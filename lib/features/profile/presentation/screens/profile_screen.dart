@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:travelcompanion/core/error/error_handler.dart';
 import 'package:travelcompanion/core/router/router.dart';
 import 'package:travelcompanion/features/auth/data/models/user_model.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
@@ -217,34 +217,39 @@ class ProfileScreen extends ConsumerWidget {
         _buildActionButton(
           icon: Icons.favorite,
           label: 'Избранное',
-          onTap: () => context.push('/wishlist'),
+          onTap: () => context.router.push(FavouriteRoute()),
         ),
         _buildActionButton(
           icon: Icons.logout,
           label: 'Выйти',
           onTap: () async {
             try {
-              await ref.read(authProvider.notifier).signOut();
-              if (context.mounted) {
-                await Future.delayed(const Duration(milliseconds: 100));
+              await ref.read(authServiceProvider).signOut();
+              WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (context.mounted) {
-                  context.router.replaceAll([const SignInRoute()]);
+                  context.router.replace(const SignInRoute());
                 }
-              }
+              });
             } catch (e) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Ошибка при выходе: $e'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
+              ErrorHandler.getErrorMessage(e);
             }
           },
         ),
       ],
     );
+  }
+
+  Future<void> logOut(context, WidgetRef ref) async {
+    try {} catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ошибка при выходе: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildActionButton({

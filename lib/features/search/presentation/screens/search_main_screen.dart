@@ -5,7 +5,7 @@ import 'package:travelcompanion/core/router/router.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
 import 'package:travelcompanion/features/search/presentation/providers/search_routes_provider.dart';
-import 'package:travelcompanion/features/search/presentation/widgets/route_card_widget.dart';
+import 'package:travelcompanion/core/widgets/route_card_widget.dart';
 
 @RoutePage()
 class SearchMainScreen extends ConsumerStatefulWidget {

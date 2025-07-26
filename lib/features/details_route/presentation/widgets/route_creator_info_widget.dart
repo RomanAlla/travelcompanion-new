@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:travelcompanion/core/utils/string_utils.dart';
+import 'package:travelcompanion/features/auth/data/models/user_model.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 
 class RouteCreatorInfoWidget extends StatelessWidget {
@@ -6,10 +8,12 @@ class RouteCreatorInfoWidget extends StatelessWidget {
   final RouteModel route;
   final double averageUserRoutesRating;
   final int userRoutesCount;
+  final UserModel creator;
   const RouteCreatorInfoWidget({
     super.key,
     required this.creatorName,
     required this.route,
+    required this.creator,
     required this.averageUserRoutesRating,
     required this.userRoutesCount,
   });
@@ -28,10 +32,10 @@ class RouteCreatorInfoWidget extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 35,
-              backgroundImage: route.creator!.avatarUrl != null
-                  ? NetworkImage(route.creator!.avatarUrl!)
+              backgroundImage: creator.avatarUrl != null
+                  ? NetworkImage(creator.avatarUrl!)
                   : null,
-              child: route.creator!.avatarUrl == null
+              child: creator.avatarUrl == null
                   ? CircleAvatar(
                       radius: 35,
                       backgroundColor: Colors.blue[100],
@@ -60,7 +64,7 @@ class RouteCreatorInfoWidget extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      '$userRoutesCount',
+                      pluralizeRoute(userRoutesCount),
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],

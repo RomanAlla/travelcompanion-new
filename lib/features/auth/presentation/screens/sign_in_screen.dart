@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/auth_button_widget.dart';
+import 'package:travelcompanion/features/auth/presentation/widgets/social_login_button.dart';
+import 'package:travelcompanion/features/auth/presentation/widgets/textfield_widget.dart';
+import 'package:travelcompanion/core/error/error_handler.dart';
 
 @RoutePage()
 class SignInScreen extends ConsumerStatefulWidget {
@@ -67,7 +70,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       } catch (e) {
         if (mounted) {
           setState(() {
-            _error = e.toString();
+            _error = ErrorHandler.getErrorMessage(e);
           });
         }
       }
@@ -162,17 +165,17 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _SocialLoginButton(
+                            SocialLoginButton(
                               icon: Icons.g_mobiledata,
                               label: 'Google',
                               onTap: () {},
                             ),
-                            _SocialLoginButton(
+                            SocialLoginButton(
                               icon: Icons.facebook,
                               label: 'Facebook',
                               onTap: () {},
                             ),
-                            _SocialLoginButton(
+                            SocialLoginButton(
                               icon: Icons.apple,
                               label: 'Apple',
                               onTap: () {},
@@ -330,109 +333,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class TextFieldWidget extends StatelessWidget {
-  final String labelText;
-  final String hintText;
-  final Widget prefixIcon;
-  final String? Function(String?)? validator;
-  final TextEditingController controller;
-  final void Function()? onTap;
-  final bool obscureText;
-  final bool isPassword;
-  final VoidCallback? onTogglePasswordVisibility;
-
-  const TextFieldWidget({
-    super.key,
-    required this.labelText,
-    required this.hintText,
-    required this.prefixIcon,
-    required this.validator,
-    required this.controller,
-    this.onTap,
-    required this.obscureText,
-    this.isPassword = false,
-    this.onTogglePasswordVisibility,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      obscureText: obscureText,
-      controller: controller,
-      onTap: onTap,
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        prefixIcon: prefixIcon,
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey[600],
-                ),
-                onPressed: onTogglePasswordVisibility,
-              )
-            : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        filled: true,
-        fillColor: Colors.grey[50],
-      ),
-      validator: validator,
-    );
-  }
-}
-
-class _SocialLoginButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const _SocialLoginButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: Colors.blue[700], size: 24),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.blue[700],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

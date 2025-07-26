@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 import 'package:travelcompanion/features/routes/data/models/route_point_model.dart';
+import 'package:travelcompanion/core/error/app_exception.dart';
 
 class RoutePointRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -31,7 +32,7 @@ class RoutePointRepository {
           .single();
       return RoutePointModel.fromJson(response);
     } catch (e) {
-      throw 'Ошибка в создании route point';
+      throw AppException('Ошибка в создании route point: $e');
     }
   }
 
@@ -47,7 +48,7 @@ class RoutePointRepository {
           .toList();
       return points;
     } catch (e) {
-      throw 'Ошибка в получении route point';
+      throw AppException('Ошибка в получении route point: $e');
     }
   }
 
@@ -60,7 +61,7 @@ class RoutePointRepository {
           .toList();
       return points;
     } catch (e) {
-      throw 'Ошибка в получении all route point';
+      throw AppException('Ошибка в получении all route point: $e');
     }
   }
 

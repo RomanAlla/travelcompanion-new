@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 final mapStateProvider = StateNotifierProvider<MapController, MapState>((ref) {
   return MapController();
@@ -14,19 +15,21 @@ final mapControllerProvider = Provider<MapController>((ref) {
 class MapController extends StateNotifier<MapState> {
   MapController() : super(MapState());
 
-  void addMark(Marker marker) {
-    final updatedPlacemarks = List<Marker>.from(state.placemarks)..add(marker);
+  void addMark(PlacemarkMapObject marker) {
+    final updatedPlacemarks = List<PlacemarkMapObject>.from(state.placemarks)
+      ..add(marker);
     state = state.copyWith(placemarks: updatedPlacemarks);
   }
 
-  void updateMarks(List<Marker> markers) {
-    final updatedPlacemarsk = List<Marker>.from(state.placemarks)
+  void updateMarks(List<PlacemarkMapObject> markers) {
+    final updatedPlacemarsk = List<PlacemarkMapObject>.from(state.placemarks)
       ..addAll(markers);
     state = state.copyWith(placemarks: updatedPlacemarsk);
   }
 
-  void deleteMark(Marker marker) {
-    final updatedPlacemarks = List<Marker>.from(state.placemarks)..add(marker);
+  void deleteMark(PlacemarkMapObject marker) {
+    final updatedPlacemarks = List<PlacemarkMapObject>.from(state.placemarks)
+      ..add(marker);
     state = state.copyWith(placemarks: updatedPlacemarks);
   }
 
@@ -38,7 +41,7 @@ class MapController extends StateNotifier<MapState> {
 class MapState {
   final LatLng? initialLocation;
   final LatLng? currentLocation;
-  final List<Marker> placemarks;
+  final List<PlacemarkMapObject> placemarks;
   final MapMode mapMode;
 
   MapState({
@@ -51,7 +54,7 @@ class MapState {
   MapState copyWith({
     ValueGetter<LatLng?>? initialLocation,
     ValueGetter<LatLng?>? currentLocation,
-    List<Marker>? placemarks,
+    List<PlacemarkMapObject>? placemarks,
     MapMode? mapMode,
   }) {
     return MapState(

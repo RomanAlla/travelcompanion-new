@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcompanion/core/utils/string_utils.dart';
 
 class RouteMetaInfoWidget extends StatelessWidget {
   final double rating;
@@ -47,7 +48,7 @@ class RouteMetaInfoWidget extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                '($reviewsCount отзывов)',
+                pluralizeReviews(reviewsCount),
                 style: TextStyle(color: Colors.grey[600], fontSize: 13),
               ),
             ],

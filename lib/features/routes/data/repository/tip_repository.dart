@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/features/routes/data/models/tip_model.dart';
+import 'package:travelcompanion/core/error/app_exception.dart';
 
 class TipRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -22,8 +23,7 @@ class TipRepository {
           .single();
       return TipModel.fromJson(response);
     } catch (e) {
-      print(e.toString());
-      throw 'Failed to create tip';
+      throw AppException('Ошибка создания совета: $e');
     }
   }
 
@@ -39,8 +39,7 @@ class TipRepository {
 
       return tipsList;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка получения советов';
+      throw AppException('Ошибка получения советов: $e');
     }
   }
 }

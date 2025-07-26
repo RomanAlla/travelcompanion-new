@@ -1,39 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/core/router/router.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
-
+    await dotenv.load(fileName: 'assets/.env');
     await Supabase.initialize(
-      url: 'https://dvwkdpswmesccgonqroo.supabase.co',
-      anonKey:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2d2tkcHN3bWVzY2Nnb25xcm9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwNzU0ODgsImV4cCI6MjA2MTY1MTQ4OH0.5BIuF1le3bSnI61Fjkj-w_DCqtpIlh8wHbWIwn_anSk',
+      url: dotenv.env['SUPABASE_URL']!,
+      anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
     );
-
     runApp(const ProviderScope(child: TravelApp()));
   } catch (e) {
     rethrow;
   }
 }
 
-class TravelApp extends StatelessWidget {
+class TravelApp extends ConsumerWidget {
   const TravelApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userProfile = ref.watch(userProfileProvider);
     final appRouter = AppRouter();
 
-    return MaterialApp.router(
-      title: 'Travel Companion',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return userProfile.when(
+      data: (user) {
+        if (user == null) {
+          return const CircularProgressIndicator();
+        }
+        return MaterialApp.router(
+          title: 'Travel Companion',
+          theme: AppTheme.lightTheme,
+          routerConfig: appRouter.config(
+            navigatorObservers: () => [RouteObserver()],
+          ),
+        );
+      },
+      loading: () => const MaterialApp(
+        home: Scaffold(body: Center(child: CircularProgressIndicator())),
       ),
-      routerConfig: appRouter.config(
-        navigatorObservers: () => [RouteObserver()],
+      error: (e, _) => MaterialApp(
+        home: Scaffold(body: Center(child: Text('Ошибка: $e'))),
       ),
     );
   }

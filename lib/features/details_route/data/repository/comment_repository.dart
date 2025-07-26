@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/features/details_route/data/models/comment_model.dart';
 import 'package:travelcompanion/core/service/supabase_service.dart';
+import 'package:travelcompanion/core/error/app_exception.dart';
 
 class CommentRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -36,8 +37,7 @@ class CommentRepository {
 
       return CommentModel.fromJson(response);
     } catch (e) {
-      print(e.toString());
-      throw 'add comment error';
+      throw AppException('Ошибка добавления комментария: $e');
     }
   }
 
@@ -50,8 +50,7 @@ class CommentRepository {
 
       return response.first['count'] as int;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка получения количества комментариев';
+      throw AppException('Ошибка получения количества комментариев: $e');
     }
   }
 
@@ -60,8 +59,7 @@ class CommentRepository {
       final avgRating = await _supabaseService.getAvgRating(routeId);
       return avgRating;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка получения среднего рейтинга';
+      throw AppException('Ошибка получения среднего рейтинга: $e');
     }
   }
 
@@ -74,20 +72,16 @@ class CommentRepository {
       for (var file in files) {
         final fileName = '$routeId/${DateTime.now().millisecondsSinceEpoch}';
         await _supabase.storage.from(_bucketName).upload(fileName, file);
+
         final photoUrl = _supabase.storage
             .from(_bucketName)
             .getPublicUrl(fileName);
         photoUrls.add(photoUrl);
       }
-      await _supabase
-          .from('comments')
-          .update({'images': photoUrls})
-          .eq('route_id', routeId);
+      return photoUrls;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка при загрузке фото';
+      throw AppException('Ошибка при загрузке фото: $e');
     }
-    return null;
   }
 
   Future<List<CommentModel>> getComments({required String routeId}) async {
@@ -102,8 +96,7 @@ class CommentRepository {
           .toList();
       return commentsList;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка получения коментов';
+      throw AppException('Ошибка получения комментариев: $e');
     }
   }
 }

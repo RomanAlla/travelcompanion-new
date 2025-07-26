@@ -2,8 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/router/router.dart';
-import 'package:travelcompanion/features/main/presentation/widgets/route_card_widget.dart';
+import 'package:travelcompanion/core/widgets/user_route_card_widget.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/routes_list_provider.dart';
+import 'package:travelcompanion/core/error/error_handler.dart';
 
 @RoutePage()
 class UserRoutesScreen extends ConsumerWidget {
@@ -124,7 +125,7 @@ class UserRoutesScreen extends ConsumerWidget {
                           final route = routesList[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16),
-                            child: RouteCard(
+                            child: UserRouteCardWidget(
                               route: route,
                               showDeleteButton: true,
                             ),
@@ -143,7 +144,7 @@ class UserRoutesScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Ошибка: $error',
+                            'Ошибка: ${ErrorHandler.getErrorMessage(error)}',
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.red,

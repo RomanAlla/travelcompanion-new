@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/features/routes/data/models/interesting_route_points_model.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 import 'package:travelcompanion/core/service/supabase_service.dart';
+import 'package:travelcompanion/core/error/app_exception.dart';
 
 class RouteRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -40,8 +41,7 @@ class RouteRepository {
           .single();
       return RouteModel.fromJson(response);
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка создания маршрута';
+      throw AppException('Ошибка создания маршрута: $e');
     }
   }
 
@@ -57,7 +57,7 @@ class RouteRepository {
 
       return routes;
     } catch (e) {
-      throw 'Ошибка получения маршрутов: $e';
+      throw AppException('Ошибка получения маршрутов: $e');
     }
   }
 
@@ -75,7 +75,7 @@ class RouteRepository {
 
       return routes;
     } catch (e) {
-      throw 'Ошибка получения маршрутов: $e';
+      throw AppException('Ошибка получения маршрутов: $e');
     }
   }
 
@@ -89,8 +89,7 @@ class RouteRepository {
 
       return RouteModel.fromJson(response);
     } catch (e) {
-      print(e.toString());
-      throw 'ошибка в получении пути';
+      throw AppException('Ошибка в получении пути: $e');
     }
   }
 
@@ -103,8 +102,7 @@ class RouteRepository {
 
       return response.first['count'] as int?;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка получения кол-ва путей юзера';
+      throw AppException('Ошибка получения кол-ва путей юзера: $e');
     }
   }
 
@@ -135,8 +133,7 @@ class RouteRepository {
 
       return ratedRoutesCount > 0 ? totalAvgRating! / ratedRoutesCount : null;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка получения среднего рейтинга всех маршрутов пользователя';
+      throw AppException('Ошибка получения avg рейтинга пользователя');
     }
   }
 
@@ -194,8 +191,7 @@ class RouteRepository {
           .eq('id', id);
       return photoUrls;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка при загрузке фото';
+      throw AppException('Ошибка при загрузке фото: $e');
     }
   }
 
@@ -217,7 +213,7 @@ class RouteRepository {
         return RouteModel.fromJson(item);
       }).toList();
     } catch (e) {
-      throw 'Ошибка поиска маршрутов';
+      throw AppException('Ошибка поиска маршрутов: $e');
     }
   }
 }

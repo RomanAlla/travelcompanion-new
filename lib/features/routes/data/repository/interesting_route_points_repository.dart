@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/features/routes/data/models/interesting_route_points_model.dart';
+import 'package:travelcompanion/core/error/app_exception.dart';
 
 class InterestingRoutePointsRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -14,7 +15,7 @@ class InterestingRoutePointsRepository {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw 'Пользователь не авторизован';
+        throw AppException('Пользователь не авторизован');
       }
 
       final data = {
@@ -33,8 +34,7 @@ class InterestingRoutePointsRepository {
 
       return InterestingRoutePointsModel.fromJson(response);
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка создания интересной точки';
+      throw AppException('Ошибка создания интересной точки: $e');
     }
   }
 
@@ -53,8 +53,9 @@ class InterestingRoutePointsRepository {
 
       return pointsList;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка получения интересных точек по ID маршрута';
+      throw AppException(
+        'Ошибка получения интересных точек по ID маршрута: $e',
+      );
     }
   }
 
@@ -62,7 +63,7 @@ class InterestingRoutePointsRepository {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        throw 'Пользователь не авторизован';
+        throw AppException('Пользователь не авторизован');
       }
 
       final response = await _supabase
@@ -76,8 +77,7 @@ class InterestingRoutePointsRepository {
 
       return pointsList;
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка получения интересных точек';
+      throw AppException('Ошибка получения интересных точек: $e');
     }
   }
 }

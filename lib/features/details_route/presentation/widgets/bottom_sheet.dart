@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:travelcompanion/core/error/error_handler.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comment_rep_provider.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
@@ -19,24 +20,44 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
   int _rating = 0;
   final _textController = TextEditingController();
   List<String> _coverImagePaths = [];
+  String? _error;
 
   Future<void> createComment() async {
     final rep = ref.read(commentRepositoryProvider);
     final user = ref.watch(authProvider).user;
 
     try {
+      if (_rating == 0 || _textController.text.isEmpty) {
+        setState(() {
+          _error = 'Заполните все данные';
+        });
+        return;
+      }
+      List<String> imageUrls = [];
+      if (_coverImagePaths.isNotEmpty) {
+        final files = _coverImagePaths.map((path) => File(path)).toList();
+        final uploadedUrls = await rep.updateCommentImages(
+          files: files,
+          routeId: widget.route.id,
+        );
+        if (uploadedUrls != null) {
+          imageUrls = uploadedUrls;
+        }
+      }
       await rep.addComment(
         creatorId: user!.id,
         routeId: widget.route.id,
         text: _textController.text,
-        images: _coverImagePaths,
+        images: imageUrls.isNotEmpty ? imageUrls : null,
         rating: _rating,
       );
+      ref.invalidate(commentsProvider(widget.route.id));
+
       if (mounted) {
         context.router.pop();
       }
     } catch (e) {
-      print(e.toString());
+      ErrorHandler.getErrorMessage(e);
     }
   }
 
@@ -114,6 +135,12 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
               ),
             ),
           ),
+          SizedBox(height: 5),
+          if (_error != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text(_error!, style: TextStyle(color: Colors.red)),
+            ),
           SizedBox(height: 5),
           Wrap(
             children: [
@@ -223,8 +250,7 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
                           width: 80,
                           child: Image.file(
                             File(image),
-                            fit: BoxFit
-                                .cover, // Важно! Это заставляет изображение заполнить весь контейнер
+                            fit: BoxFit.cover,
                             width: 80,
                             height: 60,
                           ),

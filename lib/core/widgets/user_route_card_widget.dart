@@ -10,27 +10,27 @@ import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/routes_list_provider.dart';
 
-class RouteCard extends ConsumerStatefulWidget {
+class UserRouteCardWidget extends ConsumerStatefulWidget {
   final RouteModel route;
   final bool showDeleteButton;
 
-  const RouteCard({
+  const UserRouteCardWidget({
     super.key,
     required this.route,
     this.showDeleteButton = false,
   });
 
   @override
-  ConsumerState<RouteCard> createState() => _RouteCardState();
+  ConsumerState<UserRouteCardWidget> createState() => _RouteCardState();
 }
 
-class _RouteCardState extends ConsumerState<RouteCard> {
+class _RouteCardState extends ConsumerState<UserRouteCardWidget> {
   double? routeRating;
 
   Future<void> getRouteRating() async {
-    final _sbService = SupabaseService(Supabase.instance.client);
+    final sbService = SupabaseService(Supabase.instance.client);
     try {
-      final rating = await _sbService.getAvgRating(widget.route.id);
+      final rating = await sbService.getAvgRating(widget.route.id);
       setState(() {
         routeRating = rating;
       });
@@ -178,8 +178,14 @@ class _RouteCardState extends ConsumerState<RouteCard> {
                               ),
                               Row(
                                 children: [
-                                  Text('$routeRating'),
-                                  Icon(Icons.star),
+                                  routeRating != null
+                                      ? Row(
+                                          children: [
+                                            Text('$routeRating'),
+                                            Icon(Icons.star),
+                                          ],
+                                        )
+                                      : SizedBox(),
                                 ],
                               ),
                             ],

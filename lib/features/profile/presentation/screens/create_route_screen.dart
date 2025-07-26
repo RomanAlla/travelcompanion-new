@@ -83,7 +83,7 @@ class _CreateRouteScreenState extends ConsumerState<CreateRouteScreen> {
       if (interestingPoints.isNotEmpty) {
         for (var point in interestingPoints) {
           await ref
-              .read(interestingRoutePointsModelProvider)
+              .read(interestingRoutePointsRepositoryProvider)
               .createPoint(
                 routeId: route.id,
                 name: point['name'],

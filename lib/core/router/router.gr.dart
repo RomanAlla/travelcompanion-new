@@ -43,6 +43,74 @@ class FavouriteRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [FullScreenCommentPhotosScreen]
+class FullRouteCommentPhotosRoute
+    extends PageRouteInfo<FullRouteCommentPhotosRouteArgs> {
+  FullRouteCommentPhotosRoute({
+    Key? key,
+    required List<String> imageUrls,
+    int initialIndex = 0,
+    List<PageRouteInfo>? children,
+  }) : super(
+         FullRouteCommentPhotosRoute.name,
+         args: FullRouteCommentPhotosRouteArgs(
+           key: key,
+           imageUrls: imageUrls,
+           initialIndex: initialIndex,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'FullRouteCommentPhotosRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<FullRouteCommentPhotosRouteArgs>();
+      return FullScreenCommentPhotosScreen(
+        key: args.key,
+        imageUrls: args.imageUrls,
+        initialIndex: args.initialIndex,
+      );
+    },
+  );
+}
+
+class FullRouteCommentPhotosRouteArgs {
+  const FullRouteCommentPhotosRouteArgs({
+    this.key,
+    required this.imageUrls,
+    this.initialIndex = 0,
+  });
+
+  final Key? key;
+
+  final List<String> imageUrls;
+
+  final int initialIndex;
+
+  @override
+  String toString() {
+    return 'FullRouteCommentPhotosRouteArgs{key: $key, imageUrls: $imageUrls, initialIndex: $initialIndex}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! FullRouteCommentPhotosRouteArgs) return false;
+    return key == other.key &&
+        const ListEquality().equals(imageUrls, other.imageUrls) &&
+        initialIndex == other.initialIndex;
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^
+      const ListEquality().hash(imageUrls) ^
+      initialIndex.hashCode;
+}
+
+/// generated route for
 /// [HomeScreen]
 class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute({List<PageRouteInfo>? children})
@@ -152,18 +220,51 @@ class MapRouteArgs {
 
 /// generated route for
 /// [MapWatchModeScreen]
-class MapWatchModeRoute extends PageRouteInfo<void> {
-  const MapWatchModeRoute({List<PageRouteInfo>? children})
-    : super(MapWatchModeRoute.name, initialChildren: children);
+class MapWatchModeRoute extends PageRouteInfo<MapWatchModeRouteArgs> {
+  MapWatchModeRoute({
+    Key? key,
+    InterestingRoutePointsModel? point,
+    List<PageRouteInfo>? children,
+  }) : super(
+         MapWatchModeRoute.name,
+         args: MapWatchModeRouteArgs(key: key, point: point),
+         initialChildren: children,
+       );
 
   static const String name = 'MapWatchModeRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const MapWatchModeScreen();
+      final args = data.argsAs<MapWatchModeRouteArgs>(
+        orElse: () => const MapWatchModeRouteArgs(),
+      );
+      return MapWatchModeScreen(key: args.key, point: args.point);
     },
   );
+}
+
+class MapWatchModeRouteArgs {
+  const MapWatchModeRouteArgs({this.key, this.point});
+
+  final Key? key;
+
+  final InterestingRoutePointsModel? point;
+
+  @override
+  String toString() {
+    return 'MapWatchModeRouteArgs{key: $key, point: $point}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MapWatchModeRouteArgs) return false;
+    return key == other.key && point == other.point;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ point.hashCode;
 }
 
 /// generated route for

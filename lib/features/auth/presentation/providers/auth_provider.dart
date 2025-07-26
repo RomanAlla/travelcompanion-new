@@ -21,6 +21,19 @@ final authServiceProvider = Provider<AuthService>((ref) {
   final userRepository = ref.watch(_userRepositoryProvider);
   return AuthService(authRepository, userRepository);
 });
+final userProfileProvider = FutureProvider<UserModel?>((ref) async {
+  final session = Supabase.instance.client.auth.currentSession;
+  if (session == null) return null;
+
+  final response = await Supabase.instance.client
+      .from('users')
+      .select()
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+  if (response == null) return null;
+  return UserModel.fromJson(response);
+});
 
 final authStateProvider = StreamProvider<AuthNotifierState>((ref) {
   return Supabase.instance.client.auth.onAuthStateChange.map((event) {

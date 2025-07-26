@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/features/auth/data/models/user_model.dart';
+import 'package:travelcompanion/core/error/app_exception.dart';
 
 abstract class UserRepository {
   Future<UserModel?> getCurrentUser();
@@ -45,7 +46,7 @@ class SupabaseUserRepository implements UserRepository {
     try {
       final currentUser = _supabase.auth.currentUser;
       if (currentUser == null) {
-        throw 'Пользователь не авторизован';
+        throw AppException('Пользователь не авторизован');
       }
 
       final userData = UserModel(
@@ -66,8 +67,7 @@ class SupabaseUserRepository implements UserRepository {
 
       return UserModel.fromJson(response);
     } catch (e) {
-      print('Error updating user: $e');
-      rethrow;
+      throw AppException('Ошибка обновления пользователя: $e');
     }
   }
 
@@ -76,7 +76,7 @@ class SupabaseUserRepository implements UserRepository {
     try {
       await _supabase.auth.signOut();
     } catch (e) {
-      rethrow;
+      throw AppException('Ошибка выхода: $e');
     }
   }
 
@@ -85,7 +85,7 @@ class SupabaseUserRepository implements UserRepository {
     try {
       final user = _supabase.auth.currentUser;
       if (user == null) {
-        return null;
+        throw AppException('Пользователь не авторизован');
       }
 
       final fileName =
@@ -104,7 +104,7 @@ class SupabaseUserRepository implements UserRepository {
 
       return photoUrl;
     } catch (e) {
-      rethrow;
+      throw AppException('Ошибка загрузки фото: $e');
     }
   }
 }

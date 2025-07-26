@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:travelcompanion/core/error/app_exception.dart';
 import 'package:travelcompanion/features/auth/data/models/user_model.dart';
 import 'package:travelcompanion/features/auth/data/repositories/auth_repository.dart';
 import 'package:travelcompanion/features/auth/data/repositories/user_repository.dart';
@@ -19,7 +20,7 @@ class AuthService {
       final authResponse = await _authRepository.signUp(email, password);
 
       if (authResponse.user == null) {
-        throw 'Ошибка при регистрации пользователя';
+        throw AppException('Ошибка при регистрации пользователя');
       }
 
       final user = UserModel(
@@ -31,13 +32,12 @@ class AuthService {
 
       try {
         final userResponse = await _userRepository.updateUser(user);
-        await _userRepository.getCurrentUser();
         return userResponse;
       } catch (e) {
-        throw 'Ошибка при создании профиля пользователя: $e';
+        throw AppException('Ошибка при создании профиля пользователя: $e');
       }
     } catch (e) {
-      rethrow;
+      throw AppException('$e');
     }
   }
 
@@ -46,7 +46,7 @@ class AuthService {
       final authResponse = await _authRepository.signIn(email, password);
 
       if (authResponse.user == null) {
-        throw 'Ошибка при входе';
+        throw AppException('Ошибка при входе');
       }
 
       try {
@@ -65,10 +65,10 @@ class AuthService {
 
         return userResponse;
       } catch (e) {
-        throw 'Ошибка при получении профиля пользователя: $e';
+        throw AppException('Ошибка при получении профиля пользователя: $e');
       }
     } catch (e) {
-      rethrow;
+      throw AppException('Ошибка входа: $e');
     }
   }
 
@@ -76,7 +76,7 @@ class AuthService {
     try {
       await _authRepository.signOut();
     } catch (e) {
-      rethrow;
+      throw AppException('Ошибка при выходе: $e');
     }
   }
 
@@ -86,7 +86,7 @@ class AuthService {
 
       return user;
     } catch (e) {
-      rethrow;
+      throw AppException('Ошибка получения пользователя: $e');
     }
   }
 
@@ -99,7 +99,7 @@ class AuthService {
     try {
       final currentUser = await _userRepository.getCurrentUser();
       if (currentUser == null) {
-        throw 'Пользователь не найден';
+        throw AppException('Пользователь не найден');
       }
 
       final updatedUser = UserModel(
@@ -115,7 +115,7 @@ class AuthService {
 
       return userResponse;
     } catch (e) {
-      rethrow;
+      throw AppException('Ошибка обновления профиля: $e');
     }
   }
 
@@ -124,7 +124,7 @@ class AuthService {
       final file = File(filePath);
       return await _userRepository.uploadPhoto(file);
     } catch (e) {
-      rethrow;
+      throw AppException('Ошибка загрузки фото: $e');
     }
   }
 }

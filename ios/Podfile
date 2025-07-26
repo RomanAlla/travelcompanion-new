@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '15.0'
+platform :ios, '16.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -30,15 +30,20 @@ flutter_ios_podfile_setup
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
-  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git', :tag => '11.10.0'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
+    # Отключаем проверку privacy для Flutter плагинов
+    if ['shared_preferences_foundation', 'path_provider_foundation', 'url_launcher_ios'].include?(target.name)
       target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0' 
+        config.build_settings['GENERATE_INFOPLIST_FILE'] = 'YES'
+        config.build_settings['INFOPLIST_FILE'] = '${PODS_ROOT}/../Flutter/AppFrameworkInfo.plist'
+      end
     end
+    flutter_additional_ios_build_settings(target)
   end
 end
+

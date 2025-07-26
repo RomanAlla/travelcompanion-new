@@ -2,10 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/router/router.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:travelcompanion/features/main/presentation/widgets/popular_desnitation_widget.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/routes_list_provider.dart';
-import 'package:travelcompanion/features/search/presentation/widgets/route_card_widget.dart';
+import 'package:travelcompanion/core/widgets/route_card_widget.dart';
 
 @RoutePage()
 class MainRoutesScreen extends ConsumerStatefulWidget {
@@ -50,6 +52,7 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
   @override
   Widget build(BuildContext context) {
     final routes = ref.watch(routesListProvider);
+    final user = ref.watch(authProvider).user;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -97,12 +100,11 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                                           ],
                                         ),
                                         CircleAvatar(
+                                          backgroundImage: user != null
+                                              ? NetworkImage(user.avatarUrl!)
+                                              : null,
                                           radius: 20,
                                           backgroundColor: Colors.blue[50],
-                                          child: Icon(
-                                            Icons.person,
-                                            color: Colors.blue[700],
-                                          ),
                                         ),
                                       ],
                                     ),
@@ -183,29 +185,29 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                                 child: ListView(
                                   scrollDirection: Axis.horizontal,
                                   children: [
-                                    _buildPopularDestination(
-                                      'Тропики',
-                                      Icons.beach_access,
-                                      Colors.blue[50]!,
-                                      Colors.grey[600]!,
+                                    PopularDesnitationWidget(
+                                      title: 'Тропики',
+                                      icon: Icons.beach_access,
+                                      bgColor: Colors.blue[50]!,
+                                      iconColor: Colors.grey[600]!,
                                     ),
-                                    _buildPopularDestination(
-                                      'Острова',
-                                      Icons.rocket,
-                                      Colors.blue[50]!,
-                                      Colors.grey[600]!,
+                                    PopularDesnitationWidget(
+                                      title: 'Острова',
+                                      icon: Icons.rocket,
+                                      bgColor: Colors.blue[50]!,
+                                      iconColor: Colors.grey[600]!,
                                     ),
-                                    _buildPopularDestination(
-                                      'Пещеры',
-                                      Icons.dangerous,
-                                      Colors.blue[50]!,
-                                      Colors.grey[600]!,
+                                    PopularDesnitationWidget(
+                                      title: 'Пещеры',
+                                      icon: Icons.dangerous,
+                                      bgColor: Colors.blue[50]!,
+                                      iconColor: Colors.grey[600]!,
                                     ),
-                                    _buildPopularDestination(
-                                      'Особые',
-                                      Icons.nature,
-                                      Colors.blue[50]!,
-                                      Colors.grey[600]!,
+                                    PopularDesnitationWidget(
+                                      title: 'Особые',
+                                      icon: Icons.nature,
+                                      bgColor: Colors.blue[50]!,
+                                      iconColor: Colors.grey[600]!,
                                     ),
                                   ],
                                 ),
@@ -409,39 +411,6 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildPopularDestination(
-    String title,
-    IconData icon,
-    Color bgColor,
-    Color iconColor,
-  ) {
-    return Container(
-      width: 100,
-      height: 80,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: iconColor, size: 28),
-          const SizedBox(height: 6),
-          Text(
-            title,
-            style: TextStyle(
-              color: iconColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }

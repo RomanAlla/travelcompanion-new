@@ -3,8 +3,10 @@ import 'package:travelcompanion/features/routes/data/models/interesting_route_po
 import 'package:travelcompanion/features/routes/presentation/providers/interesting_route_points_repository_provider.dart';
 
 final interestingRoutePointsByRouteIdProvider =
-    FutureProvider.family<List<InterestingRoutePointsModel>, String>(
-        (ref, routeId) async {
-  final repo = ref.watch(interestingRoutePointsModelProvider);
-  return await repo.getInterestingPointsByRouteId(routeId);
-});
+    FutureProvider.family<List<InterestingRoutePointsModel>, String>((
+      ref,
+      routeId,
+    ) async {
+      final repo = ref.watch(interestingRoutePointsRepositoryProvider);
+      return await repo.getInterestingPointsByRouteId(routeId);
+    });

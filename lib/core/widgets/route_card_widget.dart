@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:travelcompanion/core/error/error_handler.dart';
 import 'package:travelcompanion/core/service/supabase_service.dart';
+import 'package:travelcompanion/core/utils/string_utils.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
 
@@ -19,14 +21,14 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
   int? userRoutesCount;
 
   Future<void> getRouteRating() async {
-    final _sbService = SupabaseService(Supabase.instance.client);
+    final sbService = SupabaseService(Supabase.instance.client);
     try {
-      final rating = await _sbService.getAvgRating(widget.route.id);
+      final rating = await sbService.getAvgRating(widget.route.id);
       setState(() {
         routeRating = rating;
       });
     } catch (e) {
-      print(e.toString());
+      ErrorHandler.getErrorMessage(e);
     }
   }
 
@@ -39,7 +41,7 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
         userRoutesCount = count;
       });
     } catch (e) {
-      print(e.toString());
+      ErrorHandler.getErrorMessage(e);
     }
   }
 
@@ -174,29 +176,31 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
   }
 
   Widget _buildRatingBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.star, size: 16, color: Colors.orangeAccent),
-          const SizedBox(width: 4),
-          Text(
-            '$routeRating',
-            style: TextStyle(
-              color: Colors.grey[700],
-              fontWeight: FontWeight.w500,
-              fontSize: 12,
+    return routeRating != null
+        ? Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey[50],
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[200]!),
             ),
-          ),
-        ],
-      ),
-    );
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.star, size: 16, color: Colors.orangeAccent),
+                const SizedBox(width: 4),
+                Text(
+                  '${routeRating?.toStringAsFixed(1)}',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          )
+        : SizedBox();
   }
 
   Widget _buildCreatorInfo() {
@@ -225,7 +229,7 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
               ),
             ),
             Text(
-              '${userRoutesCount ?? 0} маршрут(ов)',
+              pluralizeRoute(userRoutesCount ?? 0),
               style: TextStyle(color: Colors.grey[500], fontSize: 10),
             ),
           ],

@@ -22,20 +22,20 @@ class _InterestingPointsMapState extends ConsumerState<InterestingPointsMap>
   late final _animatedMapController = AnimatedMapController(vsync: this);
   LatLng? interestingPoint;
 
-  void addMarks(LatLng point) {
-    setState(() {
-      interestingPoint = point;
-    });
-    ref.read(mapControllerProvider).clearMarks();
-    ref
-        .read(mapControllerProvider)
-        .addMark(
-          Marker(
-            point: point,
-            child: const Icon(Icons.location_on, color: Colors.red, size: 40),
-          ),
-        );
-  }
+  // void addMarks(LatLng point) {
+  //   setState(() {
+  //     interestingPoint = point;
+  //   });
+  //   ref.read(mapControllerProvider).clearMarks();
+  //   ref
+  //       .read(mapControllerProvider)
+  //       .addMark(
+  //         Marker(
+  //           point: point,
+  //           child: const Icon(Icons.location_on, color: Colors.red, size: 40),
+  //         ),
+  //       );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -109,26 +109,26 @@ class _InterestingPointsMapState extends ConsumerState<InterestingPointsMap>
           ),
         ],
       ),
-      body: FlutterMap(
-        mapController: _animatedMapController.mapController,
-        options: MapOptions(
-          onTap: (tapPosition, point) {
-            addMarks(point);
-            Future.delayed(const Duration(milliseconds: 100), () {
-              _animatedMapController.mapController.move(point, 15);
-            });
-          },
-          initialCenter: const LatLng(55.755793, 37.617134),
-          initialZoom: 6,
-        ),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.example.travelcompanion',
-          ),
-          MarkerLayer(markers: state.placemarks),
-        ],
-      ),
+      // body: FlutterMap(
+      //   mapController: _animatedMapController.mapController,
+      //   options: MapOptions(
+      //     onTap: (tapPosition, point) {
+      //       addMarks(point);
+      //       Future.delayed(const Duration(milliseconds: 100), () {
+      //         _animatedMapController.mapController.move(point, 15);
+      //       });
+      //     },
+      //     initialCenter: const LatLng(55.755793, 37.617134),
+      //     initialZoom: 6,
+      //   ),
+      //   children: [
+      //     TileLayer(
+      //       urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      //       userAgentPackageName: 'com.example.travelcompanion',
+      //     ),
+      //     MarkerLayer(markers: state.placemarks),
+      //   ],
+      // ),
     );
   }
 }

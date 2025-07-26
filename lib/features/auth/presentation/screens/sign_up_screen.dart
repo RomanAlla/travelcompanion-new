@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/core/error/app_exception.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
-import 'package:travelcompanion/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/auth_button_widget.dart';
+import 'package:travelcompanion/features/auth/presentation/widgets/social_login_button.dart';
+import 'package:travelcompanion/features/auth/presentation/widgets/textfield_widget.dart';
+import 'package:travelcompanion/core/error/error_handler.dart';
 
 @RoutePage()
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -50,6 +53,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   Future<void> _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
+        if (_passwordController.text != _confirmPasswordController.text) {
+          throw AppException('Пароли не совпадают', code: 'passwords_mismatch');
+        }
         setState(() {
           _error = null;
         });
@@ -64,7 +70,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       } catch (e) {
         if (mounted) {
           setState(() {
-            _error = e.toString();
+            _error = ErrorHandler.getErrorMessage(e);
           });
         }
       }
@@ -156,17 +162,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _SocialLoginButton(
+                            SocialLoginButton(
                               icon: Icons.g_mobiledata,
                               label: 'Google',
                               onTap: () {},
                             ),
-                            _SocialLoginButton(
+                            SocialLoginButton(
                               icon: Icons.facebook,
                               label: 'Facebook',
                               onTap: () {},
                             ),
-                            _SocialLoginButton(
+                            SocialLoginButton(
                               icon: Icons.apple,
                               label: 'Apple',
                               onTap: () {},
@@ -357,54 +363,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SocialLoginButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  const _SocialLoginButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: Colors.blue[700], size: 24),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.blue[700],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

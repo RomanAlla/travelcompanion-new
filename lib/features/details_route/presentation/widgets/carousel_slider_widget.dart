@@ -27,15 +27,46 @@ class CarouselSliderWidget extends StatefulWidget {
 }
 
 class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
+  List _favouriteList = [];
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getFavouriteList();
+    });
+    super.initState();
+  }
+
+  Future<void> getFavouriteList() async {
+    final user = widget.ref.watch(authProvider).user;
+    final favouriteList = await widget.ref
+        .watch(favouriteRepository)
+        .getFavouriteRoutes(userId: user!.id);
+    setState(() {
+      _favouriteList = favouriteList;
+    });
+  }
+
   Future<void> addToFavouriteRoute() async {
     try {
       final rep = widget.ref.read(favouriteRepository);
       final user = widget.ref.watch(authProvider).user;
-      await rep.addToFavourite(userId: user!.id, routeId: widget.route.id);
-      if (mounted) {
+
+      if (!_favouriteList.any((route) => route.id == widget.route.id)) {
+        await rep.addToFavourite(userId: user!.id, routeId: widget.route.id);
+        setState(() {
+          _favouriteList.add(widget.route);
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Маршрут добавлен в избранное')));
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Маршрут добавлен в избранное')),
+          SnackBar(content: Text('Маршрут уже добавлен в избранное')),
         );
+      }
+      if (mounted) {
+        widget.ref.invalidate(favouriteListProvider);
       }
     } catch (e) {
       print(e.toString());
