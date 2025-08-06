@@ -59,16 +59,16 @@ class _MapDisplayWidgetState extends State<MapDisplayWidget> {
             Expanded(
               child: GestureDetector(
                 onTap: () async {
-                  final result = await context.router.push<LatLng>(
-                    MapChangeModeRoute(),
-                  );
-                  if (result != null && widget.onPointSelected != null) {
-                    widget.onPointSelected!(result);
-                    setState(() {
-                      point = result;
-                    });
-                    _centerOnPoint(result);
-                  }
+                  // final result = await context.router.push<LatLng>(
+                  //   MapChangeModeRoute(),
+                  // );
+                  // if (result != null && widget.onPointSelected != null) {
+                  //   widget.onPointSelected!(result);
+                  //   setState(() {
+                  //     point = result;
+                  //   });
+                  //   _centerOnPoint(result);
+                  // }
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),

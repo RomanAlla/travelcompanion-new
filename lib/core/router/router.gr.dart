@@ -127,22 +127,6 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [InterestingPointsMapRoute]
-class InterestingPointsMapRoute extends PageRouteInfo<void> {
-  const InterestingPointsMapRoute({List<PageRouteInfo>? children})
-    : super(InterestingPointsMapRoute.name, initialChildren: children);
-
-  static const String name = 'InterestingPointsMap';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const InterestingPointsMap();
-    },
-  );
-}
-
-/// generated route for
 /// [MainRoutesScreen]
 class MainRoutesRoute extends PageRouteInfo<void> {
   const MainRoutesRoute({List<PageRouteInfo>? children})
@@ -159,28 +143,12 @@ class MainRoutesRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [MapChangeModeScreen]
-class MapChangeModeRoute extends PageRouteInfo<void> {
-  const MapChangeModeRoute({List<PageRouteInfo>? children})
-    : super(MapChangeModeRoute.name, initialChildren: children);
-
-  static const String name = 'MapChangeModeRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      return const MapChangeModeScreen();
-    },
-  );
-}
-
-/// generated route for
 /// [MapScreen]
 class MapRoute extends PageRouteInfo<MapRouteArgs> {
-  MapRoute({Key? key, required LatLng point, List<PageRouteInfo>? children})
+  MapRoute({Key? key, required bool showObjects, List<PageRouteInfo>? children})
     : super(
         MapRoute.name,
-        args: MapRouteArgs(key: key, point: point),
+        args: MapRouteArgs(key: key, showObjects: showObjects),
         initialChildren: children,
       );
 
@@ -190,81 +158,32 @@ class MapRoute extends PageRouteInfo<MapRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<MapRouteArgs>();
-      return MapScreen(key: args.key, point: args.point);
+      return MapScreen(key: args.key, showObjects: args.showObjects);
     },
   );
 }
 
 class MapRouteArgs {
-  const MapRouteArgs({this.key, required this.point});
+  const MapRouteArgs({this.key, required this.showObjects});
 
   final Key? key;
 
-  final LatLng point;
+  final bool showObjects;
 
   @override
   String toString() {
-    return 'MapRouteArgs{key: $key, point: $point}';
+    return 'MapRouteArgs{key: $key, showObjects: $showObjects}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! MapRouteArgs) return false;
-    return key == other.key && point == other.point;
+    return key == other.key && showObjects == other.showObjects;
   }
 
   @override
-  int get hashCode => key.hashCode ^ point.hashCode;
-}
-
-/// generated route for
-/// [MapWatchModeScreen]
-class MapWatchModeRoute extends PageRouteInfo<MapWatchModeRouteArgs> {
-  MapWatchModeRoute({
-    Key? key,
-    InterestingRoutePointsModel? point,
-    List<PageRouteInfo>? children,
-  }) : super(
-         MapWatchModeRoute.name,
-         args: MapWatchModeRouteArgs(key: key, point: point),
-         initialChildren: children,
-       );
-
-  static const String name = 'MapWatchModeRoute';
-
-  static PageInfo page = PageInfo(
-    name,
-    builder: (data) {
-      final args = data.argsAs<MapWatchModeRouteArgs>(
-        orElse: () => const MapWatchModeRouteArgs(),
-      );
-      return MapWatchModeScreen(key: args.key, point: args.point);
-    },
-  );
-}
-
-class MapWatchModeRouteArgs {
-  const MapWatchModeRouteArgs({this.key, this.point});
-
-  final Key? key;
-
-  final InterestingRoutePointsModel? point;
-
-  @override
-  String toString() {
-    return 'MapWatchModeRouteArgs{key: $key, point: $point}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! MapWatchModeRouteArgs) return false;
-    return key == other.key && point == other.point;
-  }
-
-  @override
-  int get hashCode => key.hashCode ^ point.hashCode;
+  int get hashCode => key.hashCode ^ showObjects.hashCode;
 }
 
 /// generated route for

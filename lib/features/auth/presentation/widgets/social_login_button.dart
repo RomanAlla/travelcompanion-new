@@ -33,13 +33,16 @@ class SocialLoginButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: Colors.blue[700], size: 24),
+            Icon(icon, color: Colors.blue[700], size: 22),
             const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.blue[700],
-                fontWeight: FontWeight.w500,
+            Expanded(
+              child: Text(
+                overflow: TextOverflow.ellipsis,
+                label,
+                style: TextStyle(
+                  color: Colors.blue[700],
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],

@@ -163,22 +163,29 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                         ),
                         const SizedBox(height: 40),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            SocialLoginButton(
-                              icon: Icons.g_mobiledata,
-                              label: 'Google',
-                              onTap: () {},
+                            Expanded(
+                              child: SocialLoginButton(
+                                icon: Icons.g_mobiledata,
+                                label: 'Google',
+                                onTap: () {},
+                              ),
                             ),
-                            SocialLoginButton(
-                              icon: Icons.facebook,
-                              label: 'Facebook',
-                              onTap: () {},
+                            SizedBox(width: 5),
+                            Expanded(
+                              child: SocialLoginButton(
+                                icon: Icons.facebook,
+                                label: 'Facebook',
+                                onTap: () {},
+                              ),
                             ),
-                            SocialLoginButton(
-                              icon: Icons.apple,
-                              label: 'Apple',
-                              onTap: () {},
+                            SizedBox(width: 5),
+                            Expanded(
+                              child: SocialLoginButton(
+                                icon: Icons.apple,
+                                label: 'Apple',
+                                onTap: () {},
+                              ),
                             ),
                           ],
                         ),
@@ -218,7 +225,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                             children: [
                               TextFieldWidget(
                                 obscureText: false,
-                                onTap: () {
+
+                                onTogglePasswordVisibility: () {
                                   setState(() {
                                     _isPasswordVisible = !_isPasswordVisible;
                                   });

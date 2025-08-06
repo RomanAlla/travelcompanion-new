@@ -7,17 +7,13 @@ import 'package:travelcompanion/features/auth/presentation/screens/sign_in_scree
 import 'package:travelcompanion/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:travelcompanion/features/details_route/presentation/screens/full_screen_comment_photos_screen.dart';
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_screen.dart';
-import 'package:travelcompanion/features/details_route/presentation/widgets/map_screen.dart';
 import 'package:travelcompanion/features/favourite/presentation/screens/favourite_screen.dart';
 import 'package:travelcompanion/features/home/presentation/home_screen.dart';
 import 'package:travelcompanion/features/main/presentation/screens/main_routes_screen.dart';
-import 'package:travelcompanion/features/map/screens/map_change_mode.dart';
-import 'package:travelcompanion/features/map/screens/map_watch_mode.dart';
+import 'package:travelcompanion/features/map/presentation/screens/map_screen.dart';
 import 'package:travelcompanion/features/profile/presentation/screens/create_route_screen.dart';
-import 'package:travelcompanion/features/profile/presentation/screens/interesting_points_map.dart';
 import 'package:travelcompanion/features/profile/presentation/screens/point_description_screen.dart';
 import 'package:travelcompanion/features/profile/presentation/screens/profile_screen.dart';
-import 'package:travelcompanion/features/routes/data/models/interesting_route_points_model.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 import 'package:travelcompanion/features/search/presentation/screens/search_main_screen.dart';
 import 'package:travelcompanion/features/travels/presentation/screens/travels_screen.dart';
@@ -32,30 +28,35 @@ class AuthGuard extends AutoRouteGuard {
   ) async {
     final isAuthenticated =
         Supabase.instance.client.auth.currentSession != null;
+    debugPrint('Guard triggered. Authenticated: $isAuthenticated');
     final isAuthRoute =
         resolver.route.name == SignInRoute.name ||
         resolver.route.name == SignUpRoute.name;
 
     if (!isAuthenticated && !isAuthRoute) {
+      debugPrint('Redirecting to SignInRoute');
       router.replace(const SignInRoute());
     } else if (isAuthenticated && isAuthRoute) {
+      debugPrint('Redirecting to HomeRoute');
       router.replace(const HomeRoute());
     } else {
+      debugPrint('Proceeding to route: ${resolver.route.name}');
       resolver.next(true);
     }
   }
 }
 
-final _authGuard = AuthGuard();
-
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
+  final AuthGuard authGuard;
+
+  AppRouter({required this.authGuard});
   @override
   List<AutoRoute> get routes => [
     AutoRoute(
       page: HomeRoute.page,
       path: '/',
-      guards: [_authGuard],
+      guards: [authGuard],
       children: [
         AutoRoute(page: MainRoutesRoute.page, path: 'main'),
         AutoRoute(page: FavouriteRoute.page, path: 'favourite'),
@@ -66,31 +67,31 @@ class AppRouter extends RootStackRouter {
     AutoRoute(
       page: SearchMainRoute.page,
       path: '/search',
-      guards: [_authGuard],
+      guards: [authGuard],
       children: [AutoRoute(page: RouteDescriptionRoute.page)],
     ),
     AutoRoute(
       page: UserRoutesRoute.page,
       path: '/user-routes',
-      guards: [_authGuard],
+      guards: [authGuard],
     ),
     AutoRoute(
       page: RouteDescriptionRoute.page,
       path: '/route-description',
-      guards: [_authGuard],
+      guards: [authGuard],
     ),
+    AutoRoute(page: MapRoute.page, guards: [authGuard]),
     AutoRoute(page: SignInRoute.page, path: '/sign-in', initial: true),
     AutoRoute(page: SignUpRoute.page, path: '/sign-up'),
-    AutoRoute(page: MapChangeModeRoute.page, guards: [_authGuard]),
-    AutoRoute(page: MapWatchModeRoute.page, guards: [_authGuard]),
+
     AutoRoute(
       page: CreateRouteRoute.page,
       path: '/create-route',
-      guards: [_authGuard],
+      guards: [authGuard],
     ),
-    AutoRoute(page: InterestingPointsMapRoute.page, guards: [_authGuard]),
-    AutoRoute(page: PointDescriptionRoute.page, guards: [_authGuard]),
-    AutoRoute(page: MapRoute.page, guards: [_authGuard]),
-    AutoRoute(page: FullRouteCommentPhotosRoute.page, guards: [_authGuard]),
+
+    AutoRoute(page: PointDescriptionRoute.page, guards: [authGuard]),
+    // AutoRoute(page: MapScreenRoute.page, guards: [_authGuard]),
+    AutoRoute(page: FullRouteCommentPhotosRoute.page, guards: [authGuard]),
   ];
 }

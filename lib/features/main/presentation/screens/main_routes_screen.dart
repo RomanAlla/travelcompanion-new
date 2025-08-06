@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/router/router.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
-import 'package:travelcompanion/features/main/presentation/widgets/popular_desnitation_widget.dart';
 import 'package:travelcompanion/features/routes/data/models/route_model.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
 import 'package:travelcompanion/features/routes/presentation/providers/routes_list_provider.dart';
@@ -162,60 +161,7 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                           ),
                         ),
                       ),
-                      SliverToBoxAdapter(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Популярные направления',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              SizedBox(
-                                height: 80,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    PopularDesnitationWidget(
-                                      title: 'Тропики',
-                                      icon: Icons.beach_access,
-                                      bgColor: Colors.blue[50]!,
-                                      iconColor: Colors.grey[600]!,
-                                    ),
-                                    PopularDesnitationWidget(
-                                      title: 'Острова',
-                                      icon: Icons.rocket,
-                                      bgColor: Colors.blue[50]!,
-                                      iconColor: Colors.grey[600]!,
-                                    ),
-                                    PopularDesnitationWidget(
-                                      title: 'Пещеры',
-                                      icon: Icons.dangerous,
-                                      bgColor: Colors.blue[50]!,
-                                      iconColor: Colors.grey[600]!,
-                                    ),
-                                    PopularDesnitationWidget(
-                                      title: 'Особые',
-                                      icon: Icons.nature,
-                                      bgColor: Colors.blue[50]!,
-                                      iconColor: Colors.grey[600]!,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+
                       SliverToBoxAdapter(
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -388,7 +334,8 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(25),
-                      onTap: () => context.router.push(MapWatchModeRoute()),
+                      onTap: () =>
+                          context.router.push(MapRoute(showObjects: true)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

@@ -48,7 +48,7 @@ class _MapContainerState extends State<MapContainer> {
         ],
       ),
       child: GestureDetector(
-        onTap: () => context.router.push(MapRoute(point: point)),
+        // onTap: () => context.router.push(MapScreenRoute(point: point)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: Stack(

@@ -135,9 +135,9 @@ class RoutePointsWidget extends ConsumerWidget {
                           ),
                           trailing: IconButton(
                             onPressed: () {
-                              context.router.push(
-                                MapWatchModeRoute(point: point),
-                              );
+                              // context.router.push(
+                              //   MapWatchModeRoute(point: point),
+                              // );
                             },
                             icon: Icon(
                               Icons.arrow_circle_right,
