@@ -3,8 +3,9 @@ platform :ios, '16.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
-
+ENV['YANDEX_MAPKIT_VARIANT'] = 'full'
 project 'Runner', {
+  
   'Debug' => :debug,
   'Profile' => :release,
   'Release' => :release,
@@ -24,9 +25,9 @@ def flutter_root
 end
 
 require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
-
+puts "YANDEX_MAPKIT_VARIANT = #{ENV['YANDEX_MAPKIT_VARIANT']}"
 flutter_ios_podfile_setup
-
+ENV['YANDEX_MAPKIT_VARIANT'] = 'full'
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
@@ -35,15 +36,19 @@ end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
-    # Отключаем проверку privacy для Flutter плагинов
-    if ['shared_preferences_foundation', 'path_provider_foundation', 'url_launcher_ios'].include?(target.name)
-      target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0' 
-        config.build_settings['GENERATE_INFOPLIST_FILE'] = 'YES'
-        config.build_settings['INFOPLIST_FILE'] = '${PODS_ROOT}/../Flutter/AppFrameworkInfo.plist'
-      end
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_LOCATION=1',
+      ]
+      
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+      config.build_settings['GENERATE_INFOPLIST_FILE'] = 'YES'
+      config.build_settings['INFOPLIST_FILE'] = '${PODS_ROOT}/../Flutter/AppFrameworkInfo.plist'
     end
+
     flutter_additional_ios_build_settings(target)
   end
 end
+
 
