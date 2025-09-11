@@ -1,1 +1,1 @@
-enum RoutePickState { none, startPicked, bothPicked }
+enum PointPickState { none, startPicked, bothPicked }

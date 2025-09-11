@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/tips_list_provider.dart'
+import 'package:travelcompanion/features/route_builder/presentation/providers/tips_list_provider.dart'
     show tipsListProvider;
 
 class TipsWidget extends ConsumerWidget {
@@ -30,7 +30,7 @@ class TipsWidget extends ConsumerWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
             child: Text(
-              'Советы и лайфхаки',
+              'Советы от создателя',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

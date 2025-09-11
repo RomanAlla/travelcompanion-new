@@ -4,13 +4,11 @@ import 'package:travelcompanion/core/utils/string_utils.dart';
 class RouteMetaInfoWidget extends StatelessWidget {
   final double rating;
   final int reviewsCount;
-  final String routeType;
 
   const RouteMetaInfoWidget({
     super.key,
     required this.rating,
     required this.reviewsCount,
-    required this.routeType,
   });
 
   @override
@@ -52,25 +50,6 @@ class RouteMetaInfoWidget extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[600], fontSize: 13),
               ),
             ],
-          ),
-        ),
-
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          height: 30,
-          decoration: BoxDecoration(
-            color: Colors.greenAccent,
-            borderRadius: BorderRadius.circular(40),
-          ),
-          child: Center(
-            child: Text(
-              routeType,
-              style: const TextStyle(
-                color: Colors.green,
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
-            ),
           ),
         ),
       ],

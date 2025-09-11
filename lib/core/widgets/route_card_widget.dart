@@ -4,13 +4,25 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/core/error/error_handler.dart';
 import 'package:travelcompanion/core/service/supabase_service.dart';
 import 'package:travelcompanion/core/utils/string_utils.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
+import 'package:travelcompanion/core/widgets/delete_button.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/favourite_repository_provider.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
+
+// Добавьте этот провайдер в ваши провайдеры
+final imageVersionProvider = StateProvider<int>((ref) => 0);
 
 class RouteCardWidget extends ConsumerStatefulWidget {
   final RouteModel route;
   final Function()? onTap;
-  const RouteCardWidget({super.key, required this.route, required this.onTap});
+  final bool canDelete;
+  const RouteCardWidget({
+    super.key,
+    required this.route,
+    required this.onTap,
+    this.canDelete = false,
+  });
 
   @override
   ConsumerState<RouteCardWidget> createState() => _RouteCardWidgetState();
@@ -32,11 +44,19 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
     }
   }
 
+  Future<void> deleteRouteFromFavorite() async {
+    final user = ref.watch(authProvider).user;
+    ref
+        .read(favouriteRepository)
+        .removeFromFavourites(userId: user!.id, routeId: widget.route.id);
+    ref.invalidate(favouriteListProvider);
+  }
+
   Future<void> getUserRoutesCount() async {
     try {
       final count = await ref
           .watch(routeRepositoryProvider)
-          .getUserRoutesCount(creatorId: widget.route.creatorId);
+          .getUserRoutesCount(creatorId: widget.route.creator!.id);
       setState(() {
         userRoutesCount = count;
       });
@@ -56,6 +76,8 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final imageVersion = ref.watch(imageVersionProvider);
+
     return Card(
       color: Colors.white,
       margin: const EdgeInsets.only(bottom: 16),
@@ -79,7 +101,7 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
                     ),
                     child: widget.route.photoUrls.isNotEmpty
                         ? Image.network(
-                            widget.route.photoUrls.first,
+                            '${widget.route.photoUrls.first}?v=$imageVersion',
                             width: double.infinity,
                             height: 300,
                             fit: BoxFit.cover,
@@ -103,30 +125,19 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
                                 ),
                               );
                             },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: 300,
+                                color: Colors.grey[50],
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey[400],
+                                  size: 48,
+                                ),
+                              );
+                            },
                           )
                         : Container(height: 300),
-                  ),
-                  Positioned(
-                    top: 12,
-                    right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[600],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        widget.route.routeType,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -247,6 +258,10 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
   Widget _buildActionButtons() {
     return Row(
       children: [
+        widget.canDelete
+            ? DeleteButtonWidget(onPressed: deleteRouteFromFavorite)
+            : SizedBox(),
+        SizedBox(width: 7),
         _buildActionButton(
           icon: Icons.favorite_border,
           color: Colors.grey[600]!,

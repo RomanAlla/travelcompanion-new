@@ -10,7 +10,7 @@ class HelperWidget extends StatefulWidget {
 }
 
 class _HelperWidgetState extends State<HelperWidget> {
-  bool showInstraction = true;
+  bool _showInstraction = true;
   double _instructionOffset = -0.2;
   double _instructionOpacity = 0.0;
   @override
@@ -24,8 +24,19 @@ class _HelperWidgetState extends State<HelperWidget> {
     super.initState();
   }
 
+  void _closeInstruction() {
+    setState(() {
+      _showInstraction = false;
+      _instructionOffset = -0.2; // Добавляем анимацию закрытия
+      _instructionOpacity = 0.0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!_showInstraction) {
+      return const SizedBox.shrink();
+    }
     return SafeArea(
       child: AnimatedSlide(
         offset: Offset(0, _instructionOffset),
@@ -70,7 +81,7 @@ class _HelperWidgetState extends State<HelperWidget> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          showInstraction = false;
+                          _closeInstruction();
                         });
                       },
                       child: Icon(Icons.close, size: 20, color: Colors.grey),

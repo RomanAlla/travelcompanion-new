@@ -1,8 +1,6 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:travelcompanion/core/router/router.dart';
 
 class MapDisplayWidget extends StatefulWidget {
   final Marker? marker;

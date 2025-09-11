@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/features/auth/data/models/user_model.dart';
 import 'package:travelcompanion/features/details_route/data/models/comment_model.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/carousel_slider_widget.dart';
-import 'package:travelcompanion/features/details_route/presentation/widgets/map_container.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/reviews_section_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/route_creator_info_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/route_description_widget.dart';
@@ -11,7 +10,7 @@ import 'package:travelcompanion/features/details_route/presentation/widgets/rout
 import 'package:travelcompanion/features/details_route/presentation/widgets/route_points_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/route_title_name_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/tips_widget.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart'
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart'
     show RouteModel;
 
 class RouteDescriptionContent extends ConsumerWidget {
@@ -60,7 +59,6 @@ class RouteDescriptionContent extends ConsumerWidget {
                 RouteMetaInfoWidget(
                   rating: averageRating ?? 0.0,
                   reviewsCount: commentsCount ?? 0,
-                  routeType: route.routeType,
                 ),
                 const SizedBox(height: 20),
                 RouteCreatorInfoWidget(
@@ -75,9 +73,9 @@ class RouteDescriptionContent extends ConsumerWidget {
                 ),
 
                 const SizedBox(height: 20),
-                const RouteDescriptionWidget(),
+                RouteDescriptionWidget(route: route),
                 const SizedBox(height: 20),
-                MapContainer(route: route),
+
                 const SizedBox(height: 20),
                 RoutePointsWidget(route.id),
                 const SizedBox(height: 20),

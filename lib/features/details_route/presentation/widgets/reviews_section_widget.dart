@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:travelcompanion/core/router/router.dart';
 import 'package:travelcompanion/core/theme/app_theme.dart';
-import 'package:travelcompanion/features/details_route/presentation/providers/comment_rep_provider.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/comments_provider.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 
 class ReviewsSectionWidget extends ConsumerWidget {
   final List? commentList;

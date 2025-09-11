@@ -6,9 +6,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/core/service/supabase_service.dart';
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_screen.dart';
 
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/routes_list_provider.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/routes_list_provider.dart';
 
 class UserRouteCardWidget extends ConsumerStatefulWidget {
   final RouteModel route;

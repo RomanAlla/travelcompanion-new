@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_screen.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
 
 class RouteTileWidget extends ConsumerWidget {
   final RouteModel route;
@@ -12,11 +12,14 @@ class RouteTileWidget extends ConsumerWidget {
     final completeRoute = await routeRepository.getRoutesById(id: route.id);
 
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RouteDescriptionScreen(
-              routeId: completeRoute.id, route: completeRoute),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => RouteDescriptionScreen(
+          routeId: completeRoute.id,
+          route: completeRoute,
+        ),
+      ),
+    );
   }
 
   @override

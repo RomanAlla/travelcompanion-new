@@ -15,7 +15,7 @@ void main() async {
       url: dotenv.env['SUPABASE_URL']!,
       anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
     );
-    runApp(const ProviderScope(child: TravelApp()));
+    runApp(const ProviderScope(overrides: [], child: TravelApp()));
   } catch (e) {
     rethrow;
   }
@@ -26,8 +26,7 @@ class TravelApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appRouter = AppRouter(authGuard: AuthGuard());
-
+    final appRouter = AppRouter(authGuard: AuthGuard(ref));
     return MaterialApp.router(
       title: 'Travel Companion',
       theme: AppTheme.lightTheme,

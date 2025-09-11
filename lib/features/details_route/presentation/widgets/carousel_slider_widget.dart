@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/favourite_repository_provider.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/favourite_repository_provider.dart';
 
 class CarouselSliderWidget extends StatefulWidget {
   final List<Widget> items;
@@ -119,10 +119,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
               ),
             ),
           ),
-        Positioned(
-          top: 25,
-          left: 0,
-          right: 0,
+        SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(

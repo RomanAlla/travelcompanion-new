@@ -2,8 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/router/router.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
+import 'package:travelcompanion/core/widgets/choice_chip_widget.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
 import 'package:travelcompanion/features/search/presentation/providers/search_routes_provider.dart';
 import 'package:travelcompanion/core/widgets/route_card_widget.dart';
 
@@ -21,13 +22,7 @@ class _SearchMainScreen2State extends ConsumerState<SearchMainScreen> {
   final _searchController = TextEditingController();
   String? _searchQuery = '';
 
-  final List<Map<String, dynamic>> categories = [
-    {'icon': Icons.beach_access, 'label': 'Тропики'},
-    {'icon': Icons.rocket, 'label': 'Острова'},
-    {'icon': Icons.dangerous, 'label': 'Пещеры'},
-    {'icon': Icons.local_fire_department, 'label': 'Популярные'},
-    {'icon': Icons.nature, 'label': 'Особые'},
-  ];
+  final List<String> categoryList = ['Все', 'Сохраненные', 'Созданные'];
 
   @override
   void initState() {
@@ -144,64 +139,11 @@ class _SearchMainScreen2State extends ConsumerState<SearchMainScreen> {
                 ],
               ),
             ),
-            Container(
-              height: 50,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey[200]!, width: 1),
-                ),
-              ),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  final category = categories[index];
-                  final isSelected = index == selectedCategory;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ChoiceChip(
-                      avatar: Icon(
-                        category['icon'] as IconData,
-                        size: 18,
-                        color: isSelected ? Colors.blue[700] : Colors.grey[600],
-                      ),
-                      label: Text(
-                        category['label'] as String,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: isSelected
-                              ? Colors.blue[700]
-                              : Colors.grey[600],
-                        ),
-                      ),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        setState(() {
-                          selectedCategory = index;
-                          pickedCategory = category['label'] as String;
-                        });
-                      },
-                      backgroundColor: Colors.grey[100],
-                      selectedColor: Colors.blue[50],
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            ChoiceChipBuilderWidget(),
             Expanded(
               child: routesList.when(
                 data: (routesList) {
-                  var filteredList = routesList.where((route) {
-                    return route.routeType == pickedCategory;
-                  }).toList();
-
-                  if (filteredList.isEmpty) {
+                  if (routesList.isEmpty) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -226,9 +168,9 @@ class _SearchMainScreen2State extends ConsumerState<SearchMainScreen> {
 
                   return ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: filteredList.length,
+                    itemCount: routesList.length,
                     itemBuilder: (context, index) {
-                      final route = filteredList[index];
+                      final route = routesList[index];
                       return RouteCardWidget(
                         route: route,
                         onTap: () => _toDescriptionScreen(route),

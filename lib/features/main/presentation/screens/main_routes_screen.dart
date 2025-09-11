@@ -2,10 +2,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/router/router.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/widgets/app_bar.dart';
+import 'package:travelcompanion/core/widgets/choice_chip_widget.dart';
+import 'package:travelcompanion/core/widgets/search_bar_widget.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/routes_list_provider.dart';
+import 'package:travelcompanion/features/main/presentation/providers/routes_filter_provider.dart';
+import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
 import 'package:travelcompanion/core/widgets/route_card_widget.dart';
 
 @RoutePage()
@@ -17,15 +22,7 @@ class MainRoutesScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
-  String _selectedCategory = 'Все';
-  final List<String> categoryList = [
-    'Все',
-    'Тропики',
-    'Острова',
-    'Пещеры',
-    'Популярное',
-    'Особые',
-  ];
+  final List<String> categoryList = ['Все', 'Сохраненные', 'Созданные'];
 
   void toSearchScreen() {
     context.router.push(const SearchMainRoute());
@@ -50,8 +47,7 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routes = ref.watch(routesListProvider);
-    final user = ref.watch(authProvider).user;
+    ref.watch(authProvider).user;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -62,57 +58,8 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                 Expanded(
                   child: CustomScrollView(
                     slivers: [
-                      SliverToBoxAdapter(
-                        child: Container(
-                          color: Colors.white,
-                          child: Stack(
-                            children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(16),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Добро пожаловать!',
-                                              style: TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.blue[700],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              'Откройте для себя новые маршруты',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey[500],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        CircleAvatar(
-                                          backgroundImage: user != null
-                                              ? NetworkImage(user.avatarUrl!)
-                                              : null,
-                                          radius: 20,
-                                          backgroundColor: Colors.blue[50],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                      SliverAppBar(
+                        flexibleSpace: AppBarWidget(title: 'Travel Companion'),
                       ),
                       SliverAppBar(
                         pinned: true,
@@ -137,27 +84,7 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                           ),
                           child: GestureDetector(
                             onTap: toSearchScreen,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[50],
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.grey[200]!),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.search, color: Colors.grey[600]),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Поиск направлений',
-                                    style: TextStyle(color: Colors.grey[600]),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            child: AbsorbPointer(child: SearchBarWidget()),
                           ),
                         ),
                       ),
@@ -177,12 +104,13 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                                 ),
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.router.push(CreateRouteRoute());
+                                },
                                 child: Text(
-                                  'Смотреть все',
-                                  style: TextStyle(
-                                    color: Colors.blue[700],
-                                    fontWeight: FontWeight.w500,
+                                  'Создать маршрут',
+                                  style: AppTheme.bodyMedium.copyWith(
+                                    color: AppTheme.primaryLightColor,
                                   ),
                                 ),
                               ),
@@ -190,67 +118,71 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                           ),
                         ),
                       ),
-                      SliverToBoxAdapter(
-                        child: Container(
-                          height: 50,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: categoryList.length,
-                            itemBuilder: (context, index) {
-                              final category = categoryList[index];
-                              final isSelected = category == _selectedCategory;
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8),
-                                child: ChoiceChip(
-                                  label: Text(category),
-                                  selected: isSelected,
-                                  onSelected: (selected) {
-                                    setState(() {
-                                      _selectedCategory = category;
-                                    });
-                                  },
-                                  backgroundColor: Colors.white,
-                                  selectedColor: Colors.blue[50],
-                                  labelStyle: TextStyle(
-                                    color: isSelected
-                                        ? Colors.blue[700]
-                                        : Colors.grey[500],
-                                    fontWeight: isSelected
-                                        ? FontWeight.w500
-                                        : FontWeight.normal,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+                      SliverToBoxAdapter(child: ChoiceChipBuilderWidget()),
                       SliverPadding(
                         padding: const EdgeInsets.all(16),
-                        sliver: routes.when(
-                          data: (routesList) {
-                            var filteredList = routesList.where((route) {
-                              if (_selectedCategory == 'Все') {
-                                return true;
-                              }
-                              return route.routeType == _selectedCategory;
-                            }).toList();
+                        sliver: ref
+                            .watch(filteredRoutesProvider)
+                            .when(
+                              data: (filteredRoutes) {
+                                if (filteredRoutes.isEmpty) {
+                                  return SliverFillRemaining(
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.explore_off,
+                                            size: 64,
+                                            color: Colors.grey[400],
+                                          ),
+                                          const SizedBox(height: 16),
+                                          Text(
+                                            'Маршруты не найдены',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.grey[600],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
 
-                            if (filteredList.isEmpty) {
-                              return SliverFillRemaining(
+                                return SliverList(
+                                  delegate: SliverChildBuilderDelegate((
+                                    context,
+                                    index,
+                                  ) {
+                                    final route = filteredRoutes[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 16,
+                                      ),
+                                      child: RouteCardWidget(
+                                        route: route,
+                                        onTap: () =>
+                                            _toDescriptionScreen(route),
+                                      ),
+                                    );
+                                  }, childCount: filteredRoutes.length),
+                                );
+                              },
+                              error: (error, _) => SliverFillRemaining(
                                 child: Center(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Icon(
-                                        Icons.explore_off,
+                                        Icons.error_outline,
                                         size: 64,
-                                        color: Colors.grey[400],
+                                        color: Colors.red[400],
                                       ),
                                       const SizedBox(height: 16),
                                       Text(
-                                        'Маршруты не найдены',
+                                        'Ошибка загрузки маршрутов',
                                         style: TextStyle(
                                           fontSize: 18,
                                           color: Colors.grey[600],
@@ -259,51 +191,13 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                                     ],
                                   ),
                                 ),
-                              );
-                            }
-
-                            return SliverList(
-                              delegate: SliverChildBuilderDelegate((
-                                context,
-                                index,
-                              ) {
-                                final route = filteredList[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 16),
-                                  child: RouteCardWidget(
-                                    route: route,
-                                    onTap: () => _toDescriptionScreen(route),
-                                  ),
-                                );
-                              }, childCount: filteredList.length),
-                            );
-                          },
-                          error: (error, _) => SliverFillRemaining(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.error_outline,
-                                    size: 64,
-                                    color: Colors.red[400],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'Ошибка загрузки маршрутов',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
+                              ),
+                              loading: () => const SliverFillRemaining(
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
                               ),
                             ),
-                          ),
-                          loading: () => const SliverFillRemaining(
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                        ),
                       ),
                     ],
                   ),
@@ -335,7 +229,7 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(25),
                       onTap: () =>
-                          context.router.push(MapRoute(showObjects: true)),
+                          context.router.push(MapRoute(mode: MapMode.viewAll)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

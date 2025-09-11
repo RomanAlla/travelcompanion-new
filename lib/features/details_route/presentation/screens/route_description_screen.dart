@@ -1,12 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/features/details_route/data/models/comment_model.dart';
-import 'package:travelcompanion/features/details_route/presentation/providers/comment_rep_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/average_rating_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/average_user_routes_rating.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/comments_count_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/comments_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/user_routes_count_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_content.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/bottom_sheet.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/route_repository_provider.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 
 @RoutePage()
 class RouteDescriptionScreen extends ConsumerStatefulWidget {
@@ -26,11 +28,7 @@ class RouteDescriptionScreen extends ConsumerStatefulWidget {
 class _MyshiState extends ConsumerState<RouteDescriptionScreen> {
   late final List<Widget> myItems;
   int currentIndex = 0;
-  List<CommentModel>? commentsList;
-  int? commentsCount;
-  double? averageRating;
-  int? userRoutesCount;
-  double? averageUserRoutesRating;
+
   void showBottomSheet() {
     showModalBottomSheet(
       isScrollControlled: true,
@@ -43,86 +41,8 @@ class _MyshiState extends ConsumerState<RouteDescriptionScreen> {
     );
   }
 
-  Future<void> getCommentsCount() async {
-    try {
-      final rep = ref.watch(commentRepositoryProvider);
-      final count = await rep.getCommentsCount(routeId: widget.routeId);
-      if (mounted) {
-        setState(() {
-          commentsCount = count;
-        });
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> getUserRoutesCount() async {
-    try {
-      final rep = ref.watch(routeRepositoryProvider);
-      final count = await rep.getUserRoutesCount(
-        creatorId: widget.route.creatorId,
-      );
-      setState(() {
-        userRoutesCount = count;
-      });
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> getAverageUserRoutesRating() async {
-    try {
-      final rep = ref.watch(routeRepositoryProvider);
-      final averageRating = await rep.getAverageUserRoutesRating(
-        userId: widget.route.creatorId,
-      );
-      setState(() {
-        averageUserRoutesRating = averageRating;
-      });
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> getAverageRating() async {
-    try {
-      final rep = ref.watch(commentRepositoryProvider);
-      final rating = await rep.getAverageRating(routeId: widget.routeId);
-      if (mounted) {
-        setState(() {
-          averageRating = rating;
-        });
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> getComments() async {
-    try {
-      final result = await ref
-          .read(commentRepositoryProvider)
-          .getComments(routeId: widget.route.id);
-      if (mounted) {
-        setState(() {
-          commentsList = result;
-        });
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getComments();
-      getCommentsCount();
-      getAverageRating();
-      getUserRoutesCount();
-      getAverageUserRoutesRating();
-    });
     super.initState();
 
     myItems = widget.route.photoUrls
@@ -179,6 +99,19 @@ class _MyshiState extends ConsumerState<RouteDescriptionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final commentsAsync = ref.watch(commentsProvider(widget.route.id));
+    final commentsCountAsync = ref.watch(
+      commentsCountProvider(widget.route.id),
+    );
+    final averageRatingAsync = ref.watch(
+      averageRatingProvider(widget.route.id),
+    );
+    final userRoutesCountAsync = ref.watch(
+      userRoutesCountProvider(widget.route.creatorId),
+    );
+    final averageUserRoutesRatingAsync = ref.watch(
+      averageUserRoutesRatingProvider(widget.route.creator!.id),
+    );
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: RouteDescriptionContent(
@@ -186,11 +119,11 @@ class _MyshiState extends ConsumerState<RouteDescriptionScreen> {
         route: widget.route,
         myItems: myItems,
         currentIndex: currentIndex,
-        commentsCount: commentsCount,
-        averageRating: averageRating,
-        userRoutesCount: userRoutesCount,
-        averageUserRoutesRating: averageUserRoutesRating,
-        commentsList: commentsList,
+        commentsCount: commentsCountAsync.value,
+        averageRating: averageRatingAsync.value,
+        userRoutesCount: userRoutesCountAsync.value,
+        averageUserRoutesRating: averageUserRoutesRatingAsync.value,
+        commentsList: commentsAsync.value,
         onReviewPressed: showBottomSheet,
       ),
     );

@@ -52,6 +52,9 @@ dependencies:
   geolocator: ^9.0.2
   shared_preferences: ^2.5.3
   flutter_svg: ^2.2.0
+  permission_handler: ^12.0.1
+  mask_text_input_formatter: ^2.0.0
+  dio: ^5.9.0
 
 dev_dependencies:
   flutter_test:
@@ -80,8 +83,23 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/icons/location.png
+    - assets/icons/
     - assets/.env
+    - assets/fonts/
+
+
+  fonts: 
+    - family: PlusJakartaSans
+      fonts: 
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf 
+    - family: Montserrat
+      fonts: 
+        - asset: assets/fonts/Montserrat-Regular.ttf 
+    - family: SF
+      fonts: 
+        - asset: assets/fonts/SF-Compact-Rounded-Light.otf
+         
+         
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

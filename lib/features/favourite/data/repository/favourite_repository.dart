@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/features/favourite/data/models/favourite_model.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 import 'package:travelcompanion/core/error/app_exception.dart';
 
 class FavouriteRepository {

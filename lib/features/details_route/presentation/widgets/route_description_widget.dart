@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 
-class RouteDescriptionWidget extends StatelessWidget {
-  const RouteDescriptionWidget({super.key});
+class RouteDescriptionWidget extends ConsumerWidget {
+  final RouteModel route;
+  const RouteDescriptionWidget({super.key, required this.route});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 200,
+      width: MediaQuery.of(context).size.width,
+      constraints: BoxConstraints(minHeight: 170),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -17,16 +21,11 @@ class RouteDescriptionWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Описание маршрута',
+              'Описание',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            SizedBox(
-              height: 7,
-            ),
-            Text(
-              'Uhjrwhe htjkrwnmrwegh ruiewirjlwejrlw jelrjhlwejhrlwk elklf kjldjklgfhjk lsdhlghjks dlhufg husdh fuglh ksdf jhklgjhk sdfghj klsdkh jg hjkl',
-              style: TextStyle(fontSize: 16),
-            )
+            SizedBox(height: 7),
+            Text(route.description!, style: TextStyle(fontSize: 16)),
           ],
         ),
       ),

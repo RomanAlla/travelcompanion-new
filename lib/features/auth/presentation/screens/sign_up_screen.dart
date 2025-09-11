@@ -160,22 +160,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                         ),
                         const SizedBox(height: 40),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            SocialLoginButton(
-                              icon: Icons.g_mobiledata,
-                              label: 'Google',
-                              onTap: () {},
+                            Expanded(
+                              child: SocialLoginButton(
+                                icon: Icons.g_mobiledata,
+                                label: 'Google',
+                                onTap: () {},
+                              ),
                             ),
-                            SocialLoginButton(
-                              icon: Icons.facebook,
-                              label: 'Facebook',
-                              onTap: () {},
+                            Expanded(
+                              child: SocialLoginButton(
+                                icon: Icons.facebook,
+                                label: 'Facebook',
+                                onTap: () {},
+                              ),
                             ),
-                            SocialLoginButton(
-                              icon: Icons.apple,
-                              label: 'Apple',
-                              onTap: () {},
+                            Expanded(
+                              child: SocialLoginButton(
+                                icon: Icons.apple,
+                                label: 'Apple',
+                                onTap: () {},
+                              ),
                             ),
                           ],
                         ),

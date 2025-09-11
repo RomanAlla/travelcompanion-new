@@ -1,1 +1,1 @@
-enum MapMode { viewAll, pickPoints }
+enum MapMode { viewAll, pickMainPoints, pickWayPoints }

@@ -27,6 +27,22 @@ class CreateRouteRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [EditProfileScreen]
+class EditProfileRoute extends PageRouteInfo<void> {
+  const EditProfileRoute({List<PageRouteInfo>? children})
+    : super(EditProfileRoute.name, initialChildren: children);
+
+  static const String name = 'EditProfileRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return EditProfileScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [FavouriteScreen]
 class FavouriteRoute extends PageRouteInfo<void> {
   const FavouriteRoute({List<PageRouteInfo>? children})
@@ -145,45 +161,50 @@ class MainRoutesRoute extends PageRouteInfo<void> {
 /// generated route for
 /// [MapScreen]
 class MapRoute extends PageRouteInfo<MapRouteArgs> {
-  MapRoute({Key? key, required bool showObjects, List<PageRouteInfo>? children})
-    : super(
-        MapRoute.name,
-        args: MapRouteArgs(key: key, showObjects: showObjects),
-        initialChildren: children,
-      );
+  MapRoute({
+    Key? key,
+    MapMode mode = MapMode.viewAll,
+    List<PageRouteInfo>? children,
+  }) : super(
+         MapRoute.name,
+         args: MapRouteArgs(key: key, mode: mode),
+         initialChildren: children,
+       );
 
   static const String name = 'MapRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<MapRouteArgs>();
-      return MapScreen(key: args.key, showObjects: args.showObjects);
+      final args = data.argsAs<MapRouteArgs>(
+        orElse: () => const MapRouteArgs(),
+      );
+      return MapScreen(key: args.key, mode: args.mode);
     },
   );
 }
 
 class MapRouteArgs {
-  const MapRouteArgs({this.key, required this.showObjects});
+  const MapRouteArgs({this.key, this.mode = MapMode.viewAll});
 
   final Key? key;
 
-  final bool showObjects;
+  final MapMode mode;
 
   @override
   String toString() {
-    return 'MapRouteArgs{key: $key, showObjects: $showObjects}';
+    return 'MapRouteArgs{key: $key, mode: $mode}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! MapRouteArgs) return false;
-    return key == other.key && showObjects == other.showObjects;
+    return key == other.key && mode == other.mode;
   }
 
   @override
-  int get hashCode => key.hashCode ^ showObjects.hashCode;
+  int get hashCode => key.hashCode ^ mode.hashCode;
 }
 
 /// generated route for

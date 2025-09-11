@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/router/router.dart';
 import 'package:travelcompanion/core/theme/app_theme.dart';
-import 'package:travelcompanion/features/routes/presentation/providers/interesting_route_points_by_route_id_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/way_points_provider.dart';
+import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 
 class RoutePointsWidget extends ConsumerWidget {
   final String routeId;
@@ -11,9 +12,7 @@ class RoutePointsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pointsAsyncValue = ref.watch(
-      interestingRoutePointsByRouteIdProvider(routeId),
-    );
+    final pointsAsyncValue = ref.watch(wayPointsListProvider(routeId));
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -63,13 +62,13 @@ class RoutePointsWidget extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppTheme.primaryLightColor,
+                          color: AppTheme.lightBlue,
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
                           Icons.location_on,
                           size: 24,
-                          color: Color(0xFF6C5CE7),
+                          color: AppTheme.primaryLightColor,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -120,24 +119,18 @@ class RoutePointsWidget extends ConsumerWidget {
                             ),
                           ),
                           title: Text(
-                            point.name,
+                            '${point.latitude}, ${point.longitude}',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
                           ),
-                          subtitle: Text(
-                            point.description,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                            ),
-                          ),
+
                           trailing: IconButton(
                             onPressed: () {
-                              // context.router.push(
-                              //   MapWatchModeRoute(point: point),
-                              // );
+                              context.router.push(
+                                MapRoute(mode: MapMode.viewAll),
+                              );
                             },
                             icon: Icon(
                               Icons.arrow_circle_right,

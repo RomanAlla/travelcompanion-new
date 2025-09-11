@@ -5,8 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelcompanion/core/error/error_handler.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/average_user_routes_rating.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comment_rep_provider.dart';
-import 'package:travelcompanion/features/routes/data/models/route_model.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/comments_count_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/comments_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/user_routes_count_provider.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 
 class BottomSheetWidget extends ConsumerStatefulWidget {
   final RouteModel route;
@@ -52,6 +56,9 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
         rating: _rating,
       );
       ref.invalidate(commentsProvider(widget.route.id));
+      ref.invalidate(commentsCountProvider(widget.route.id));
+      ref.invalidate(userRoutesCountProvider(widget.route.creatorId));
+      ref.invalidate(averageUserRoutesRatingProvider(widget.route.creatorId));
 
       if (mounted) {
         context.router.pop();
