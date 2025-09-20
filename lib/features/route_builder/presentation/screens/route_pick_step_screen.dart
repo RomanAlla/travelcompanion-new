@@ -4,8 +4,8 @@ import 'package:travelcompanion/core/theme/app_theme.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 import 'package:travelcompanion/features/map/domain/enums/route_pick_state.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
-import 'package:travelcompanion/features/map/presentation/screens/map_screen.dart';
 import 'package:travelcompanion/features/map/presentation/widgets/helper_widget.dart';
+import 'package:travelcompanion/features/map/presentation/widgets/yandex_map_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/page_controller_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
@@ -257,7 +257,14 @@ class _RoutePickStepWidgetState extends ConsumerState<RoutePickStepScreen> {
                                         child: ElevatedButton.icon(
                                           onPressed: _hidePanel,
                                           icon: const Icon(Icons.map),
-                                          label: const Text('Выбрать на карте'),
+                                          label: Text(
+                                            'Выбрать на карте',
+                                            style: AppTheme.bodySmallBold
+                                                .copyWith(
+                                                  color: AppTheme
+                                                      .primaryLightColor,
+                                                ),
+                                          ),
                                           style: ElevatedButton.styleFrom(
                                             padding: const EdgeInsets.symmetric(
                                               vertical: 16,
