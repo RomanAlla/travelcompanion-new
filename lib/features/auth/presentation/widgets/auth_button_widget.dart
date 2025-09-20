@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 
 class AuthButtonWidget extends StatelessWidget {
   final void Function()? onPressed;
@@ -20,7 +21,7 @@ class AuthButtonWidget extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue[700],
+          backgroundColor: AppTheme.primaryLightColor,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
