@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/error/app_exception.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/auth_button_widget.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/social_login_button.dart';
@@ -84,30 +85,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
       backgroundColor: Colors.grey[100],
       body: Stack(
         children: [
-          Positioned(
-            top: -50,
-            right: -50,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.blue[700]?.withOpacity(0.1),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -100,
-            left: -50,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.blue[700]?.withOpacity(0.1),
-              ),
-            ),
-          ),
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -137,25 +114,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                             child: Icon(
                               Icons.person_add,
                               size: 48,
-                              color: Colors.blue[700],
+                              color: AppTheme.primaryLightColor,
                             ),
                           ),
                         ),
                         const SizedBox(height: 40),
                         Text(
                           'Создайте аккаунт',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue[700],
+                          style: AppTheme.headLineSmall.copyWith(
+                            color: AppTheme.primaryLightColor,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Зарегистрируйтесь, чтобы начать планировать путешествия',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppTheme.grey600,
                           ),
                         ),
                         const SizedBox(height: 40),
@@ -168,6 +142,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                                 onTap: () {},
                               ),
                             ),
+                            SizedBox(width: 5),
                             Expanded(
                               child: SocialLoginButton(
                                 icon: Icons.facebook,
@@ -175,6 +150,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                                 onTap: () {},
                               ),
                             ),
+                            SizedBox(width: 5),
                             Expanded(
                               child: SocialLoginButton(
                                 icon: Icons.apple,
@@ -194,9 +170,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                               ),
                               child: Text(
                                 'или зарегистрируйтесь через email',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
+                                style: AppTheme.bodyMini.copyWith(
+                                  color: AppTheme.grey600,
                                 ),
                               ),
                             ),
@@ -204,83 +179,79 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                           ],
                         ),
                         const SizedBox(height: 30),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
+                        Column(
+                          children: [
+                            TextFieldWidget(
+                              labelText: 'Логин',
+                              hintText: 'Введите логин',
+                              prefixIcon: const Icon(
+                                Icons.email,
+                                color: AppTheme.grey600,
                               ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              TextFieldWidget(
-                                labelText: 'Логин',
-                                hintText: 'Введите логин',
-                                prefixIcon: const Icon(Icons.email),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Пожалуйста, введите логин';
-                                  }
-                                  return null;
-                                },
-                                controller: _emailController,
-                                obscureText: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Пожалуйста, введите логин';
+                                }
+                                return null;
+                              },
+                              controller: _emailController,
+                              obscureText: false,
+                            ),
+                            SizedBox(height: 10),
+                            TextFieldWidget(
+                              obscureText: !_isPasswordVisible,
+                              labelText: 'Пароль',
+                              hintText: 'Введите пароль',
+                              isPassword: true,
+                              prefixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: AppTheme.grey600,
                               ),
-                              const Divider(height: 1),
-                              TextFieldWidget(
-                                obscureText: !_isPasswordVisible,
-                                labelText: 'Пароль',
-                                hintText: 'Введите пароль',
-                                isPassword: true,
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                onTogglePasswordVisibility: () {
-                                  setState(() {
-                                    _isPasswordVisible = !_isPasswordVisible;
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Пожалуйста, введите пароль';
-                                  }
-                                  if (value.length < 6) {
-                                    return 'Пароль должен содержать минимум 6 символов';
-                                  }
+                              onTogglePasswordVisibility: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Пожалуйста, введите пароль';
+                                }
+                                if (value.length < 6) {
+                                  return 'Пароль должен содержать минимум 6 символов';
+                                }
 
-                                  return null;
-                                },
-                                controller: _passwordController,
+                                return null;
+                              },
+                              controller: _passwordController,
+                            ),
+                            SizedBox(height: 10),
+                            TextFieldWidget(
+                              obscureText: !_isConfirmPasswordVisible,
+                              labelText: 'Подтвердите пароль',
+                              hintText: 'Подтвердите пароль',
+                              isPassword: true,
+                              prefixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: AppTheme.grey600,
                               ),
-                              const Divider(height: 1),
-                              TextFieldWidget(
-                                obscureText: !_isConfirmPasswordVisible,
-                                labelText: 'Подтвердите пароль',
-                                hintText: 'Подтвердите пароль',
-                                isPassword: true,
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                onTogglePasswordVisibility: () {
-                                  setState(() {
-                                    _isConfirmPasswordVisible =
-                                        !_isConfirmPasswordVisible;
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Пожалуйста, введите пароль';
-                                  }
-                                  if (value.length < 6) {
-                                    return 'Пароль должен содержать минимум 6 символов';
-                                  }
-                                  return null;
-                                },
-                                controller: _confirmPasswordController,
-                              ),
-                            ],
-                          ),
+                              onTogglePasswordVisibility: () {
+                                setState(() {
+                                  _isConfirmPasswordVisible =
+                                      !_isConfirmPasswordVisible;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Пожалуйста, введите пароль';
+                                }
+                                if (value.length < 6) {
+                                  return 'Пароль должен содержать минимум 6 символов';
+                                }
+                                return null;
+                              },
+                              controller: _confirmPasswordController,
+                            ),
+                          ],
                         ),
                         if (_error != null) ...[
                           const SizedBox(height: 16),
@@ -316,16 +287,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                           children: [
                             Icon(
                               Icons.check_circle_outline,
-                              color: Colors.blue[700],
+                              color: AppTheme.primaryLightColor,
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 'Регистрируясь, вы соглашаетесь с нашими условиями использования и политикой конфиденциальности',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
+                                style: AppTheme.bodyMini.copyWith(
+                                  color: AppTheme.grey600,
                                 ),
                               ),
                             ),
@@ -343,18 +313,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                           children: [
                             Text(
                               'Уже есть аккаунт?',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 14,
+                              style: AppTheme.bodySmall.copyWith(
+                                color: AppTheme.grey600,
                               ),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context),
                               child: Text(
                                 'Войти',
-                                style: TextStyle(
-                                  color: Colors.blue[700],
-                                  fontWeight: FontWeight.bold,
+                                style: AppTheme.bodySmallBold.copyWith(
+                                  color: AppTheme.primaryLightColor,
                                 ),
                               ),
                             ),
