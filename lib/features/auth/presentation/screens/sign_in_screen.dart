@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/auth_button_widget.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/social_login_button.dart';
@@ -87,30 +88,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
       backgroundColor: Colors.grey[100],
       body: Stack(
         children: [
-          Positioned(
-            top: -50,
-            right: -50,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.blue[700]?.withOpacity(0.1),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -100,
-            left: -50,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.blue[700]?.withOpacity(0.1),
-              ),
-            ),
-          ),
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -131,7 +108,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.blue[700]!.withOpacity(0.2),
+                                  color: AppTheme.primaryLightColor.withOpacity(
+                                    0.2,
+                                  ),
                                   blurRadius: 30,
                                   offset: const Offset(0, 10),
                                 ),
@@ -140,25 +119,22 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                             child: Icon(
                               Icons.travel_explore,
                               size: 48,
-                              color: Colors.blue[700],
+                              color: AppTheme.primaryLightColor,
                             ),
                           ),
                         ),
                         const SizedBox(height: 40),
                         Text(
                           'Добро пожаловать!',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue[700],
+                          style: AppTheme.headLineSmall.copyWith(
+                            color: AppTheme.primaryLightColor,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Войдите, чтобы продолжить планировать путешествия',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                          style: AppTheme.bodySmall.copyWith(
+                            color: AppTheme.grey600,
                           ),
                         ),
                         const SizedBox(height: 40),
@@ -199,9 +175,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                               ),
                               child: Text(
                                 'или войдите через email',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
+                                style: AppTheme.bodyMini.copyWith(
+                                  color: AppTheme.grey600,
                                 ),
                               ),
                             ),
@@ -209,61 +184,54 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                           ],
                         ),
                         const SizedBox(height: 30),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              TextFieldWidget(
-                                obscureText: false,
+                        Column(
+                          children: [
+                            TextFieldWidget(
+                              obscureText: false,
 
-                                onTogglePasswordVisibility: () {
-                                  setState(() {
-                                    _isPasswordVisible = !_isPasswordVisible;
-                                  });
-                                },
-                                labelText: 'Логин',
-                                hintText: 'Введите ваш логин',
-                                prefixIcon: Icon(Icons.mail),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Пожалуйста, введите email';
-                                  }
-                                  return null;
-                                },
-                                controller: _emailController,
+                              onTogglePasswordVisibility: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                              labelText: 'Логин',
+                              hintText: 'Введите ваш логин',
+                              prefixIcon: Icon(
+                                Icons.mail,
+                                color: AppTheme.grey600,
                               ),
-                              const Divider(height: 1),
-                              TextFieldWidget(
-                                obscureText: !_isPasswordVisible,
-                                labelText: 'Пароль',
-                                hintText: 'Введите ваш пароль',
-                                prefixIcon: Icon(Icons.password_outlined),
-                                isPassword: true,
-                                onTogglePasswordVisibility: () {
-                                  setState(() {
-                                    _isPasswordVisible = !_isPasswordVisible;
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Пожалуйста, введите пароль';
-                                  }
-                                  return null;
-                                },
-                                controller: _passwordController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Пожалуйста, введите email';
+                                }
+                                return null;
+                              },
+                              controller: _emailController,
+                            ),
+                            SizedBox(height: 10),
+                            TextFieldWidget(
+                              obscureText: !_isPasswordVisible,
+                              labelText: 'Пароль',
+                              hintText: 'Введите ваш пароль',
+                              prefixIcon: Icon(
+                                Icons.password_outlined,
+                                color: AppTheme.grey600,
                               ),
-                            ],
-                          ),
+                              isPassword: true,
+                              onTogglePasswordVisibility: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Пожалуйста, введите пароль';
+                                }
+                                return null;
+                              },
+                              controller: _passwordController,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         Align(
@@ -272,9 +240,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                             onPressed: () {},
                             child: Text(
                               'Забыли пароль?',
-                              style: TextStyle(
-                                color: Colors.blue[700],
-                                fontSize: 14,
+                              style: AppTheme.bodySmall.copyWith(
+                                color: AppTheme.primaryLightColor,
                               ),
                             ),
                           ),
@@ -316,18 +283,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
                           children: [
                             Text(
                               'Нет аккаунта?',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 14,
+                              style: AppTheme.bodySmall.copyWith(
+                                color: AppTheme.grey600,
                               ),
                             ),
                             TextButton(
                               onPressed: _navigateToSignUp,
                               child: Text(
                                 'Зарегистрироваться',
-                                style: TextStyle(
-                                  color: Colors.blue[700],
-                                  fontWeight: FontWeight.bold,
+                                style: AppTheme.bodySmallBold.copyWith(
+                                  color: AppTheme.primaryLightColor,
                                 ),
                               ),
                             ),
