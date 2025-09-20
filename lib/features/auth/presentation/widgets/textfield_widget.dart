@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final String labelText;
@@ -33,7 +34,10 @@ class TextFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
+        labelStyle: AppTheme.bodyMedium.copyWith(color: AppTheme.grey600),
+        hintStyle: AppTheme.bodySmall.copyWith(color: AppTheme.grey600),
         prefixIcon: prefixIcon,
+        prefixStyle: TextStyle(color: AppTheme.primaryLightColor),
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
