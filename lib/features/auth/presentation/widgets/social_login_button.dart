@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 
 class SocialLoginButton extends StatelessWidget {
   final IconData icon;
@@ -22,26 +23,18 @@ class SocialLoginButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: Colors.blue[700], size: 22),
+            Icon(icon, color: AppTheme.primaryLightColor, size: 22),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 overflow: TextOverflow.ellipsis,
                 label,
-                style: TextStyle(
-                  color: Colors.blue[700],
-                  fontWeight: FontWeight.w500,
+                style: AppTheme.bodySmall.copyWith(
+                  color: AppTheme.primaryLightColor,
                 ),
               ),
             ),
