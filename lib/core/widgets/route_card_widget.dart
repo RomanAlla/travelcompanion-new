@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/core/error/error_handler.dart';
 import 'package:travelcompanion/core/service/supabase_service.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 import 'package:travelcompanion/core/utils/string_utils.dart';
 import 'package:travelcompanion/core/widgets/delete_button.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
@@ -10,7 +11,6 @@ import 'package:travelcompanion/features/route_builder/data/models/route_model.d
 import 'package:travelcompanion/features/route_builder/presentation/providers/favourite_repository_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
 
-// Добавьте этот провайдер в ваши провайдеры
 final imageVersionProvider = StateProvider<int>((ref) => 0);
 
 class RouteCardWidget extends ConsumerStatefulWidget {
@@ -151,10 +151,8 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
                       Expanded(
                         child: Text(
                           widget.route.name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.blue[700],
+                          style: AppTheme.bodyLarge.copyWith(
+                            color: AppTheme.primaryLightColor,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -167,11 +165,7 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
                   const SizedBox(height: 8),
                   Text(
                     widget.route.description ?? '',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[500],
-                      height: 1.4,
-                    ),
+                    style: AppTheme.bodySmall.copyWith(color: AppTheme.grey600),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -239,11 +233,7 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
           children: [
             Text(
               widget.route.creator?.name ?? 'Автор',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-                color: Colors.grey[700],
-              ),
+              style: AppTheme.bodyMini.copyWith(color: AppTheme.grey700),
             ),
             Text(
               pluralizeRoute(userRoutesCount ?? 0),
