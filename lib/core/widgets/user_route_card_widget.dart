@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/core/service/supabase_service.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_screen.dart';
 
 import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
@@ -35,7 +36,7 @@ class _RouteCardState extends ConsumerState<UserRouteCardWidget> {
         routeRating = rating;
       });
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -52,7 +53,7 @@ class _RouteCardState extends ConsumerState<UserRouteCardWidget> {
     final completeRoute = await routeRepository.getRoutesById(
       id: widget.route.id,
     );
-
+    if (!mounted) return;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -262,9 +263,8 @@ class _RouteCardState extends ConsumerState<UserRouteCardWidget> {
                       const SizedBox(height: 8),
                       Text(
                         widget.route.description!,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF636E72),
+                        style: AppTheme.bodySmall.copyWith(
+                          color: AppTheme.grey600,
                         ),
                       ),
                     ],
