@@ -38,7 +38,10 @@ class _ChoiceChipBuilderWidgetState
                 selectAnimation: AnimationStyle.noAnimation,
               ),
               side: BorderSide.none,
-              label: Text(category),
+              label: Text(
+                category,
+                style: AppTheme.bodySmall.copyWith(color: AppTheme.grey600),
+              ),
               selected: isSelected,
               onSelected: (selected) {
                 setState(() {

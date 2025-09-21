@@ -95,6 +95,8 @@ class AuthService {
     String? name,
     String? country,
     String? avatarUrl,
+    String? email,
+    String? phoneNumber,
   }) async {
     try {
       final currentUser = await _userRepository.getCurrentUser();
@@ -105,6 +107,7 @@ class AuthService {
       final updatedUser = UserModel(
         id: currentUser.id,
         email: currentUser.email,
+        phoneNumber: phoneNumber ?? currentUser.phoneNumber,
         name: name ?? currentUser.name,
         country: country ?? currentUser.country,
         createdAt: currentUser.createdAt,

@@ -1,15 +1,17 @@
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:travelcompanion/core/router/router.dart';
 import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/validators/form_validator.dart';
 import 'package:travelcompanion/core/widgets/app_bar.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
-import 'package:travelcompanion/features/profile/data/api/countries_api.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/avatar_widget.dart';
+import 'package:travelcompanion/features/profile/presentation/widgets/common_button_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/country_sheet.dart';
-import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
+import 'package:travelcompanion/features/profile/presentation/widgets/save_changes_button.dart';
+import 'package:travelcompanion/features/profile/presentation/widgets/set_avatar_bottom_sheet_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/text_field_widget.dart';
 
 @RoutePage()
@@ -22,12 +24,16 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _nameController = TextEditingController();
-  final _bioController = TextEditingController();
+
   final _emailController = TextEditingController();
   final _numberController = TextEditingController();
   final _countryController = TextEditingController();
   final _searchController = TextEditingController();
   List<String> countries = [];
+  final _formKey = GlobalKey<FormState>();
+  Color _buttonColor = Colors.grey;
+  bool isLoading = false;
+  String? pickedPhotoPath;
 
   final maskFormatter = MaskTextInputFormatter(
     mask: '+7 (###) ###-##-##',
@@ -35,21 +41,62 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   );
 
   @override
+  void initState() {
+    final userData = ref.read(authProvider).user;
+
+    _nameController.text = userData?.name ?? '';
+    _emailController.text = userData?.email ?? '';
+    _numberController.text = userData?.phoneNumber ?? '';
+    _countryController.text = userData?.country ?? '';
+    _nameController.addListener(changeColor);
+
+    _emailController.addListener(changeColor);
+    _numberController.addListener(changeColor);
+    _countryController.addListener(changeColor);
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _numberController.dispose();
     _countryController.dispose();
-    _bioController.dispose();
+
     _emailController.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
   Future<void> updateUserInfo() async {
-    final currentUser = ref.watch(authProvider).user;
-    await ref
-        .read(authServiceProvider)
-        .updateUserProfile(userId: currentUser!.id, name: _nameController.text);
+    if (_formKey.currentState!.validate()) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+        final currentUser = ref.watch(authProvider).user;
+        await ref
+            .read(authProvider.notifier)
+            .updateProfile(
+              userId: currentUser!.id,
+              name: _nameController.text,
+              country: _countryController.text,
+              email: _emailController.text,
+              phoneNumber: _numberController.text,
+            );
+        Future.delayed(Duration(seconds: 1));
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+          context.router.pushAndPopUntil(
+            ProfileRoute(),
+            predicate: (route) => false,
+          );
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
   }
 
   void showCountryPickSheet(BuildContext context) {
@@ -69,8 +116,33 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
+  void changeColor() {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      setState(() {
+        _buttonColor = AppTheme.primaryLightColor;
+      });
+    }
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _buttonColor = AppTheme.lightGrey;
+      });
+    }
+  }
+
+  void showBottomSheetWidget() {
+    showModalBottomSheet(
+      showDragHandle: true,
+      context: context,
+      builder: (context) {
+        return SetAvatarBottomSheetWidget();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userData = ref.watch(authProvider).user;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(double.infinity, 50),
@@ -78,18 +150,36 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
-              AvatarWidget(),
-
-              SizedBox(height: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: AvatarWidget(
+                      radius: 50,
+                      avatarUrl: pickedPhotoPath ?? userData!.avatarUrl,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  CommonButtonWidget(
+                    onPressed: showBottomSheetWidget,
+                    text: userData!.avatarUrl != null
+                        ? 'Изменить аватар'
+                        : 'Добавить аватар',
+                  ),
+                  SizedBox(height: 20),
                   Text('Имя', style: AppTheme.bodyMedium),
                   SizedBox(height: 5),
-                  InputDataFieldWidget(controller: _nameController),
+                  InputDataFieldWidget(
+                    controller: _nameController,
+                    validator: (value) {
+                      return FormValidator.validateName(value);
+                    },
+                  ),
                   SizedBox(height: 15),
                   GestureDetector(
                     onTap: () => showCountryPickSheet(context),
@@ -104,13 +194,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  Text('Доп. информация', style: AppTheme.bodyMedium),
-                  SizedBox(height: 5),
-                  InputDataFieldWidget(controller: _bioController, maxLines: 3),
-                  SizedBox(height: 15),
+
                   Text('Почта', style: AppTheme.bodyMedium),
                   SizedBox(height: 5),
-                  InputDataFieldWidget(controller: _emailController),
+                  InputDataFieldWidget(
+                    controller: _emailController,
+                    validator: (value) {
+                      return FormValidator.validateEmail(value);
+                    },
+                  ),
                   SizedBox(height: 15),
                   Text('Телефон', style: AppTheme.bodyMedium),
                   SizedBox(height: 5),
@@ -130,17 +222,24 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       fillColor: const Color.fromARGB(255, 232, 243, 248),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.center,
-                    child: ContinueActionButtonWidget(
-                      onPressed: () {},
-                      label: 'Сохранить',
-                    ),
-                  ),
-                  SizedBox(height: 40),
                 ],
               ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ActionButtonWidget(
+                        text: 'Сохранить',
+                        backgroundColor: _buttonColor,
+                        onPressed: () {
+                          _buttonColor == AppTheme.primaryLightColor
+                              ? updateUserInfo()
+                              : null;
+                        },
+                      ),
+              ),
+              SizedBox(height: 20),
             ],
           ),
         ),

@@ -36,11 +36,7 @@ class RoutePointsWidget extends ConsumerWidget {
               Expanded(
                 child: Text(
                   'Интересные точки маршрута',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
+                  style: AppTheme.bodyMediumBold,
                 ),
               ),
             ],

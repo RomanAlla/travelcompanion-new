@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color primaryLightColor = Color(0xFF42A5F5);
+  static const Color primaryLightColor = Color.fromARGB(255, 86, 177, 251);
   static const Color textHintColor = Color(0xFF4A739C);
   static const Color deepPurpleColor = Color(0xFF6C5CE7);
   static const Color textPrimaryColor = Color.fromARGB(255, 0, 0, 0);
-  static const Color lightBlue = Color.fromARGB(255, 232, 243, 248);
+  static const Color lightBlue = Color.fromRGBO(232, 243, 248, 1);
   static const Color lightGrey = Color(0xffF0F2F5);
-
+  static const Color grey700 = Color(0xFF616161);
+  static const Color grey600 = Color(0xFF757575);
+  static const TextStyle headLineSmall = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w600,
+    color: textPrimaryColor,
+    fontFamily: "SF",
+  );
   static const TextStyle titleLarge = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w600,
@@ -46,7 +53,12 @@ class AppTheme {
     color: textPrimaryColor,
     fontFamily: "SF",
   );
-
+  static const TextStyle bodyLarge = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w400,
+    color: textPrimaryColor,
+    fontFamily: "SF",
+  );
   static const TextStyle bodyMedium = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w400,
@@ -55,6 +67,18 @@ class AppTheme {
   );
   static const TextStyle bodySmall = TextStyle(
     fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: textPrimaryColor,
+    fontFamily: "SF",
+  );
+  static const TextStyle bodySmallBold = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.bold,
+    color: textPrimaryColor,
+    fontFamily: "SF",
+  );
+  static const TextStyle bodyMini = TextStyle(
+    fontSize: 12,
     fontWeight: FontWeight.w400,
     color: textPrimaryColor,
     fontFamily: "SF",

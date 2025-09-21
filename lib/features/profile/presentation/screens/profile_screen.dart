@@ -20,114 +20,102 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: Size(double.infinity, 60),
+        child: AppBarWidget(title: 'Профиль'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10),
 
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 50,
-            flexibleSpace: AppBarWidget(title: 'Настройки'),
-            pinned: true,
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 30),
-                    AvatarWidget(),
-                    SizedBox(height: 5),
-                    Text(user!.name ?? user.email, style: AppTheme.titleLarge),
-                    Text(
-                      'Создан в ${user.createdAt.year.toString()}',
-                      style: AppTheme.hintStyle,
-                    ),
-                    SizedBox(height: 7),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.router.push(EditProfileRoute());
-                      },
-
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.lightGrey,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user!.name ?? user.email,
+                        style: AppTheme.titleLarge,
+                      ),
+                      Text(
+                        user.email,
+                        style: AppTheme.bodyMediumBold.copyWith(
+                          color: AppTheme.primaryLightColor,
                         ),
                       ),
-                      child: Center(
-                        child: Text(
-                          'Редактировать профиль',
-                          style: AppTheme.bodyMediumBold,
+                    ],
+                  ),
+
+                  Stack(
+                    children: [
+                      AvatarWidget(radius: 40, avatarUrl: user.avatarUrl),
+                      Positioned(
+                        right: 2,
+                        top: 3,
+                        child: SizedBox(
+                          height: 25,
+                          width: 25,
+                          child: Center(
+                            child: IconButton(
+                              padding: EdgeInsets.all(2),
+
+                              style: IconButton.styleFrom(
+                                shape: CircleBorder(),
+                                backgroundColor: AppTheme.primaryLightColor,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                context.router.push(EditProfileRoute());
+                              },
+                              icon: Icon(Icons.edit, size: 15),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    TripsColumnWidget(),
-                    SizedBox(height: 15),
+                    ],
+                  ),
+                ],
+              ),
 
-                    SettingsWidget(),
-                  ],
+              Text(
+                'Создан в ${user.createdAt.year.toString()}',
+                style: AppTheme.hintStyle,
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  context.router.push(EditProfileRoute());
+                },
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.lightGrey,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 17),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    'Редактировать профиль',
+                    style: AppTheme.bodyMediumBold,
+                  ),
                 ),
               ),
-            ),
+              SizedBox(height: 20),
+              TripsColumnWidget(),
+              SizedBox(height: 15),
+
+              SettingsWidget(),
+            ],
           ),
-        ],
+        ),
       ),
-      // body: SingleChildScrollView(
-      //   child: Padding(
-      //     padding: const EdgeInsets.symmetric(horizontal: 15),
-      //     child: Center(
-      //       child: Column(
-      //         crossAxisAlignment: CrossAxisAlignment.center,
-      //         children: [
-      //           SizedBox(height: 30),
-      //           CircleAvatar(
-      //             radius: 65,
-      //             backgroundImage: user!.avatarUrl != null
-      //                 ? NetworkImage(user.avatarUrl!)
-      //                 : null,
-      //             child: user.avatarUrl == null
-      //                 ? Icon(Icons.add_a_photo)
-      //                 : null,
-      //           ),
-      //           SizedBox(height: 5),
-      //           Text(user.name ?? user.email, style: AppTheme.titleLarge),
-      //           Text(
-      //             'Создан в ${user.createdAt.year.toString()}',
-      //             style: AppTheme.hintStyle,
-      //           ),
-      //           SizedBox(height: 7),
-      //           ElevatedButton(
-      //             onPressed: () {},
-
-      //             style: ElevatedButton.styleFrom(
-      //               backgroundColor: AppTheme.lightGrey,
-      //               elevation: 0,
-      //               padding: const EdgeInsets.symmetric(vertical: 10),
-      //               shape: RoundedRectangleBorder(
-      //                 borderRadius: BorderRadius.circular(10),
-      //               ),
-      //             ),
-      //             child: Center(
-      //               child: Text(
-      //                 'Редактировать профиль',
-      //                 style: AppTheme.bodyMediumBold,
-      //               ),
-      //             ),
-      //           ),
-      //           SizedBox(height: 20),
-      //           TripsColumnWidget(),
-      //           SizedBox(height: 15),
-
-      //           SettingsWidget(),
-      //         ],
-      //       ),
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/tips_list_provider.dart'
     show tipsListProvider;
 
@@ -29,14 +30,7 @@ class TipsWidget extends ConsumerWidget {
         children: [
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-            child: Text(
-              'Советы от создателя',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
+            child: Text('Советы от создателя', style: AppTheme.bodyMediumBold),
           ),
           tipsList.when(
             data: (tipsList) {

@@ -33,14 +33,7 @@ class ReviewsSectionWidget extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Expanded(
-                  child: Text(
-                    'Отзывы',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
+                  child: Text('Отзывы', style: AppTheme.bodyLarge),
                 ),
                 TextButton.icon(
                   onPressed: onPressed,
@@ -49,9 +42,11 @@ class ReviewsSectionWidget extends ConsumerWidget {
                     color: AppTheme.primaryLightColor,
                     size: 20,
                   ),
-                  label: const Text(
+                  label: Text(
                     'Добавить отзыв',
-                    style: TextStyle(color: AppTheme.primaryLightColor),
+                    style: AppTheme.bodyMedium.copyWith(
+                      color: AppTheme.primaryLightColor,
+                    ),
                   ),
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -70,7 +65,7 @@ class ReviewsSectionWidget extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 23.0),
               child: Text(
                 'Нет отзывов. Будьте первым!',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                style: AppTheme.bodySmall.copyWith(color: AppTheme.grey600),
               ),
             )
           else

@@ -16,7 +16,7 @@ class MapState {
   final String? error;
   final bool isLoading;
   final bool showAllStartPoints;
-  final String? selectedRouteId; // ID выбранного маршрута
+  final String? selectedRouteId;
 
   const MapState({
     this.error,
@@ -45,7 +45,6 @@ class MapState {
     );
   }
 
-  // Геттеры для удобства
   List<RoutePointsModel> get startPoints =>
       allRoutePoints.where((p) => p.type == 'start').toList();
 
@@ -77,10 +76,8 @@ class MapState {
   List<MapObject> get mapObjects {
     final List<MapObject> allObjects = [];
 
-    // Добавляем маршруты
     allObjects.addAll(routes);
 
-    // Режим показа всех стартовых точек
     if (showAllStartPoints) {
       final startPointPlacemarks = startPoints.map((routePoint) {
         return PlacemarkMapObject(
@@ -98,7 +95,6 @@ class MapState {
         );
       }).toList();
 
-      // Кластеризация только стартовых точек
       final clusterCollection = ClusterizedPlacemarkCollection(
         mapId: const MapObjectId('start_points_cluster'),
         placemarks: startPointPlacemarks,
@@ -127,10 +123,7 @@ class MapState {
       );
 
       allObjects.add(clusterCollection);
-    }
-    // Режим показа конкретного маршрута
-    else if (selectedRouteId != null) {
-      // Стартовая точка
+    } else if (selectedRouteId != null) {
       final startPoint = selectedStartPoint;
       if (startPoint != null) {
         allObjects.add(
@@ -150,7 +143,6 @@ class MapState {
         );
       }
 
-      // Конечная точка
       final endPoint = selectedEndPoint;
       if (endPoint != null) {
         allObjects.add(
@@ -170,7 +162,6 @@ class MapState {
         );
       }
 
-      // Промежуточные точки (без кластеризации!)
       final wayPointPlacemarks = selectedWayPoints.map((point) {
         return PlacemarkMapObject(
           opacity: 1,
@@ -287,9 +278,9 @@ class MapStateNotifier extends StateNotifier<MapState> {
           .toList();
 
       state = state.copyWith(
-        allRoutePoints: routePoints, // Сохраняем все точки
-        selectedRouteId: null, // Сбрасываем выбранный маршрут
-        showAllStartPoints: true, // Показываем все стартовые точки
+        allRoutePoints: routePoints,
+        selectedRouteId: null,
+        showAllStartPoints: true,
         isLoading: false,
       );
     } catch (e) {
@@ -317,6 +308,10 @@ class MapStateNotifier extends StateNotifier<MapState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
+  }
+
+  void clearPastPolilynes() {
+    state = state.copyWith(routes: []);
   }
 
   void setError(String error) {

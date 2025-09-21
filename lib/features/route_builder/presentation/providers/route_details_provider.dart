@@ -4,15 +4,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/features/auth/data/models/user_model.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comment_rep_provider.dart';
 import 'package:travelcompanion/features/route_builder/data/models/route_details.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
 
-final routeDetailsProvider = FutureProvider.family<RouteDetails, RouteModel>((
+final routeDetailsProvider = FutureProvider.family<RouteDetails, String>((
   ref,
-  route,
+  routeId,
 ) async {
   final commentRepo = ref.read(commentRepositoryProvider);
   final routeRepo = ref.read(routeRepositoryProvider);
+  final route = await ref
+      .read(routeRepositoryProvider)
+      .getRoutesById(id: routeId);
   final user = await Supabase.instance.client
       .from('users')
       .select()
@@ -39,6 +41,7 @@ final routeDetailsProvider = FutureProvider.family<RouteDetails, RouteModel>((
       .toList();
   return RouteDetails(
     creator: creator!,
+    route: route,
     commentsList: commentsList,
     commentsCount: commentsCount,
     averageRating: averageRating,

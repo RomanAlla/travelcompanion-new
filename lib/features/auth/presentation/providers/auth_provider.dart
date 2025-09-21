@@ -120,6 +120,8 @@ class AuthNotifier extends StateNotifier<AuthNotifierState> {
   Future<void> updateProfile({
     required String userId,
     String? name,
+    String? phoneNumber,
+    String? email,
     String? country,
     String? avatarUrl,
     TextEditingController? nameController,
@@ -130,6 +132,8 @@ class AuthNotifier extends StateNotifier<AuthNotifierState> {
       final updatedUser = await _authService.updateUserProfile(
         userId: userId,
         name: name,
+        phoneNumber: phoneNumber,
+        email: email,
         country: country,
         avatarUrl: avatarUrl,
       );

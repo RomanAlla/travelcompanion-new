@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:travelcompanion/core/cache/app_cached_image.dart';
 import 'package:travelcompanion/core/error/error_handler.dart';
 import 'package:travelcompanion/core/service/supabase_service.dart';
 import 'package:travelcompanion/core/theme/app_theme.dart';
@@ -10,8 +11,6 @@ import 'package:travelcompanion/features/auth/presentation/providers/auth_provid
 import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/favourite_repository_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
-
-final imageVersionProvider = StateProvider<int>((ref) => 0);
 
 class RouteCardWidget extends ConsumerStatefulWidget {
   final RouteModel route;
@@ -76,8 +75,6 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final imageVersion = ref.watch(imageVersionProvider);
-
     return Card(
       color: Colors.white,
       margin: const EdgeInsets.only(bottom: 16),
@@ -100,42 +97,11 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
                       top: Radius.circular(16),
                     ),
                     child: widget.route.photoUrls.isNotEmpty
-                        ? Image.network(
-                            '${widget.route.photoUrls.first}?v=$imageVersion',
-                            width: double.infinity,
+                        ? AppCachedImage(
+                            imageUrl: '${widget.route.photoUrls.first}?',
                             height: 300,
                             fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                height: 200,
-                                color: Colors.grey[50],
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value:
-                                        loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                  .cumulativeBytesLoaded /
-                                              loadingProgress
-                                                  .expectedTotalBytes!
-                                        : null,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                height: 300,
-                                color: Colors.grey[50],
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.grey[400],
-                                  size: 48,
-                                ),
-                              );
-                            },
+                            width: double.infinity,
                           )
                         : Container(height: 300),
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travelcompanion/features/auth/data/models/user_model.dart';
 
 import 'package:travelcompanion/features/details_route/data/models/comment_model.dart';
+import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 
 class RouteDetails {
   final List<CommentModel> commentsList;
@@ -12,6 +13,7 @@ class RouteDetails {
   final List<Widget> myItems;
   final int currentIndex;
   final UserModel creator;
+  final RouteModel route;
 
   RouteDetails({
     required this.commentsList,
@@ -22,5 +24,6 @@ class RouteDetails {
     required this.myItems,
     required this.currentIndex,
     required this.creator,
+    required this.route,
   });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 
 class RouteDescriptionWidget extends ConsumerWidget {
@@ -20,10 +21,7 @@ class RouteDescriptionWidget extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Описание',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
+            Text('Описание', style: AppTheme.bodyMediumBold),
             SizedBox(height: 7),
             Text(route.description!, style: TextStyle(fontSize: 16)),
           ],

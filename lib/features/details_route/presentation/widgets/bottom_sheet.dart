@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelcompanion/core/error/error_handler.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/average_user_routes_rating.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comment_rep_provider.dart';
@@ -315,7 +316,7 @@ class _PickPhotoBottomSheetState extends State<PickPhotoBottomSheet> {
   Widget build(BuildContext context) {
     final hasSelection = selectedIndexes.isNotEmpty;
     return Container(
-      height: MediaQuery.of(context).size.height / 4,
+      height: MediaQuery.of(context).size.height / 3.8,
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -327,10 +328,7 @@ class _PickPhotoBottomSheetState extends State<PickPhotoBottomSheet> {
             children: [
               Spacer(),
               SizedBox(width: 20),
-              Text(
-                'Выбор фото',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
-              ),
+              Text('Выбор фото', style: AppTheme.bodyMediumBold),
               Spacer(),
               GestureDetector(
                 onTap: () => closeBottomSheet(context),
@@ -429,7 +427,9 @@ class _PickPhotoBottomSheetState extends State<PickPhotoBottomSheet> {
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: hasSelection ? Colors.blue : Colors.grey[100],
+                color: hasSelection
+                    ? AppTheme.primaryLightColor
+                    : Colors.grey[100],
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Row(
@@ -444,10 +444,7 @@ class _PickPhotoBottomSheetState extends State<PickPhotoBottomSheet> {
                     hasSelection
                         ? 'Загрузить (${selectedIndexes.length})'
                         : 'Выбрать из галереи',
-                    style: TextStyle(
-                      color: hasSelection ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTheme.bodyMediumBold,
                   ),
                 ],
               ),

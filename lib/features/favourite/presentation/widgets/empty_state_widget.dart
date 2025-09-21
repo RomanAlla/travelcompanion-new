@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcompanion/core/theme/app_theme.dart';
 
 class EmptyStateWidget extends StatelessWidget {
   const EmptyStateWidget({super.key});
@@ -13,17 +14,13 @@ class EmptyStateWidget extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Список избранного пуст',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[700],
-            ),
+            style: AppTheme.titleMediumBold.copyWith(color: AppTheme.grey700),
           ),
           const SizedBox(height: 8),
           Text(
             'Сохраняйте понравившиеся маршруты,\nчтобы вернуться к ним позже',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            style: AppTheme.bodySmall.copyWith(color: AppTheme.grey600),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -31,9 +28,12 @@ class EmptyStateWidget extends StatelessWidget {
               Navigator.pop(context);
             },
             icon: const Icon(Icons.explore),
-            label: const Text('Найти маршруты'),
+            label: Text(
+              'Найти маршруты',
+              style: AppTheme.bodyMediumBold.copyWith(color: Colors.white),
+            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue[700],
+              backgroundColor: AppTheme.primaryLightColor,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(

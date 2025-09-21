@@ -7,7 +7,7 @@ import 'package:travelcompanion/features/route_builder/presentation/providers/pa
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/back_action_button_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
-import 'package:travelcompanion/features/route_builder/presentation/widgets/form_validator.dart';
+import 'package:travelcompanion/core/validators/form_validator.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/text_field_widget.dart';
 
 class MainInfoStepScreen extends ConsumerStatefulWidget {

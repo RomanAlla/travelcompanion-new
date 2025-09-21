@@ -8,6 +8,7 @@ import 'package:travelcompanion/features/details_route/presentation/providers/co
 import 'package:travelcompanion/features/details_route/presentation/providers/user_routes_count_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_content.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/bottom_sheet.dart';
+import 'package:travelcompanion/features/details_route/presentation/widgets/image_container_widget.dart';
 import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
 
 @RoutePage()
@@ -46,54 +47,7 @@ class _MyshiState extends ConsumerState<RouteDescriptionScreen> {
     super.initState();
 
     myItems = widget.route.photoUrls
-        .map(
-          (url) => SizedBox(
-            width: double.infinity,
-            child: Image.network(
-              url,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  height: 200,
-                  color: Colors.grey[50],
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                          : null,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 200,
-                  color: Colors.grey[50],
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          color: Colors.grey[400],
-                          size: 32,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Ошибка загрузки изображения',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        )
+        .map((url) => ImageContainerWidget(url: url))
         .toList();
   }
 

@@ -53,7 +53,7 @@ class SupabaseUserRepository implements UserRepository {
         id: user.id,
         email: user.email,
         avatarUrl: user.avatarUrl,
-
+        phoneNumber: user.phoneNumber,
         country: user.country,
         name: user.name,
         createdAt: DateTime.now(),

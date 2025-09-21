@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/theme/app_theme.dart';
@@ -8,6 +9,7 @@ import 'package:travelcompanion/features/map/presentation/widgets/helper_widget.
 import 'package:travelcompanion/features/map/presentation/widgets/yandex_map_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/page_controller_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
+import 'package:travelcompanion/features/route_builder/presentation/widgets/back_action_button_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/modal_point_select_container_widget.dart';
 
@@ -252,29 +254,46 @@ class _RoutePickStepWidgetState extends ConsumerState<RoutePickStepScreen> {
                                           ),
                                         ],
                                       )
-                                    : SizedBox(
-                                        width: double.infinity,
-                                        child: ElevatedButton.icon(
-                                          onPressed: _hidePanel,
-                                          icon: const Icon(Icons.map),
-                                          label: Text(
-                                            'Выбрать на карте',
-                                            style: AppTheme.bodySmallBold
-                                                .copyWith(
-                                                  color: AppTheme
-                                                      .primaryLightColor,
+                                    : Row(
+                                        children: [
+                                          Expanded(
+                                            child: BackActionButtonWidget(
+                                              onPressed: () =>
+                                                  context.router.pop(),
+                                              label: 'Выйти',
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Expanded(
+                                            child: SizedBox(
+                                              width: double.infinity,
+                                              child: ElevatedButton.icon(
+                                                onPressed: _hidePanel,
+                                                icon: const Icon(Icons.map),
+                                                label: Text(
+                                                  'Выбрать на карте',
+                                                  style: AppTheme.bodySmallBold
+                                                      .copyWith(
+                                                        color: AppTheme
+                                                            .primaryLightColor,
+                                                      ),
                                                 ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 16,
+                                                style: ElevatedButton.styleFrom(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        vertical: 16,
+                                                      ),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                               ],
                             ],

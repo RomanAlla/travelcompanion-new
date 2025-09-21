@@ -57,6 +57,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
         setState(() {
           _favouriteList.add(widget.route);
         });
+        if (!mounted) return;
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Маршрут добавлен в избранное')));
@@ -69,7 +70,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
         widget.ref.invalidate(favouriteListProvider);
       }
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
       if (mounted) {
         ScaffoldMessenger.of(
           context,
