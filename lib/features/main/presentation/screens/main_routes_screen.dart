@@ -97,10 +97,8 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                             children: [
                               Text(
                                 'Все маршруты',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey[600],
+                                style: AppTheme.titleSmall.copyWith(
+                                  color: AppTheme.grey600,
                                 ),
                               ),
                               TextButton(
@@ -140,10 +138,10 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                                           const SizedBox(height: 16),
                                           Text(
                                             'Маршруты не найдены',
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.grey[600],
-                                            ),
+                                            style: AppTheme.titleSmallBold
+                                                .copyWith(
+                                                  color: AppTheme.grey600,
+                                                ),
                                           ),
                                         ],
                                       ),
@@ -183,9 +181,8 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                                       const SizedBox(height: 16),
                                       Text(
                                         'Ошибка загрузки маршрутов',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.grey[600],
+                                        style: AppTheme.titleSmallBold.copyWith(
+                                          color: AppTheme.grey600,
                                         ),
                                       ),
                                     ],
@@ -213,7 +210,7 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                   height: 50,
                   width: 120,
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.9),
+                    color: AppTheme.primaryLightColor,
                     borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
@@ -237,10 +234,8 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
                           const SizedBox(width: 8),
                           Text(
                             'Карта',
-                            style: TextStyle(
+                            style: AppTheme.bodyMedium.copyWith(
                               color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ],
