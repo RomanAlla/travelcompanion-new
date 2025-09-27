@@ -7,6 +7,7 @@ import 'package:travelcompanion/core/theme/app_theme.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
+
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();

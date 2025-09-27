@@ -14,6 +14,32 @@ class AppCachedImage extends StatelessWidget {
   final double? height;
   final BoxFit? fit;
 
+  static Future<void> preload({
+    required String imageUrl,
+    required BuildContext context,
+  }) async {
+    try {
+      await precacheImage(
+        CachedNetworkImageProvider(imageUrl, cacheKey: 'unique_key_$imageUrl'),
+        context,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  static Future<void> preloadMultiple({
+    required List<String> imageUrls,
+    required BuildContext context,
+    int delayBetween = 50,
+  }) async {
+    for (final url in imageUrls) {
+      if (!context.mounted) return;
+      await preload(imageUrl: url, context: context);
+      await Future.delayed(Duration(milliseconds: delayBetween));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
@@ -23,6 +49,8 @@ class AppCachedImage extends StatelessWidget {
       fit: fit,
       height: height,
       width: width,
+
+      cacheKey: 'unique_key_$imageUrl',
     );
   }
 

@@ -97,7 +97,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
             autoPlayCurve: Curves.fastOutSlowIn,
             autoPlayAnimationDuration: Duration(milliseconds: 800),
             autoPlayInterval: Duration(seconds: 3),
-            autoPlay: true,
+            autoPlay: false,
           ),
         ),
         if (widget.items.length > 1)

@@ -30,6 +30,24 @@ class RouteCardWidget extends ConsumerStatefulWidget {
 class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
   double? routeRating;
   int? userRoutesCount;
+  bool _isImagePreloaded = false;
+
+  Future<void> _preloadRouteImage() async {
+    if (_isImagePreloaded || widget.route.photoUrls.isEmpty) return;
+
+    try {
+      final imageList = widget.route.photoUrls;
+      await AppCachedImage.preloadMultiple(
+        imageUrls: imageList,
+        context: context,
+      );
+      setState(() {
+        _isImagePreloaded = true;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   Future<void> getRouteRating() async {
     final sbService = SupabaseService(Supabase.instance.client);
@@ -71,6 +89,15 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
       getUserRoutesCount();
     });
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preloadRouteImage();
+    });
   }
 
   @override
