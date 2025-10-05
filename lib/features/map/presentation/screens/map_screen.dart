@@ -45,22 +45,8 @@ class _MapChangeModeState extends ConsumerState<MapScreen> {
     super.dispose();
   }
 
-  void _handleQuit() {
-    final notifier = ref.read(mapStateNotifierProvider.notifier);
-    notifier.clearTappedPoint();
-    notifier.clearPastPolilynes();
-    context.router.pop();
-  }
-
-  void _handleClearTappedPoint() {
-    final notifier = ref.read(mapStateNotifierProvider.notifier);
-    notifier.clearTappedPoint();
-    notifier.clearPastPolilynes();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(mapStateNotifierProvider);
     return Scaffold(
       body: Stack(
         children: [
@@ -69,37 +55,6 @@ class _MapChangeModeState extends ConsumerState<MapScreen> {
             HelperWidget(
               text: 'Нажмите на метку, чтобы увидеть полный маршрут',
             ),
-
-          state.hasTappedPoint
-              ? SafeArea(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        BackActionButtonWidget(
-                          onPressed: _handleClearTappedPoint,
-                          label: 'Вернуться',
-                        ),
-                        SizedBox(width: 30),
-                        ContinueActionButtonWidget(
-                          onPressed: () {},
-                          label: 'Продолжить',
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-
-                      child: QuitButtonWidget(onPressed: _handleQuit),
-                    ),
-                  ),
-                ),
         ],
       ),
     );

@@ -8,7 +8,10 @@ import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
 import 'package:travelcompanion/features/map/presentation/providers/yandex_map_service_provider.dart';
+import 'package:travelcompanion/features/map/presentation/widgets/quit_button_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
+import 'package:travelcompanion/features/route_builder/presentation/widgets/back_action_button_widget.dart';
+import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class YandexMapWidget extends ConsumerStatefulWidget {
@@ -83,47 +86,96 @@ class _YandexMapWidgetState extends ConsumerState<YandexMapWidget>
     context.router.push(RouteDescriptionRoute(routeId: routeId, route: route));
   }
 
+  void _handleQuit() {
+    final notifier = ref.read(mapStateNotifierProvider.notifier);
+    notifier.clearTappedPoint();
+    notifier.clearPastPolilynes();
+    context.router.pop();
+  }
+
+  void _handleClearTappedPoint() {
+    final notifier = ref.read(mapStateNotifierProvider.notifier);
+    notifier.clearTappedPoint();
+    notifier.clearPastPolilynes();
+  }
+
   @override
   Widget build(BuildContext context) {
     final buildModePoints = ref.watch(routeBuilderNotifierProvider).mapObjects;
     final watchModePoints = ref.watch(mapStateNotifierProvider).mapObjects;
+    final state = ref.watch(mapStateNotifierProvider);
+    return Stack(
+      children: [
+        YandexMap(
+          onMapCreated: (controller) async {
+            _mapControllerCompleter.complete(controller);
+            await Future.delayed(const Duration(milliseconds: 300));
+            moveToCurrentLocation();
+          },
 
-    return YandexMap(
-      onMapCreated: (controller) async {
-        _mapControllerCompleter.complete(controller);
-        await Future.delayed(const Duration(milliseconds: 300));
-        moveToCurrentLocation();
-      },
+          mapObjects:
+              widget.mode == MapMode.pickMainPoints ||
+                  widget.mode == MapMode.pickWayPoints
+              ? buildModePoints
+              : watchModePoints,
+          onMapTap: (tapPoint) async {
+            await onMapTap(tapPoint);
+            await _buildPedestrianRoute();
 
-      mapObjects:
-          widget.mode == MapMode.pickMainPoints ||
-              widget.mode == MapMode.pickWayPoints
-          ? buildModePoints
-          : watchModePoints,
-      onMapTap: (tapPoint) async {
-        await onMapTap(tapPoint);
-        await _buildPedestrianRoute();
+            const threshold = 0.005;
+            final state = ref.read(mapStateNotifierProvider);
 
-        const threshold = 0.005;
-        final state = ref.read(mapStateNotifierProvider);
+            for (final rp in state.startPoints) {
+              final dx = (tapPoint.latitude - rp.latitude).abs();
+              final dy = (tapPoint.longitude - rp.longitude).abs();
 
-        for (final rp in state.startPoints) {
-          final dx = (tapPoint.latitude - rp.latitude).abs();
-          final dy = (tapPoint.longitude - rp.longitude).abs();
+              if (dx < threshold && dy < threshold) {
+                final notifier = ref.read(mapStateNotifierProvider.notifier);
+                await notifier.loadRouteByStartPoint(ref, rp.routeId);
+                notifier.setTappedPoint(rp.routeId);
 
-          if (dx < threshold && dy < threshold) {
-            final notifier = ref.read(mapStateNotifierProvider.notifier);
-            await notifier.loadRouteByStartPoint(ref, rp.routeId);
-            notifier.setTappedPoint(rp.routeId);
-            break;
-          }
-        }
-      },
+                break;
+              }
+            }
+          },
 
-      onUserLocationAdded: (view) async {
-        moveToCurrentLocation();
-        return view.copyWith(pin: view.pin.copyWith(opacity: 1));
-      },
+          onUserLocationAdded: (view) async {
+            moveToCurrentLocation();
+            return view.copyWith(pin: view.pin.copyWith(opacity: 1));
+          },
+        ),
+        state.hasTappedPoint
+            ? SafeArea(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BackActionButtonWidget(
+                        onPressed: _handleClearTappedPoint,
+                        label: 'Вернуться',
+                      ),
+                      SizedBox(width: 30),
+                      ContinueActionButtonWidget(
+                        onPressed: () =>
+                            _toRouteDescription(state.tappedRouteId!),
+                        label: 'Продолжить',
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+
+                    child: QuitButtonWidget(onPressed: _handleQuit),
+                  ),
+                ),
+              ),
+      ],
     );
   }
 }
