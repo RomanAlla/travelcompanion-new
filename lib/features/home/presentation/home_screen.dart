@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/presentation/router/router.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 
 @RoutePage()
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   void _onTabTapped(int index, TabsRouter tabsRouter) {
@@ -11,7 +13,8 @@ class HomeScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(userNotifierProvider);
     return AutoTabsRouter(
       routes: const [
         MainRoutesRoute(),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/core/data/cache/app_cached_image.dart';
-import 'package:travelcompanion/core/data/services/supabase_service.dart';
 import 'package:travelcompanion/core/domain/exceptions/error_handler.dart';
 
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';

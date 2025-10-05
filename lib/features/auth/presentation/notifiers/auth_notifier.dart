@@ -17,20 +17,17 @@ class AuthNotifier extends StateNotifier<AuthNotifierState> {
     try {
       state = state.copyWith(isLoading: true);
 
-      // Проверяем текущую сессию в Supabase
       final session = Supabase.instance.client.auth.currentSession;
 
       if (session != null) {
-        // Если есть сессия, загружаем данные пользователя
         final user = await _userService.getCurrentUser();
         state = state.copyWith(isLoading: false, user: user);
       } else {
-        // Если сессии нет, просто завершаем загрузку
         state = state.copyWith(isLoading: false, user: null);
       }
     } catch (e) {
-      print('Error initializing auth: $e');
       state = state.copyWith(isLoading: false, user: null);
+      rethrow;
     }
   }
 
