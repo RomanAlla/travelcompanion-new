@@ -1,5 +1,4 @@
-
-import 'package:travelcompanion/features/auth/data/models/user_model.dart';
+import 'package:travelcompanion/core/domain/entities/user_model.dart';
 
 class AuthNotifierState {
   final bool isLoading;
@@ -7,10 +6,7 @@ class AuthNotifierState {
 
   AuthNotifierState({this.isLoading = false, this.user});
 
-  AuthNotifierState copyWith({
-    bool? isLoading,
-    UserModel? user,
-  }) {
+  AuthNotifierState copyWith({bool? isLoading, UserModel? user}) {
     return AuthNotifierState(
       isLoading: isLoading ?? this.isLoading,
       user: user ?? this.user,

@@ -2,11 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:travelcompanion/core/router/router.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
-import 'package:travelcompanion/core/validators/form_validator.dart';
-import 'package:travelcompanion/core/widgets/app_bar.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/validators/form_validator.dart';
+import 'package:travelcompanion/core/presentation/widgets/app_bar.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/avatar_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/common_button_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/country_sheet.dart';
@@ -42,7 +43,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   void initState() {
-    final userData = ref.read(authProvider).user;
+    final userData = ref.read(userNotifierProvider).user;
 
     _nameController.text = userData?.name ?? '';
     _emailController.text = userData?.email ?? '';
@@ -61,7 +62,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _nameController.dispose();
     _numberController.dispose();
     _countryController.dispose();
-
     _emailController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -73,9 +73,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         setState(() {
           isLoading = true;
         });
-        final currentUser = ref.watch(authProvider).user;
+        final currentUser = ref.watch(userNotifierProvider).user;
         await ref
-            .read(authProvider.notifier)
+            .read(userNotifierProvider.notifier)
             .updateProfile(
               userId: currentUser!.id,
               name: _nameController.text,
@@ -141,7 +141,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userData = ref.watch(authProvider).user;
+    final userData = ref.watch(userNotifierProvider).user;
 
     return Scaffold(
       appBar: PreferredSize(

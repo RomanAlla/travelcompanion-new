@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/features/details_route/data/models/comment_model.dart';
-import 'package:travelcompanion/features/details_route/presentation/providers/comment_rep_provider.dart';
+import 'package:travelcompanion/core/domain/entities/comment_model.dart';
+import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
 
 final commentsProvider = FutureProvider.family<List<CommentModel>, String>((
   ref,
   routeId,
 ) async {
   return await ref
-      .read(commentRepositoryProvider)
+      .watch(commentRepositoryProvider)
       .getComments(routeId: routeId);
 });

@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/cache/preloaded_cached_image_provider.dart';
+import 'package:travelcompanion/core/data/cache/preloaded_cached_image_provider.dart';
+import 'package:travelcompanion/core/presentation/providers/data_providers.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/average_rating_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/average_user_routes_rating.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comments_count_provider.dart';
@@ -9,7 +10,7 @@ import 'package:travelcompanion/features/details_route/presentation/providers/co
 import 'package:travelcompanion/features/details_route/presentation/providers/user_routes_count_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_content.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/bottom_sheet.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/core/domain/entities/route_model.dart';
 
 @RoutePage()
 class RouteDescriptionScreen extends ConsumerStatefulWidget {
@@ -71,6 +72,7 @@ class _MyshiState extends ConsumerState<RouteDescriptionScreen> {
     if (_isPreloading) {
       return _buildPreloader();
     }
+
     final commentsAsync = ref.watch(commentsProvider(widget.route.id));
     final commentsCountAsync = ref.watch(
       commentsCountProvider(widget.route.id),

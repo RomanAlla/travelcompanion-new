@@ -3,15 +3,16 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:travelcompanion/core/error/error_handler.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/exceptions/validation_exception.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
+import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/average_user_routes_rating.dart';
-import 'package:travelcompanion/features/details_route/presentation/providers/comment_rep_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comments_count_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comments_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/user_routes_count_provider.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/core/domain/entities/route_model.dart';
 
 class BottomSheetWidget extends ConsumerStatefulWidget {
   final RouteModel route;
@@ -26,34 +27,19 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
   final _textController = TextEditingController();
   List<String> _coverImagePaths = [];
   String? _error;
+  bool isLoading = false;
 
   Future<void> createComment() async {
-    final rep = ref.read(commentRepositoryProvider);
-    final user = ref.watch(authProvider).user;
-
+    final user = ref.read(userNotifierProvider).user;
     try {
-      if (_rating == 0 || _textController.text.isEmpty) {
-        setState(() {
-          _error = 'Заполните все данные';
-        });
-        return;
-      }
-      List<String> imageUrls = [];
-      if (_coverImagePaths.isNotEmpty) {
-        final files = _coverImagePaths.map((path) => File(path)).toList();
-        final uploadedUrls = await rep.updateCommentImages(
-          files: files,
-          routeId: widget.route.id,
-        );
-        if (uploadedUrls != null) {
-          imageUrls = uploadedUrls;
-        }
-      }
-      await rep.addComment(
+      setState(() {
+        isLoading = true;
+      });
+      final useCase = ref.read(createCommentUseCaseProvider);
+      await useCase.execute(
         creatorId: user!.id,
         routeId: widget.route.id,
         text: _textController.text,
-        images: imageUrls.isNotEmpty ? imageUrls : null,
         rating: _rating,
       );
       ref.invalidate(commentsProvider(widget.route.id));
@@ -62,10 +48,25 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
       ref.invalidate(averageUserRoutesRatingProvider(widget.route.creatorId));
 
       if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
         context.router.pop();
       }
+    } on ValidationException catch (e) {
+      setState(() {
+        isLoading = false;
+        _error = e.message;
+      });
     } catch (e) {
-      ErrorHandler.getErrorMessage(e);
+      setState(() {
+        isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Ошибка: ${e.toString()}')));
+      }
     }
   }
 
@@ -86,6 +87,12 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 
   @override
@@ -200,46 +207,48 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
                 ),
               ),
               SizedBox(width: 10),
-              InkWell(
-                onTap: createComment,
-                borderRadius: BorderRadius.circular(15),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 15),
-                  child: Container(
-                    height: 50,
-                    width: 127,
-                    decoration: BoxDecoration(
+              isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : InkWell(
+                      onTap: createComment,
                       borderRadius: BorderRadius.circular(15),
-                      color: Colors.blueAccent,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.blueAccent.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.send, size: 25, color: Colors.white),
-                          SizedBox(width: 5),
-                          Text(
-                            'Отправить',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 15),
+                        child: Container(
+                          height: 50,
+                          width: 127,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.blueAccent,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.blueAccent.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.send, size: 25, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                  'Отправить',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
             ],
           ),
           SizedBox(height: 10),

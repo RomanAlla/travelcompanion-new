@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
-import 'package:travelcompanion/core/widgets/search_bar_widget.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
+import 'package:travelcompanion/core/presentation/widgets/search_bar_widget.dart';
 import 'package:travelcompanion/features/profile/data/api/countries_api.dart';
 
 class CountrySheet extends StatefulWidget {

@@ -1,22 +1,39 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/router/router.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
-import 'package:travelcompanion/core/widgets/app_bar.dart';
-import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
+import 'package:travelcompanion/core/presentation/widgets/app_bar.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/avatar_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/settings_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/trips_column_widget.dart';
 
 @RoutePage()
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authProvider);
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userNotifierProvider.notifier).getCurrentUser();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authState = ref.watch(userNotifierProvider);
     final user = authState.user;
+
+    if (user == null) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,

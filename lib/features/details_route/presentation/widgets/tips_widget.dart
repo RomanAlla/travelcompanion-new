@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/tips_list_provider.dart'
     show tipsListProvider;
 

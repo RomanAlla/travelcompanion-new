@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 import 'package:travelcompanion/features/map/domain/enums/route_pick_state.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
-import 'package:travelcompanion/features/route_builder/data/models/tip_model.dart';
+import 'package:travelcompanion/core/domain/entities/tip_model.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 final routeBuilderNotifierProvider =

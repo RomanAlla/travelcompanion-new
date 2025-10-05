@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/router/router.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/way_points_provider.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 

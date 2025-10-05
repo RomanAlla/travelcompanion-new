@@ -4,14 +4,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 @RoutePage()
-class PointDescriptionScreen extends ConsumerWidget {
+class PointDescriptionScreen extends ConsumerStatefulWidget {
   final LatLng selectedPoint;
-  PointDescriptionScreen({super.key, required this.selectedPoint});
-  final nameController = TextEditingController();
-  final descriptionController = TextEditingController();
+  const PointDescriptionScreen({super.key, required this.selectedPoint});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PointDescriptionScreen> createState() =>
+      _PointDescriptionScreenState();
+}
+
+class _PointDescriptionScreenState
+    extends ConsumerState<PointDescriptionScreen> {
+  final _nameController = TextEditingController();
+
+  final _descriptionController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(title: const Text('Добавить детали точки')),
@@ -21,7 +37,7 @@ class PointDescriptionScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: nameController,
+              controller: _nameController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Название точки',
@@ -33,7 +49,7 @@ class PointDescriptionScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
             TextField(
-              controller: descriptionController,
+              controller: _descriptionController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Описание точки',
@@ -47,19 +63,12 @@ class PointDescriptionScreen extends ConsumerWidget {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () async {
-                if (nameController.text.isEmpty) {
+                if (_nameController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Введите название точки')),
                   );
                   return;
                 }
-
-                // final result = InterestingPointModel(
-                //   name: nameController.text,
-                //   description: descriptionController.text,
-                //   point: selectedPoint,
-                // );
-                // Navigator.of(context).pop(result);
               },
               child: const Text('Сохранить точку'),
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 
 class SocialLoginButton extends StatelessWidget {
   final IconData icon;

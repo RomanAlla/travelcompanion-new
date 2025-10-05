@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/router/router.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/exceptions/app_exception.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/main/presentation/providers/routes_filter_provider.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/page_controller_provider.dart';
@@ -10,31 +11,51 @@ import 'package:travelcompanion/features/route_builder/presentation/providers/ro
 import 'package:travelcompanion/features/route_builder/presentation/widgets/back_action_button_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
 
-class ConfirmStepScreen extends ConsumerWidget {
+class ConfirmStepScreen extends ConsumerStatefulWidget {
   const ConfirmStepScreen({super.key});
 
+  @override
+  ConsumerState<ConfirmStepScreen> createState() => _ConfirmStepScreenState();
+}
+
+class _ConfirmStepScreenState extends ConsumerState<ConfirmStepScreen> {
+  bool _isLoading = false;
+
   Future<void> createRoute(WidgetRef ref, BuildContext context) async {
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
     try {
-      ref.read(mapStateNotifierProvider.notifier).createRoute(ref);
-      if (!context.mounted) return;
+      await ref.read(mapStateNotifierProvider.notifier).createRoute(ref);
 
       ref.invalidate(filteredRoutesProvider);
       ref.invalidate(routesListProvider);
 
-      context.router.pushAndPopUntil(
-        MainRoutesRoute(),
-        predicate: (route) => false,
-      );
+      if (context.mounted) {
+        context.router.pushAndPopUntil(
+          MainRoutesRoute(),
+          predicate: (route) => false,
+        );
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Произошла неизвестная ошибка...')),
-      );
-      debugPrint(e.toString());
+      setState(() {
+        _isLoading = false;
+      });
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Произошла неизвестная ошибка...')),
+        );
+      }
+
+      throw AppException(e.toString());
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

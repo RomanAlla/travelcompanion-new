@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:travelcompanion/core/router/router.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {

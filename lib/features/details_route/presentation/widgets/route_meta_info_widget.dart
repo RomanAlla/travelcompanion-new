@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travelcompanion/core/utils/string_utils.dart';
+import 'package:travelcompanion/core/domain/utils/string_utils.dart';
 
 class RouteMetaInfoWidget extends StatelessWidget {
   final double rating;

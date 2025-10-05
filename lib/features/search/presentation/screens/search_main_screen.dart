@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/router/router.dart';
-import 'package:travelcompanion/core/widgets/choice_chip_widget.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
+import 'package:travelcompanion/core/presentation/widgets/choice_chip_widget.dart';
+import 'package:travelcompanion/core/domain/entities/route_model.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
 import 'package:travelcompanion/features/search/presentation/providers/search_routes_provider.dart';
-import 'package:travelcompanion/core/widgets/route_card_widget.dart';
+import 'package:travelcompanion/core/presentation/widgets/route_card_widget.dart';
 
 @RoutePage()
 class SearchMainScreen extends ConsumerStatefulWidget {

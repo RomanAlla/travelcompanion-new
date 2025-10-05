@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:travelcompanion/core/utils/string_utils.dart';
-import 'package:travelcompanion/features/auth/data/models/user_model.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/core/domain/utils/string_utils.dart';
+import 'package:travelcompanion/core/domain/entities/user_model.dart';
+import 'package:travelcompanion/core/domain/entities/route_model.dart';
 
 class RouteCreatorInfoWidget extends StatelessWidget {
   final String creatorName;

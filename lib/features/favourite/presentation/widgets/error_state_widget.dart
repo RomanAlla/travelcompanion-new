@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:travelcompanion/core/error/error_handler.dart';
+import 'package:travelcompanion/core/domain/exceptions/error_handler.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 
 class ErrorStateWidget extends StatefulWidget {
   final Object error;
@@ -38,9 +39,12 @@ class _ErrorStateWidgetState extends State<ErrorStateWidget> {
               setState(() {});
             },
             icon: const Icon(Icons.refresh),
-            label: const Text('Повторить'),
+            label: Text(
+              'Повторить',
+              style: AppTheme.bodyMediumBold.copyWith(color: Colors.white),
+            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue[700],
+              backgroundColor: AppTheme.primaryLightColor,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(

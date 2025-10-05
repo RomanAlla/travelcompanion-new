@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_point_model.dart';
+import 'package:travelcompanion/core/domain/entities/route_point_model.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 

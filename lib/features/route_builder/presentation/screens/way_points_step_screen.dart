@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 import 'package:travelcompanion/features/map/presentation/widgets/yandex_map_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/page_controller_provider.dart';

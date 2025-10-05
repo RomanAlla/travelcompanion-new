@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/exceptions/error_handler.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/auth_button_widget.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/social_login_button.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/textfield_widget.dart';
-import 'package:travelcompanion/core/error/error_handler.dart';
 
 @RoutePage()
 class SignInScreen extends ConsumerStatefulWidget {
@@ -50,9 +50,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
   Future<void> _signIn() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        setState(() {
-          _error = null;
-        });
+        setState(() => _error = null);
 
         final success = await ref
             .read(authProvider.notifier)
@@ -61,18 +59,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen>
         if (!mounted) return;
 
         if (!success) {
-          setState(() {
-            _error = 'Ошибка входа. Попробуйте еще раз.';
-          });
+          setState(() => _error = 'Ошибка входа. Попробуйте еще раз.');
           return;
         }
 
         context.router.replacePath('/');
       } catch (e) {
         if (mounted) {
-          setState(() {
-            _error = ErrorHandler.getErrorMessage(e);
-          });
+          setState(() => _error = ErrorHandler.getErrorMessage(e));
         }
       }
     }

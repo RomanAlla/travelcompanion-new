@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/features/auth/data/models/user_model.dart';
-import 'package:travelcompanion/features/details_route/data/models/comment_model.dart';
+import 'package:travelcompanion/core/domain/entities/user_model.dart';
+import 'package:travelcompanion/core/domain/entities/comment_model.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/carousel_slider_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/reviews_section_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/route_creator_info_widget.dart';
@@ -10,10 +10,10 @@ import 'package:travelcompanion/features/details_route/presentation/widgets/rout
 import 'package:travelcompanion/features/details_route/presentation/widgets/route_points_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/route_title_name_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/tips_widget.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_model.dart'
+import 'package:travelcompanion/core/domain/entities/route_model.dart'
     show RouteModel;
 
-class RouteDescriptionContent extends ConsumerWidget {
+class RouteDescriptionContent extends ConsumerStatefulWidget {
   final RouteModel route;
   final int? commentsCount;
   final double? averageRating;
@@ -39,15 +39,24 @@ class RouteDescriptionContent extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RouteDescriptionContent> createState() =>
+      _RouteDescriptionContentState();
+}
+
+class _RouteDescriptionContentState
+    extends ConsumerState<RouteDescriptionContent> {
+  late int currentIndex;
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
           CarouselSliderWidget(
-            route: route,
-            items: myItems,
-            count: myItems.length,
-            activeIndex: currentIndex,
+            route: widget.route,
+            items: widget.myItems,
+            count: widget.myItems.length,
+
             ref: ref,
           ),
           const SizedBox(height: 22),
@@ -55,36 +64,36 @@ class RouteDescriptionContent extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 23),
             child: Column(
               children: [
-                RouteTitleNameWidget(text: route.name),
+                RouteTitleNameWidget(text: widget.route.name),
                 RouteMetaInfoWidget(
-                  rating: averageRating ?? 0.0,
-                  reviewsCount: commentsCount ?? 0,
+                  rating: widget.averageRating ?? 0.0,
+                  reviewsCount: widget.commentsCount ?? 0,
                 ),
                 const SizedBox(height: 20),
                 RouteCreatorInfoWidget(
-                  creator: creator,
+                  creator: widget.creator,
                   averageUserRoutesRating: double.parse(
-                    (averageUserRoutesRating ?? 0.0).toStringAsFixed(1),
+                    (widget.averageUserRoutesRating ?? 0.0).toStringAsFixed(1),
                   ),
-                  userRoutesCount: userRoutesCount ?? 0,
-                  route: route,
+                  userRoutesCount: widget.userRoutesCount ?? 0,
+                  route: widget.route,
 
-                  creatorName: creator.name ?? 'Аноним',
+                  creatorName: widget.creator.name ?? 'Аноним',
                 ),
 
                 const SizedBox(height: 20),
-                RouteDescriptionWidget(route: route),
+                RouteDescriptionWidget(route: widget.route),
                 const SizedBox(height: 20),
 
                 const SizedBox(height: 20),
-                RoutePointsWidget(route.id),
+                RoutePointsWidget(widget.route.id),
                 const SizedBox(height: 20),
-                TipsWidget(route.id),
+                TipsWidget(widget.route.id),
                 const SizedBox(height: 20),
                 ReviewsSectionWidget(
-                  route: route,
-                  commentList: commentsList,
-                  onPressed: onReviewPressed,
+                  route: widget.route,
+                  commentList: widget.commentsList,
+                  onPressed: widget.onReviewPressed,
                 ),
               ],
             ),

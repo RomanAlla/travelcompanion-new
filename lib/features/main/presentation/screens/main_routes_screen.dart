@@ -1,17 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/router/router.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
-import 'package:travelcompanion/core/widgets/app_bar.dart';
-import 'package:travelcompanion/core/widgets/choice_chip_widget.dart';
-import 'package:travelcompanion/core/widgets/search_bar_widget.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
+import 'package:travelcompanion/core/presentation/widgets/app_bar.dart';
+import 'package:travelcompanion/core/presentation/widgets/choice_chip_widget.dart';
+import 'package:travelcompanion/core/presentation/widgets/search_bar_widget.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/main/presentation/providers/routes_filter_provider.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/core/domain/entities/route_model.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
-import 'package:travelcompanion/core/widgets/route_card_widget.dart';
+import 'package:travelcompanion/core/presentation/widgets/route_card_widget.dart';
 
 @RoutePage()
 class MainRoutesScreen extends ConsumerStatefulWidget {

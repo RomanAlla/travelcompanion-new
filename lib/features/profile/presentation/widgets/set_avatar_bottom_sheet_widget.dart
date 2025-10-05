@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
-import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/common_button_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/save_changes_button.dart';
 
@@ -11,7 +14,10 @@ class SetAvatarBottomSheetWidget extends ConsumerWidget {
 
   Future<void> pickPhoto(WidgetRef ref, BuildContext context) async {
     try {
-      await ref.read(authProvider.notifier).pickAndUploadPhoto();
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickMedia();
+
+      await ref.read(userNotifierProvider.notifier).pickAndUploadPhoto(image);
       if (context.mounted) {
         context.router.pop();
       }

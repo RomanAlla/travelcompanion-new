@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 
 class InputDataFieldWidget extends StatelessWidget {
   final TextEditingController controller;

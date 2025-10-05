@@ -3,71 +3,50 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_model.dart';
+import 'package:travelcompanion/core/domain/entities/route_model.dart';
+import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/favourite_repository_provider.dart';
 
-class CarouselSliderWidget extends StatefulWidget {
+class CarouselSliderWidget extends ConsumerStatefulWidget {
   final List<Widget> items;
   final int count;
-  int activeIndex;
+
   final RouteModel route;
   final WidgetRef ref;
-  CarouselSliderWidget({
+  const CarouselSliderWidget({
     super.key,
     required this.items,
     required this.count,
-    required this.activeIndex,
+
     required this.route,
     required this.ref,
   });
 
   @override
-  State<CarouselSliderWidget> createState() => _CarouselSliderWidgetState();
+  ConsumerState<CarouselSliderWidget> createState() =>
+      _CarouselSliderWidgetState();
 }
 
-class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
-  List _favouriteList = [];
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getFavouriteList();
-    });
-    super.initState();
-  }
-
-  Future<void> getFavouriteList() async {
-    final user = widget.ref.watch(authProvider).user;
-    final favouriteList = await widget.ref
-        .watch(favouriteRepository)
-        .getFavouriteRoutes(userId: user!.id);
-    setState(() {
-      _favouriteList = favouriteList;
-    });
-  }
+class _CarouselSliderWidgetState extends ConsumerState<CarouselSliderWidget> {
+  int activeIndex = 0;
 
   Future<void> addToFavouriteRoute() async {
     try {
-      final rep = widget.ref.read(favouriteRepository);
-      final user = widget.ref.watch(authProvider).user;
+      final user = widget.ref.read(userNotifierProvider).user;
+      if (user == null) return;
 
-      if (!_favouriteList.any((route) => route.id == widget.route.id)) {
-        await rep.addToFavourite(userId: user!.id, routeId: widget.route.id);
-        setState(() {
-          _favouriteList.add(widget.route);
-        });
-        if (!mounted) return;
+      final addToFavouritesUseCase = widget.ref.read(
+        addToFavouritesUseCaseProvider,
+      );
+
+      await addToFavouritesUseCase(routeId: widget.route.id, userId: user.id);
+      widget.ref.invalidate(favouriteListProvider);
+    } on Exception catch (e) {
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Маршрут добавлен в избранное')));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Маршрут уже добавлен в избранное')),
-        );
-      }
-      if (mounted) {
-        widget.ref.invalidate(favouriteListProvider);
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -88,7 +67,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
           options: CarouselOptions(
             onPageChanged: (index, reason) {
               setState(() {
-                widget.activeIndex = index;
+                activeIndex = index;
               });
             },
             height: 300,
@@ -115,7 +94,7 @@ class _CarouselSliderWidgetState extends State<CarouselSliderWidget> {
                   activeDotColor: Colors.white,
                   dotColor: const Color.fromARGB(255, 206, 206, 206),
                 ),
-                activeIndex: widget.activeIndex,
+                activeIndex: activeIndex,
                 count: widget.items.length,
               ),
             ),

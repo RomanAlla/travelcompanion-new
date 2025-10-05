@@ -1,13 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/error/app_exception.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/exceptions/error_handler.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/auth_button_widget.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/social_login_button.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/textfield_widget.dart';
-import 'package:travelcompanion/core/error/error_handler.dart';
 
 @RoutePage()
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -54,12 +53,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   Future<void> _signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        if (_passwordController.text != _confirmPasswordController.text) {
-          throw AppException('Пароли не совпадают', code: 'passwords_mismatch');
-        }
-        setState(() {
-          _error = null;
-        });
+        setState(() => _error = null);
 
         await ref
             .read(authProvider.notifier)
@@ -70,9 +64,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
         context.router.replacePath('/');
       } catch (e) {
         if (mounted) {
-          setState(() {
-            _error = ErrorHandler.getErrorMessage(e);
-          });
+          setState(() => _error = ErrorHandler.getErrorMessage(e));
         }
       }
     }
@@ -80,7 +72,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authStateProvider);
+    final authState = ref.watch(authProvider);
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Stack(
@@ -218,6 +210,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
                                 }
                                 if (value.length < 6) {
                                   return 'Пароль должен содержать минимум 6 символов';
+                                }
+                                if (value != _confirmPasswordController.text) {
+                                  return 'Пароли не совпадают';
                                 }
 
                                 return null;

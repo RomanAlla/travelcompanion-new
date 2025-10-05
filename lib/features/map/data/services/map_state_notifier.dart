@@ -2,8 +2,9 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/map/presentation/providers/yandex_map_service_provider.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_point_model.dart';
+import 'package:travelcompanion/core/domain/entities/route_point_model.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_point_repository_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
@@ -11,8 +12,8 @@ import 'package:travelcompanion/features/route_builder/presentation/providers/ti
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MapState {
-  final List<RoutePointsModel> allRoutePoints; // Все точки всех маршрутов
-  final List<PolylineMapObject> routes; // Маршруты
+  final List<RoutePointsModel> allRoutePoints;
+  final List<PolylineMapObject> routes;
   final String? error;
   final bool isLoading;
   final bool showAllStartPoints;
@@ -192,18 +193,16 @@ class MapStateNotifier extends StateNotifier<MapState> {
       final routeRepository = ref.read(routeRepositoryProvider);
       final routePointRepository = ref.read(routePointRepositoryProvider);
       final tipRepository = ref.read(tipRepositoryProvider);
-      final creator = ref.read(authProvider).user;
+      final creator = ref.read(userNotifierProvider).user;
       final routeInfo = ref.read(routeBuilderNotifierProvider);
 
       if (creator == null) return;
-      final route = await ref
-          .read(routeRepositoryProvider)
-          .createRoute(
-            creatorId: creator.id,
-            name: routeInfo.name!,
-            description: routeInfo.description!,
-            travelDuration: routeInfo.travelDuration!,
-          );
+      final route = await routeRepository.createRoute(
+        creatorId: creator.id,
+        name: routeInfo.name!,
+        description: routeInfo.description!,
+        travelDuration: routeInfo.travelDuration!,
+      );
       await routePointRepository.createRoutePoint(
         routeId: route.id,
         latitude: routeInfo.startPoint!.latitude,
@@ -241,14 +240,13 @@ class MapStateNotifier extends StateNotifier<MapState> {
       if (routeInfo.tips != null && routeInfo.tips!.isNotEmpty) {
         for (int i = 0; i < routeInfo.tips!.length; i++) {
           final tip = routeInfo.tips![i];
-          await tipRepository.createTip(
-            routeId: route.id,
-            description: tip.description,
-          );
+          await tipRepository.addTip(routeId: route.id, text: tip.description);
         }
       }
 
-      state = state.copyWith(isLoading: false);
+      if (mounted) {
+        state = state.copyWith(isLoading: false);
+      }
     } catch (e) {
       debugPrint(e.toString());
       state = state.copyWith(isLoading: false);
@@ -298,8 +296,6 @@ class MapStateNotifier extends StateNotifier<MapState> {
 
       final start = state.selectedStartPoint;
       final end = state.selectedEndPoint;
-      final waypoints = state.selectedWayPoints;
-
       if (start != null && end != null) {
         await ref.read(yandexMapServiceProvider).buildPedestrianRoute(ref);
       }

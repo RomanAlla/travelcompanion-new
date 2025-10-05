@@ -1,11 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:travelcompanion/features/route_builder/data/models/route_point_model.dart';
-import 'package:travelcompanion/core/error/app_exception.dart';
+import 'package:travelcompanion/core/domain/exceptions/app_exception.dart';
+import 'package:travelcompanion/core/domain/entities/route_point_model.dart';
+import 'package:travelcompanion/core/domain/repositories/route_point_repository.dart';
 
-class RoutePointRepository {
+class RoutePointRepositoryImpl implements RoutePointRepository {
   final SupabaseClient _supabase = Supabase.instance.client;
 
+  @override
   Future<RoutePointsModel> createRoutePoint({
     required String routeId,
     required double latitude,
@@ -26,13 +28,14 @@ class RoutePointRepository {
           .insert(data)
           .select()
           .single();
-      debugPrint('ошибка ${response.toString()}');
+
       return RoutePointsModel.fromJson(response);
     } catch (e) {
       throw AppException('Ошибка в создании route point: $e');
     }
   }
 
+  @override
   Future<List<RoutePointsModel>> getPoints({required String routeId}) async {
     try {
       final response = await _supabase
@@ -49,6 +52,7 @@ class RoutePointRepository {
     }
   }
 
+  @override
   Future<List<RoutePointsModel>> getAllPoints() async {
     try {
       final response = await _supabase.from('route_points').select();
@@ -62,6 +66,7 @@ class RoutePointRepository {
     }
   }
 
+  @override
   Future<RoutePointsModel> updateRoutePoint({
     required String id,
     required String routeId,
@@ -90,18 +95,20 @@ class RoutePointRepository {
           .single();
       return RoutePointsModel.fromJson(response);
     } catch (e) {
-      throw 'Ошибка в обновлении route point';
+      throw AppException('Ошибка в обновлении точки: $e');
     }
   }
 
+  @override
   Future<void> deleteRoutePoint({required String id}) async {
     try {
       await _supabase.from('route_points').delete().eq('id', id);
     } catch (e) {
-      throw 'Ошибка в удалении route point';
+      throw AppException('Ошибка в удалении route point: $e');
     }
   }
 
+  @override
   Future<List<RoutePointsModel>> getWayPoints({required String routeId}) async {
     try {
       final response = await _supabase
@@ -114,11 +121,11 @@ class RoutePointRepository {
       );
       return wayPoints.toList();
     } catch (e) {
-      print(e.toString());
-      throw 'Ошибка в получении way points';
+      throw AppException('Ошибка в получении way points: $e');
     }
   }
 
+  @override
   Future<RoutePointsModel> getRoutePointById({required String id}) async {
     try {
       final response = await _supabase
@@ -128,7 +135,7 @@ class RoutePointRepository {
           .single();
       return RoutePointsModel.fromJson(response);
     } catch (e) {
-      throw 'Ошибка в получении route point по id';
+      throw AppException('Ошибка в получении route point по id: $e');
     }
   }
 }

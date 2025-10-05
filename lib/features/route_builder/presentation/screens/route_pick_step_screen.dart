@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 import 'package:travelcompanion/features/map/domain/enums/route_pick_state.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';

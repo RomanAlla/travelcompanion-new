@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/page_controller_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
 import 'package:travelcompanion/features/route_builder/presentation/screens/confirm_step_screen.dart';
