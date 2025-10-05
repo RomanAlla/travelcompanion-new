@@ -56,44 +56,61 @@ class _ConfirmStepScreenState extends ConsumerState<ConfirmStepScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
       children: [
-        Icon(
-          Icons.check_circle_outline,
-          color: AppTheme.primaryLightColor,
-          size: 85,
-        ),
-        const SizedBox(height: 24),
-        const Text(
-          textAlign: TextAlign.center,
-          'Завершить маршрут?',
-          style: AppTheme.titleLargeThin,
-        ),
-
-        const SizedBox(height: 24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            BackActionButtonWidget(
-              label: 'Назад',
-              onPressed: () {
-                ref
-                    .read(pageControllerProvider)
-                    .previousPage(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.ease,
-                    );
-              },
+            Icon(
+              Icons.check_circle_outline,
+              color: AppTheme.primaryLightColor,
+              size: 85,
             ),
-            ContinueActionButtonWidget(
-              onPressed: () {
-                createRoute(ref, context);
-              },
-              label: 'Завершить',
+            const SizedBox(height: 24),
+            const Text(
+              textAlign: TextAlign.center,
+              'Завершить маршрут?',
+              style: AppTheme.titleLargeThin,
+            ),
+
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                BackActionButtonWidget(
+                  label: 'Назад',
+                  onPressed: _isLoading
+                      ? () {}
+                      : () {
+                          ref
+                              .read(pageControllerProvider)
+                              .previousPage(
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                        },
+                ),
+                ContinueActionButtonWidget(
+                  onPressed: () {
+                    _isLoading ? () {} : createRoute(ref, context);
+                  },
+                  label: 'Завершить',
+                ),
+              ],
             ),
           ],
         ),
+        if (_isLoading)
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  AppTheme.primaryLightColor,
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
