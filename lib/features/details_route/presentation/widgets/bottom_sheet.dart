@@ -6,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:travelcompanion/core/domain/exceptions/validation_exception.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
-import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/average_user_routes_rating.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comments_count_provider.dart';

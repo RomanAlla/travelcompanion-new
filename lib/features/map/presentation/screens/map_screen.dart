@@ -1,14 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/features/map/data/services/map_state_notifier.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
-import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
 import 'package:travelcompanion/features/map/presentation/widgets/helper_widget.dart';
-import 'package:travelcompanion/features/map/presentation/widgets/quit_button_widget.dart';
 import 'package:travelcompanion/features/map/presentation/widgets/yandex_map_widget.dart';
-import 'package:travelcompanion/features/route_builder/presentation/widgets/back_action_button_widget.dart';
-import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
 
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
