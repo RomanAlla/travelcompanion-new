@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/core/domain/exceptions/app_exception.dart';
 import 'package:travelcompanion/core/domain/entities/route_point_model.dart';

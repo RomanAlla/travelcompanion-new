@@ -51,9 +51,10 @@ class _RouteCardWidgetState extends ConsumerState<RouteCardWidget> {
   }
 
   Future<void> getRouteRating() async {
-    final sbService = SupabaseService(Supabase.instance.client);
     try {
-      final rating = await sbService.getAvgRating(widget.route.id);
+      final rating = await ref
+          .read(routeRepositoryProvider)
+          .getAverageRouteRating(widget.route.id);
       setState(() {
         routeRating = rating;
       });

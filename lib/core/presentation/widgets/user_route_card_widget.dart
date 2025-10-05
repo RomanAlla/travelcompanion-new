@@ -2,8 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:travelcompanion/core/data/services/supabase_service.dart';
+
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_screen.dart';
@@ -30,9 +29,10 @@ class _RouteCardState extends ConsumerState<UserRouteCardWidget> {
   double? routeRating;
 
   Future<void> getRouteRating() async {
-    final sbService = SupabaseService(Supabase.instance.client);
     try {
-      final rating = await sbService.getAvgRating(widget.route.id);
+      final rating = await ref
+          .read(routeRepositoryProvider)
+          .getAverageRouteRating(widget.route.id);
       setState(() {
         routeRating = rating;
       });
