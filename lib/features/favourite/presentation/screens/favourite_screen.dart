@@ -33,8 +33,8 @@ class _WishlistScreenState extends ConsumerState<FavouriteScreen> {
           context,
           MaterialPageRoute(
             builder: (context) => RouteDescriptionScreen(
-              routeId: completeRoute.id,
               route: completeRoute,
+              routeId: completeRoute.id,
             ),
           ),
         );

@@ -9,7 +9,7 @@ class QuitButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
         backgroundColor: AppTheme.primaryLightColor,
       ),
       onPressed: onPressed,

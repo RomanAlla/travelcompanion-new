@@ -17,6 +17,7 @@ class MapState {
   final bool isLoading;
   final bool showAllStartPoints;
   final String? selectedRouteId;
+  final String? tappedRouteId;
 
   const MapState({
     this.error,
@@ -25,6 +26,7 @@ class MapState {
     this.isLoading = false,
     this.showAllStartPoints = true,
     this.selectedRouteId,
+    this.tappedRouteId,
   });
 
   MapState copyWith({
@@ -34,6 +36,7 @@ class MapState {
     String? error,
     bool? showAllStartPoints,
     String? selectedRouteId,
+    String? tappedRouteId,
   }) {
     return MapState(
       isLoading: isLoading ?? this.isLoading,
@@ -42,7 +45,16 @@ class MapState {
       error: error ?? this.error,
       showAllStartPoints: showAllStartPoints ?? this.showAllStartPoints,
       selectedRouteId: selectedRouteId ?? this.selectedRouteId,
+      tappedRouteId: tappedRouteId,
     );
+  }
+
+  bool get hasTappedPoint {
+    final result = tappedRouteId != null;
+    debugPrint(
+      '🔍 hasTapedPoint getter: $result (tappedRouteId: $tappedRouteId)',
+    );
+    return result;
   }
 
   List<RoutePointsModel> get startPoints =>
@@ -315,6 +327,18 @@ class MapStateNotifier extends StateNotifier<MapState> {
 
   void clearError() {
     state = state.copyWith(error: null);
+  }
+
+  void setTappedPoint(String tappedRouteId) {
+    debugPrint('🎯 SET TappedPoint: $tappedRouteId');
+    state = state.copyWith(tappedRouteId: tappedRouteId);
+    debugPrint('✅ State updated - hasTapedPoint: ${state.hasTappedPoint}');
+  }
+
+  void clearTappedPoint() {
+    debugPrint('🎯 CLEAR TappedPoint');
+    state = state.copyWith(tappedRouteId: null, showAllStartPoints: true);
+    debugPrint('✅ State cleared - hasTapedPoint: ${state.hasTappedPoint}');
   }
 
   void rebuildRoute(WidgetRef ref) async {

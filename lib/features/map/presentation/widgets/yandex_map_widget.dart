@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
 import 'package:travelcompanion/features/map/presentation/providers/yandex_map_service_provider.dart';
@@ -72,50 +75,54 @@ class _YandexMapWidgetState extends ConsumerState<YandexMapWidget>
     );
   }
 
+  Future<void> _toRouteDescription(String routeId) async {
+    final route = await ref
+        .read(routeRepositoryProvider)
+        .getRoutesById(id: routeId);
+    if (!mounted) return;
+    context.router.push(RouteDescriptionRoute(routeId: routeId, route: route));
+  }
+
   @override
   Widget build(BuildContext context) {
     final buildModePoints = ref.watch(routeBuilderNotifierProvider).mapObjects;
     final watchModePoints = ref.watch(mapStateNotifierProvider).mapObjects;
 
-    return Consumer(
-      builder: (context, ref, _) {
-        return YandexMap(
-          onMapCreated: (controller) async {
-            _mapControllerCompleter.complete(controller);
-            await Future.delayed(const Duration(milliseconds: 300));
-            moveToCurrentLocation();
-          },
+    return YandexMap(
+      onMapCreated: (controller) async {
+        _mapControllerCompleter.complete(controller);
+        await Future.delayed(const Duration(milliseconds: 300));
+        moveToCurrentLocation();
+      },
 
-          mapObjects:
-              widget.mode == MapMode.pickMainPoints ||
-                  widget.mode == MapMode.pickWayPoints
-              ? buildModePoints
-              : watchModePoints,
-          onMapTap: (tapPoint) async {
-            await onMapTap(tapPoint);
-            await _buildPedestrianRoute();
+      mapObjects:
+          widget.mode == MapMode.pickMainPoints ||
+              widget.mode == MapMode.pickWayPoints
+          ? buildModePoints
+          : watchModePoints,
+      onMapTap: (tapPoint) async {
+        await onMapTap(tapPoint);
+        await _buildPedestrianRoute();
 
-            const threshold = 0.005;
-            final state = ref.read(mapStateNotifierProvider);
+        const threshold = 0.005;
+        final state = ref.read(mapStateNotifierProvider);
 
-            for (final rp in state.startPoints) {
-              final dx = (tapPoint.latitude - rp.latitude).abs();
-              final dy = (tapPoint.longitude - rp.longitude).abs();
+        for (final rp in state.startPoints) {
+          final dx = (tapPoint.latitude - rp.latitude).abs();
+          final dy = (tapPoint.longitude - rp.longitude).abs();
 
-              if (dx < threshold && dy < threshold) {
-                final notifier = ref.read(mapStateNotifierProvider.notifier);
-                await notifier.loadRouteByStartPoint(ref, rp.routeId);
+          if (dx < threshold && dy < threshold) {
+            final notifier = ref.read(mapStateNotifierProvider.notifier);
+            await notifier.loadRouteByStartPoint(ref, rp.routeId);
+            notifier.setTappedPoint(rp.routeId);
+            break;
+          }
+        }
+      },
 
-                break;
-              }
-            }
-          },
-
-          onUserLocationAdded: (view) async {
-            moveToCurrentLocation();
-            return view.copyWith(pin: view.pin.copyWith(opacity: 1));
-          },
-        );
+      onUserLocationAdded: (view) async {
+        moveToCurrentLocation();
+        return view.copyWith(pin: view.pin.copyWith(opacity: 1));
       },
     );
   }
