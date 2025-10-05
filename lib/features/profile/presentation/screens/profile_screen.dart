@@ -55,10 +55,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        user!.name ?? user.email,
-                        style: AppTheme.titleLarge,
-                      ),
+                      Text(user.name ?? user.email, style: AppTheme.titleLarge),
                       Text(
                         user.email,
                         style: AppTheme.bodyMediumBold.copyWith(

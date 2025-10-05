@@ -6,7 +6,6 @@ import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/core/domain/validators/form_validator.dart';
 import 'package:travelcompanion/core/presentation/widgets/app_bar.dart';
-import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/avatar_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/common_button_widget.dart';

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/domain/exceptions/error_handler.dart';
 import 'package:travelcompanion/core/presentation/widgets/app_bar.dart';
-import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
-import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
+
 import 'package:travelcompanion/features/details_route/presentation/screens/route_description_screen.dart';
 import 'package:travelcompanion/features/favourite/presentation/widgets/empty_state_widget.dart';
 import 'package:travelcompanion/features/favourite/presentation/widgets/error_state_widget.dart';

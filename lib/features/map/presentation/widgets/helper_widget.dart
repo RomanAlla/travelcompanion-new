@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 
 class HelperWidget extends StatefulWidget {
-  String text;
-  HelperWidget({super.key, required this.text});
+  final String text;
+  const HelperWidget({super.key, required this.text});
 
   @override
   State<HelperWidget> createState() => _HelperWidgetState();
@@ -27,7 +27,7 @@ class _HelperWidgetState extends State<HelperWidget> {
   void _closeInstruction() {
     setState(() {
       _showInstraction = false;
-      _instructionOffset = -0.2; // Добавляем анимацию закрытия
+      _instructionOffset = -0.2;
       _instructionOpacity = 0.0;
     });
   }
