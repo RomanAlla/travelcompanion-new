@@ -97,188 +97,200 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height - 60,
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        children: [
-          Text(
-            widget.route.name,
-            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+    return Stack(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.height - 60,
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          SizedBox(height: 5),
-          Text('Адрес', style: TextStyle(color: Colors.grey)),
-          SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (index) {
-              return IconButton(
-                onPressed: () {
-                  setState(() {
-                    _rating = index + 1;
-                  });
-                },
-                icon: Icon(
-                  index < _rating ? Icons.star : Icons.star_border,
-                  color: Colors.amber,
-                  size: 40,
-                ),
-              );
-            }),
-          ),
-          SizedBox(height: 10),
-          TextField(
-            controller: _textController,
-            autofocus: true,
-            maxLines: 4,
-            cursorColor: Colors.black,
-            decoration: InputDecoration(
-              hintText: 'Напишите отзыв',
-              fillColor: Colors.grey[100],
-              filled: true,
-              hintStyle: TextStyle(color: Colors.grey),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.transparent),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(color: Colors.transparent),
-              ),
-            ),
-          ),
-          SizedBox(height: 5),
-          if (_error != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(_error!, style: TextStyle(color: Colors.red)),
-            ),
-          SizedBox(height: 5),
-          Wrap(
+          child: Column(
             children: [
               Text(
-                'Были здесь? Поставьте оценку и поделитесь впечатлениями',
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+                widget.route.name,
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
               ),
-            ],
-          ),
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: showBottomSheet,
-                borderRadius: BorderRadius.circular(15),
-                child: Container(
-                  height: 50,
-                  width: 158,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.lightBlueAccent,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.lightBlueAccent.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.photo_camera, size: 25, color: Colors.white),
-                        SizedBox(width: 5),
-                        Text(
-                          'Добавить Фото',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+              SizedBox(height: 5),
+              Text('Адрес', style: TextStyle(color: Colors.grey)),
+              SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  return IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _rating = index + 1;
+                      });
+                    },
+                    icon: Icon(
+                      index < _rating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                      size: 40,
                     ),
+                  );
+                }),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _textController,
+                autofocus: true,
+                maxLines: 4,
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  hintText: 'Напишите отзыв',
+                  fillColor: Colors.grey[100],
+                  filled: true,
+                  hintStyle: TextStyle(color: Colors.grey),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: Colors.transparent),
                   ),
                 ),
               ),
-              SizedBox(width: 10),
-              isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : InkWell(
-                      onTap: createComment,
-                      borderRadius: BorderRadius.circular(15),
+              SizedBox(height: 5),
+              if (_error != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(_error!, style: TextStyle(color: Colors.red)),
+                ),
+              SizedBox(height: 5),
+              Wrap(
+                children: [
+                  Text(
+                    'Были здесь? Поставьте оценку и поделитесь впечатлениями',
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: showBottomSheet,
+                    borderRadius: BorderRadius.circular(15),
+                    child: Container(
+                      height: 50,
+                      width: 158,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.lightBlueAccent,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.lightBlueAccent.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 15),
-                        child: Container(
-                          height: 50,
-                          width: 127,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.blueAccent,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.blueAccent.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: Offset(0, 3),
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.photo_camera,
+                              size: 25,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              'Добавить Фото',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  InkWell(
+                    onTap: createComment,
+                    borderRadius: BorderRadius.circular(15),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: Container(
+                        height: 50,
+                        width: 127,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.blueAccent,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blueAccent.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.send, size: 25, color: Colors.white),
+                              SizedBox(width: 5),
+                              Text(
+                                'Отправить',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.send, size: 25, color: Colors.white),
-                                SizedBox(width: 5),
-                                Text(
-                                  'Отправить',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
                       ),
                     ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              SizedBox(
+                height: 80,
+                child: _coverImagePaths.isNotEmpty
+                    ? ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _coverImagePaths.length,
+                        itemBuilder: (context, index) {
+                          final image = _coverImagePaths[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: SizedBox(
+                              height: 60,
+                              width: 80,
+                              child: Image.file(
+                                File(image),
+                                fit: BoxFit.cover,
+                                width: 80,
+                                height: 60,
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : Container(),
+              ),
             ],
           ),
-          SizedBox(height: 10),
-          SizedBox(
-            height: 80,
-            child: _coverImagePaths.isNotEmpty
-                ? ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _coverImagePaths.length,
-                    itemBuilder: (context, index) {
-                      final image = _coverImagePaths[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: SizedBox(
-                          height: 60,
-                          width: 80,
-                          child: Image.file(
-                            File(image),
-                            fit: BoxFit.cover,
-                            width: 80,
-                            height: 60,
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                : Container(),
-          ),
-        ],
-      ),
+        ),
+        isLoading
+            ? Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            : SizedBox(),
+      ],
     );
   }
 }
