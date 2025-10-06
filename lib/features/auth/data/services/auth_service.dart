@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:travelcompanion/core/domain/exceptions/app_exception.dart';
 import 'package:travelcompanion/core/domain/entities/user_model.dart';
 import 'package:travelcompanion/core/domain/repositories/auth_repository.dart';
@@ -8,7 +11,7 @@ class AuthService {
   final UserRepository _userRepository;
   AuthService(this._authRepository, this._userRepository);
 
-  Future<UserModel?> signUp({
+  Future<UserModel> signUp({
     required String email,
     required String password,
     required String name,
@@ -16,14 +19,28 @@ class AuthService {
     try {
       final authResponse = await _authRepository.signUp(email, password);
 
+      if (authResponse.user == null) {
+        throw AppException('Ошибка при создании пользователя');
+      }
+
+      final newUser = UserModel(
+        id: authResponse.user!.id,
+        email: email,
+        name: name,
+        createdAt: DateTime.now(),
+      );
+
+      await _userRepository.updateUser(newUser);
+
       final user = await _userRepository.getUserById(authResponse.user!.id);
 
       if (user == null) {
-        throw AppException('Ошибка при регистрации пользователя');
+        throw AppException('Не удалось создать профиль пользователя');
       }
+
       return user;
     } catch (e) {
-      throw AppException('$e');
+      throw AppException('Ошибка регистрации: $e');
     }
   }
 

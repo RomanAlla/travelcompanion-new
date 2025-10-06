@@ -203,7 +203,7 @@ class RouteRepositoryImpl implements RouteRepository {
   }
 
   @override
-  Future<double?> getAverageRouteRating(String id) async {
+  Future<double> getAverageRouteRating(String id) async {
     try {
       final response = await _supabase
           .from('comments')
@@ -213,7 +213,7 @@ class RouteRepositoryImpl implements RouteRepository {
       final data = response as List<dynamic>;
 
       if (data.isEmpty) {
-        return null;
+        return 0.0;
       }
 
       double totalRating = 0;

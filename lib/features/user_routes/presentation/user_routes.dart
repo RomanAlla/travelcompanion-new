@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/domain/exceptions/error_handler.dart';
 import 'package:travelcompanion/core/presentation/router/router.dart';
-import 'package:travelcompanion/core/presentation/widgets/user_route_card_widget.dart';
+import 'package:travelcompanion/core/presentation/widgets/route_card_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/routes_list_provider.dart';
 
 @RoutePage()
@@ -125,10 +125,7 @@ class UserRoutesScreen extends ConsumerWidget {
                           final route = routesList[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16),
-                            child: UserRouteCardWidget(
-                              route: route,
-                              showDeleteButton: true,
-                            ),
+                            child: RouteCardWidget(onTap: () {}, route: route),
                           );
                         },
                       );

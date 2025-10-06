@@ -29,7 +29,7 @@ class _ConfirmStepScreenState extends ConsumerState<ConfirmStepScreen> {
       await ref.read(mapStateNotifierProvider.notifier).createRoute(ref);
 
       ref.invalidate(filteredRoutesProvider);
-      ref.invalidate(routesListProvider);
+      ref.invalidate(routeListProvider);
 
       if (context.mounted) {
         context.router.pushAndPopUntil(
