@@ -28,7 +28,6 @@ class TipWidget extends StatelessWidget {
           onPressed: onPressed,
           child: Text('Удалить', style: AppTheme.hintStyle),
         ),
-        // Text('Удалить', style: AppTheme.hintStyle),
       ],
     );
   }

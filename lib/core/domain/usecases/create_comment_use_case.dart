@@ -17,8 +17,9 @@ class CreateCommentUseCase {
   }) async {
     if (rating == 0) throw ValidationException('Поставьте оценку');
     if (text.isEmpty) throw ValidationException('Напишите текст отзыва');
-    if (text.length < 10)
+    if (text.length < 10) {
       throw ValidationException('Отзыв должен содержать минимум 10 символов');
+    }
 
     List<String> imageUrls = [];
 

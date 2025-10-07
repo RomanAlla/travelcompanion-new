@@ -31,10 +31,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final authState = ref.watch(userNotifierProvider);
     final user = authState.user;
 
-    if (user == null) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -55,9 +51,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(user.name ?? user.email, style: AppTheme.titleLarge),
                       Text(
-                        user.email,
+                        user?.name ?? user!.email,
+                        style: AppTheme.titleLarge,
+                      ),
+                      Text(
+                        user!.email,
                         style: AppTheme.bodyMediumBold.copyWith(
                           color: AppTheme.primaryLightColor,
                         ),

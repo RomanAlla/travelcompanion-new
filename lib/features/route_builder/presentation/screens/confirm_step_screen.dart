@@ -7,7 +7,6 @@ import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/main/presentation/providers/routes_filter_provider.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/page_controller_provider.dart';
-import 'package:travelcompanion/features/route_builder/presentation/providers/routes_list_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/back_action_button_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
 

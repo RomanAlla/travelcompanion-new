@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:travelcompanion/core/domain/exceptions/app_exception.dart';
 import 'package:travelcompanion/core/domain/entities/user_model.dart';
 import 'package:travelcompanion/core/domain/repositories/auth_repository.dart';
