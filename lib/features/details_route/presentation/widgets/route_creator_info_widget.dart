@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travelcompanion/core/data/cache/preloaded_cached_image_provider.dart';
 import 'package:travelcompanion/core/domain/utils/string_utils.dart';
 import 'package:travelcompanion/core/domain/entities/user_model.dart';
 import 'package:travelcompanion/core/domain/entities/route_model.dart';
@@ -33,7 +34,7 @@ class RouteCreatorInfoWidget extends StatelessWidget {
             CircleAvatar(
               radius: 35,
               backgroundImage: creator.avatarUrl != null
-                  ? NetworkImage(creator.avatarUrl!)
+                  ? InstantAppCachedImage.getImageProvider(creator.avatarUrl!)
                   : null,
               child: creator.avatarUrl == null
                   ? CircleAvatar(

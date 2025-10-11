@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/core/domain/entities/route_model.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/map/presentation/providers/yandex_map_service_provider.dart';
 import 'package:travelcompanion/core/domain/entities/route_point_model.dart';
@@ -18,6 +20,7 @@ class MapState {
   final bool showAllStartPoints;
   final String? selectedRouteId;
   final String? tappedRouteId;
+  final RouteModel? pickedRoute;
 
   const MapState({
     this.error,
@@ -27,6 +30,7 @@ class MapState {
     this.showAllStartPoints = true,
     this.selectedRouteId,
     this.tappedRouteId,
+    this.pickedRoute,
   });
 
   MapState copyWith({
@@ -37,6 +41,7 @@ class MapState {
     bool? showAllStartPoints,
     String? selectedRouteId,
     String? tappedRouteId,
+    RouteModel? pickedRoute,
   }) {
     return MapState(
       isLoading: isLoading ?? this.isLoading,
@@ -46,14 +51,13 @@ class MapState {
       showAllStartPoints: showAllStartPoints ?? this.showAllStartPoints,
       selectedRouteId: selectedRouteId ?? this.selectedRouteId,
       tappedRouteId: tappedRouteId,
+      pickedRoute: pickedRoute ?? this.pickedRoute,
     );
   }
 
   bool get hasTappedPoint {
     final result = tappedRouteId != null;
-    debugPrint(
-      '🔍 hasTapedPoint getter: $result (tappedRouteId: $tappedRouteId)',
-    );
+
     return result;
   }
 
@@ -117,21 +121,24 @@ class MapState {
             appearance: PlacemarkMapObject(
               mapId: cluster.appearance.mapId,
               point: cluster.appearance.point,
-              opacity: 1,
+              opacity: 0.9,
+              text: PlacemarkText(
+                text: cluster.size.toString(),
+                style: PlacemarkTextStyle(color: Colors.white),
+              ),
               icon: PlacemarkIcon.single(
                 PlacemarkIconStyle(
                   image: BitmapDescriptor.fromAssetImage(
                     'assets/icons/cluster.png',
                   ),
-                  scale: 0.4,
+
+                  scale: 0.1,
                 ),
               ),
             ),
           );
         },
-        onClusterTap: (self, cluster) {
-          debugPrint('Tapped cluster with ${cluster.placemarks.length} items');
-        },
+        onClusterTap: (self, cluster) {},
       );
 
       allObjects.add(clusterCollection);
@@ -330,18 +337,22 @@ class MapStateNotifier extends StateNotifier<MapState> {
   }
 
   void setTappedPoint(String tappedRouteId) {
-    debugPrint('🎯 SET TappedPoint: $tappedRouteId');
     state = state.copyWith(tappedRouteId: tappedRouteId);
-    debugPrint('✅ State updated - hasTapedPoint: ${state.hasTappedPoint}');
   }
 
   void clearTappedPoint() {
-    debugPrint('🎯 CLEAR TappedPoint');
     state = state.copyWith(tappedRouteId: null, showAllStartPoints: true);
-    debugPrint('✅ State cleared - hasTapedPoint: ${state.hasTappedPoint}');
   }
 
   void rebuildRoute(WidgetRef ref) async {
     await ref.read(yandexMapServiceProvider).buildPedestrianRoute(ref);
+  }
+
+  void setPickedRoute(RouteModel route) {
+    state = state.copyWith(pickedRoute: route, selectedRouteId: route.id);
+  }
+
+  void clearPickedRoute() {
+    state = state.copyWith(pickedRoute: null);
   }
 }

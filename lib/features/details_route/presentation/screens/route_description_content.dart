@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/domain/entities/user_model.dart';
 import 'package:travelcompanion/core/domain/entities/comment_model.dart';
+import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/carousel_slider_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/reviews_section_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/route_creator_info_widget.dart';
@@ -12,6 +14,10 @@ import 'package:travelcompanion/features/details_route/presentation/widgets/rout
 import 'package:travelcompanion/features/details_route/presentation/widgets/tips_widget.dart';
 import 'package:travelcompanion/core/domain/entities/route_model.dart'
     show RouteModel;
+import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
+import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
+import 'package:travelcompanion/features/map/presentation/screens/map_screen.dart';
+import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
 
 class RouteDescriptionContent extends ConsumerStatefulWidget {
   final RouteModel route;
@@ -47,6 +53,11 @@ class _RouteDescriptionContentState
     extends ConsumerState<RouteDescriptionContent> {
   late int currentIndex;
 
+  void startRoute() {
+    context.router.push(MapRoute(mode: MapMode.viewAll));
+    ref.read(mapStateNotifierProvider.notifier).setPickedRoute(widget.route);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -64,10 +75,25 @@ class _RouteDescriptionContentState
             padding: const EdgeInsets.symmetric(horizontal: 23),
             child: Column(
               children: [
-                RouteTitleNameWidget(text: widget.route.name),
-                RouteMetaInfoWidget(
-                  rating: widget.averageRating ?? 0.0,
-                  reviewsCount: widget.commentsCount ?? 0,
+                Row(
+                  children: [
+                    Column(
+                      children: [
+                        RouteTitleNameWidget(text: widget.route.name),
+                        RouteMetaInfoWidget(
+                          rating: widget.averageRating ?? 0.0,
+                          reviewsCount: widget.commentsCount ?? 0,
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 40),
+                    Expanded(
+                      child: ContinueActionButtonWidget(
+                        onPressed: startRoute,
+                        label: 'В путь!',
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 RouteCreatorInfoWidget(

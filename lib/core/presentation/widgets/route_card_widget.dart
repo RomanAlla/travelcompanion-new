@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/data/cache/app_cached_image.dart';
+import 'package:travelcompanion/core/data/cache/preloaded_cached_image_provider.dart';
 import 'package:travelcompanion/core/domain/entities/route_model.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 
@@ -57,7 +58,6 @@ class _RouteCardContent extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         child: Column(
           children: [
-            // Изображение
             _buildImage(),
 
             // Контент
@@ -94,13 +94,17 @@ class _RouteCardContent extends ConsumerWidget {
         height: 300,
         color: Colors.grey[100],
         child: hasImage
-            ? AppCachedImage(
+            ? InstantAppCachedImage(
                 imageUrl: data.route.photoUrls.first,
                 height: 300,
                 fit: BoxFit.cover,
                 width: double.infinity,
               )
-            : Icon(Icons.landscape, size: 64, color: Colors.grey[400]),
+            : SizedBox(
+                height: 300,
+                width: double.infinity,
+                child: Icon(Icons.landscape, size: 64, color: Colors.grey[400]),
+              ),
       ),
     );
   }
@@ -161,7 +165,9 @@ class _RouteCardContent extends ConsumerWidget {
           radius: 16,
           backgroundColor: Colors.blue[100],
           backgroundImage: data.route.creator!.avatarUrl != null
-              ? NetworkImage(data.route.creator!.avatarUrl!)
+              ? InstantAppCachedImage.getImageProvider(
+                  data.route.creator!.avatarUrl!,
+                )
               : null,
           child: data.route.creator!.avatarUrl == null
               ? const Icon(Icons.person, size: 16, color: Colors.blue)

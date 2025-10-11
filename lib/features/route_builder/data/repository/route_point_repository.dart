@@ -52,6 +52,22 @@ class RoutePointRepositoryImpl implements RoutePointRepository {
   }
 
   @override
+  Future<RoutePointsModel> getStartPoint({required String id}) async {
+    try {
+      final response = await _supabase
+          .from('route_points')
+          .select()
+          .eq('route_id', id)
+          .eq('type', 'start')
+          .single();
+
+      return RoutePointsModel.fromJson(response);
+    } catch (e) {
+      throw AppException('Ошибка в получении start route point: $e');
+    }
+  }
+
+  @override
   Future<List<RoutePointsModel>> getAllPoints() async {
     try {
       final response = await _supabase.from('route_points').select();

@@ -40,8 +40,12 @@ class _HomeScreenState extends ConsumerState<MainRoutesScreen> {
           ),
         );
       }
-    } catch (e) {
-      throw Exception(e.toString());
+    } on Exception catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 

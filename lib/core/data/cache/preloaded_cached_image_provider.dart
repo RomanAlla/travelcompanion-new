@@ -18,9 +18,17 @@ class InstantAppCachedImage extends StatefulWidget {
     this.fit,
   });
 
-  // Статические методы для предзагрузки
   static final Map<String, Uint8List?> _memoryCache = {};
   static final Set<String> _preloadedUrls = {};
+
+  static ImageProvider getImageProvider(String url) {
+    final cachedBytes = _memoryCache[url];
+    if (cachedBytes != null) {
+      return MemoryImage(cachedBytes);
+    }
+
+    return CachedNetworkImageProvider(url, cacheKey: 'instant_cache_$url');
+  }
 
   static Future<void> preloadImage(String url) async {
     if (_preloadedUrls.contains(url)) return;
@@ -59,18 +67,15 @@ class _InstantAppCachedImageState extends State<InstantAppCachedImage> {
     final cachedBytes = InstantAppCachedImage._memoryCache[widget.imageUrl];
 
     if (cachedBytes != null) {
-      // Мгновенная загрузка из памяти
       _imageProvider = MemoryImage(cachedBytes);
       _useMemoryImage = true;
     } else {
-      // Fallback на кешированное изображение
       _imageProvider = CachedNetworkImageProvider(
         widget.imageUrl,
         cacheKey: 'cache_${widget.imageUrl}',
       );
       _useMemoryImage = false;
 
-      // Параллельно загружаем в память для следующего использования
       _loadToMemory();
     }
   }
@@ -89,7 +94,7 @@ class _InstantAppCachedImageState extends State<InstantAppCachedImage> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: widget.width ?? double.infinity, // Важно!
+      width: widget.width ?? double.infinity,
       height: widget.height,
       child: Image(
         image: _imageProvider,
@@ -97,12 +102,10 @@ class _InstantAppCachedImageState extends State<InstantAppCachedImage> {
         height: widget.height,
         fit: widget.fit,
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          // Если изображение загружено синхронно - показываем сразу
           if (_useMemoryImage || wasSynchronouslyLoaded) {
             return child;
           }
 
-          // Плавное появление для сетевых изображений
           return AnimatedOpacity(
             opacity: frame == null ? 0 : 1,
             duration: const Duration(milliseconds: 200),

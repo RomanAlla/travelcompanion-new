@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:travelcompanion/core/domain/entities/route_model.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/favourite_repository_provider.dart';
@@ -110,45 +111,26 @@ class _CarouselSliderWidgetState extends ConsumerState<CarouselSliderWidget> {
                   width: 45,
                   decoration: BoxDecoration(
                     border: null,
-                    color: Colors.white.withOpacity(0.3),
+                    color: AppTheme.primaryLightColor.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    icon: Icon(Icons.arrow_back, color: Colors.white),
                     onPressed: () => context.router.pop(context),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: 45,
-                      width: 45,
-                      decoration: BoxDecoration(
-                        border: null,
-                        color: Colors.white.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.favorite_border, color: Colors.red),
-                        onPressed: addToFavouriteRoute,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Container(
-                      height: 45,
-                      width: 45,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.3),
-                        border: null,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: IconButton(
-                        icon: Icon(Icons.download),
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
+                Container(
+                  height: 45,
+                  width: 45,
+                  decoration: BoxDecoration(
+                    border: null,
+                    color: AppTheme.primaryLightColor.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.favorite_border, color: Colors.white),
+                    onPressed: addToFavouriteRoute,
+                  ),
                 ),
               ],
             ),

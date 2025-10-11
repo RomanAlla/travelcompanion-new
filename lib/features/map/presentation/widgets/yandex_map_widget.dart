@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
 import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
@@ -10,6 +11,7 @@ import 'package:travelcompanion/features/map/presentation/providers/map_state_no
 import 'package:travelcompanion/features/map/presentation/providers/yandex_map_service_provider.dart';
 import 'package:travelcompanion/features/map/presentation/widgets/quit_button_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
+import 'package:travelcompanion/features/route_builder/presentation/providers/route_point_repository_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/back_action_button_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -35,6 +37,7 @@ class _YandexMapWidgetState extends ConsumerState<YandexMapWidget>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       getPoints();
       _initLocationLayer();
+      catchPickedRoute();
     });
   }
 
@@ -42,14 +45,14 @@ class _YandexMapWidgetState extends ConsumerState<YandexMapWidget>
     await ref.read(mapStateNotifierProvider.notifier).loadStartPoints(ref);
   }
 
-  void moveToCurrentLocation() async {
+  Future<void> moveToCurrentLocation() async {
     await Future.delayed(const Duration(milliseconds: 300));
     _userLocation = await (await _mapControllerCompleter.future)
         .getUserCameraPosition();
 
     if (_userLocation != null) {
       (await _mapControllerCompleter.future).moveCamera(
-        CameraUpdate.newCameraPosition(_userLocation!.copyWith(zoom: 10)),
+        CameraUpdate.newCameraPosition(_userLocation!.copyWith(zoom: 14)),
         animation: const MapAnimation(
           type: MapAnimationType.smooth,
           duration: 2,
@@ -90,27 +93,61 @@ class _YandexMapWidgetState extends ConsumerState<YandexMapWidget>
     final notifier = ref.read(mapStateNotifierProvider.notifier);
     notifier.clearTappedPoint();
     notifier.clearPastPolilynes();
-    context.router.pop();
+    ref.invalidate(mapStateNotifierProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.router.pushAndPopUntil(
+        MainRoutesRoute(),
+        predicate: (route) => false,
+      );
+    });
   }
 
   void _handleClearTappedPoint() {
     final notifier = ref.read(mapStateNotifierProvider.notifier);
     notifier.clearTappedPoint();
     notifier.clearPastPolilynes();
+    notifier.clearPickedRoute();
+  }
+
+  void catchPickedRoute() async {
+    try {
+      final route = ref.watch(mapStateNotifierProvider).pickedRoute;
+
+      if (route != null) {
+        final point = await ref
+            .read(routePointRepositoryProvider)
+            .getStartPoint(id: route.id);
+        (await _mapControllerCompleter.future).moveCamera(
+          animation: MapAnimation(duration: 2.0, type: MapAnimationType.smooth),
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: Point(
+                latitude: point.latitude,
+                longitude: point.longitude,
+              ),
+              zoom: 16,
+            ),
+          ),
+        );
+      } else {
+        return;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final buildModePoints = ref.watch(routeBuilderNotifierProvider).mapObjects;
-    final watchModePoints = ref.watch(mapStateNotifierProvider).mapObjects;
     final state = ref.watch(mapStateNotifierProvider);
+    final watchModePoints = state.mapObjects;
+    final buildModePoints = ref.watch(routeBuilderNotifierProvider).mapObjects;
     return Stack(
       children: [
         YandexMap(
           onMapCreated: (controller) async {
             _mapControllerCompleter.complete(controller);
             await Future.delayed(const Duration(milliseconds: 300));
-            moveToCurrentLocation();
           },
 
           mapObjects:
@@ -138,12 +175,27 @@ class _YandexMapWidgetState extends ConsumerState<YandexMapWidget>
               }
             }
           },
-
-          onUserLocationAdded: (view) async {
-            moveToCurrentLocation();
-            return view.copyWith(pin: view.pin.copyWith(opacity: 1));
-          },
         ),
+        Positioned(
+          right: 5,
+          bottom: 150,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppTheme.lightGrey,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.all(5),
+            child: IconButton(
+              icon: Icon(Icons.gps_fixed, fontWeight: FontWeight.bold),
+              style: ButtonStyle(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              onPressed: moveToCurrentLocation,
+              color: AppTheme.primaryLightColor,
+            ),
+          ),
+        ),
+
         state.hasTappedPoint
             ? SafeArea(
                 child: Align(

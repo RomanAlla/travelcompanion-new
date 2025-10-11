@@ -7,55 +7,79 @@ import 'package:travelcompanion/features/auth/presentation/providers/user_notifi
 import 'package:travelcompanion/features/profile/presentation/widgets/common_button_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/save_changes_button.dart';
 
-class SetAvatarBottomSheetWidget extends ConsumerWidget {
+class SetAvatarBottomSheetWidget extends ConsumerStatefulWidget {
   const SetAvatarBottomSheetWidget({super.key});
 
-  Future<void> pickPhoto(WidgetRef ref, BuildContext context) async {
+  @override
+  ConsumerState<SetAvatarBottomSheetWidget> createState() =>
+      _SetAvatarBottomSheetWidgetState();
+}
+
+class _SetAvatarBottomSheetWidgetState
+    extends ConsumerState<SetAvatarBottomSheetWidget> {
+  bool isLoading = false;
+  Future<void> pickPhoto(BuildContext context) async {
     try {
+      setState(() {
+        isLoading = true;
+      });
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickMedia();
 
       await ref.read(userNotifierProvider.notifier).pickAndUploadPhoto(image);
       if (context.mounted) {
+        setState(() {
+          isLoading = false;
+        });
         context.router.pop();
       }
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       debugPrint(e.toString());
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: Container(
-        constraints: BoxConstraints(),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ActionButtonWidget(
-                onPressed: () {},
-                backgroundColor: AppTheme.primaryLightColor,
-                text: 'Сделать фото',
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        SafeArea(
+          child: Container(
+            constraints: BoxConstraints(),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12, bottom: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ActionButtonWidget(
+                    onPressed: () {},
+                    backgroundColor: AppTheme.primaryLightColor,
+                    text: 'Сделать фото',
+                  ),
+                  SizedBox(height: 10),
+                  ActionButtonWidget(
+                    onPressed: () async {
+                      pickPhoto(context);
+                    },
+                    backgroundColor: AppTheme.primaryLightColor,
+                    text: 'Выбрать из библиотеки',
+                  ),
+                  SizedBox(height: 10),
+                  CommonButtonWidget(
+                    onPressed: () => context.router.pop(context),
+                    text: 'Отмена',
+                  ),
+                ],
               ),
-              SizedBox(height: 10),
-              ActionButtonWidget(
-                onPressed: () async {
-                  pickPhoto(ref, context);
-                },
-                backgroundColor: AppTheme.primaryLightColor,
-                text: 'Выбрать из библиотеки',
-              ),
-              SizedBox(height: 10),
-              CommonButtonWidget(
-                onPressed: () => context.router.pop(context),
-                text: 'Отмена',
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        isLoading
+            ? SizedBox(child: Center(child: CircularProgressIndicator()))
+            : SizedBox.shrink(),
+      ],
     );
   }
 }

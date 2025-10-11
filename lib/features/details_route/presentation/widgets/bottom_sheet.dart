@@ -7,6 +7,7 @@ import 'package:travelcompanion/core/domain/exceptions/validation_exception.dart
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
+import 'package:travelcompanion/features/details_route/presentation/providers/average_rating_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/average_user_routes_rating.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comments_count_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/comments_provider.dart';
@@ -40,7 +41,9 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
         routeId: widget.route.id,
         text: _textController.text,
         rating: _rating,
+        imagePaths: _coverImagePaths,
       );
+      ref.invalidate(averageRatingProvider(widget.route.id));
       ref.invalidate(commentsProvider(widget.route.id));
       ref.invalidate(commentsCountProvider(widget.route.id));
       ref.invalidate(userRoutesCountProvider(widget.route.creatorId));
@@ -288,7 +291,7 @@ class _BottomSheetWidgetState extends ConsumerState<BottomSheetWidget> {
                 color: Colors.black.withOpacity(0.5),
                 child: Center(child: CircularProgressIndicator()),
               )
-            : SizedBox(),
+            : SizedBox.shrink(),
       ],
     );
   }

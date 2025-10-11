@@ -23,4 +23,5 @@ abstract class RoutePointRepository {
   Future<void> deleteRoutePoint({required String id});
   Future<List<RoutePointsModel>> getWayPoints({required String routeId});
   Future<RoutePointsModel> getRoutePointById({required String id});
+  Future<RoutePointsModel> getStartPoint({required String id});
 }

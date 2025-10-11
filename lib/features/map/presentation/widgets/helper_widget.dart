@@ -78,6 +78,7 @@ class _HelperWidgetState extends State<HelperWidget> {
                         ),
                       ),
                     ),
+                    
                     GestureDetector(
                       onTap: () {
                         setState(() {
