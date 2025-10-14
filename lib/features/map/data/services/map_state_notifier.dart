@@ -220,6 +220,7 @@ class MapStateNotifier extends StateNotifier<MapState> {
         name: routeInfo.name!,
         description: routeInfo.description!,
         travelDuration: routeInfo.travelDuration!,
+        isTaken: false,
       );
       await routePointRepository.createRoutePoint(
         routeId: route.id,

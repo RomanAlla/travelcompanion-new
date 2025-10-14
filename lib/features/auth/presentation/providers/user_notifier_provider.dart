@@ -7,5 +7,5 @@ final userNotifierProvider = StateNotifierProvider<UserNotifier, UserState>((
   ref,
 ) {
   final userService = ref.watch(userServiceProvider);
-  return UserNotifier(userService);
+  return UserNotifier(userService, ref);
 });

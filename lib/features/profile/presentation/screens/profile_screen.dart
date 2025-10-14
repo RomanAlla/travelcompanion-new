@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/core/presentation/widgets/app_bar.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
+import 'package:travelcompanion/features/profile/presentation/providers/planned_routes_count_provider.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/avatar_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/settings_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/trips_column_widget.dart';
@@ -19,17 +21,9 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(userNotifierProvider.notifier).getCurrentUser();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(userNotifierProvider);
-    final user = authState.user;
+    final user = ref.watch(currentUserProvider);
+    final routesStats = ref.watch(plannedRoutesCountProvider(user!.id));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -51,12 +45,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(user.name ?? user.email, style: AppTheme.titleLarge),
                       Text(
-                        user?.name ?? user!.email,
-                        style: AppTheme.titleLarge,
-                      ),
-                      Text(
-                        user!.email,
+                        user.email,
                         style: AppTheme.bodyMediumBold.copyWith(
                           color: AppTheme.primaryLightColor,
                         ),
@@ -121,7 +112,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               ),
               SizedBox(height: 20),
-              TripsColumnWidget(),
+              routesStats.when(
+                data: (stats) => TripsColumnWidget(plannedCount: stats),
+                error: (error, stack) => TripsColumnWidget(plannedCount: 0),
+                loading: () => TripsColumnWidget(plannedCount: 0),
+              ),
               SizedBox(height: 15),
 
               SettingsWidget(),

@@ -15,37 +15,13 @@ final authServiceProvider = Provider<AuthService>((ref) {
 });
 
 // Главный провайдер состояния аутентификации
-final authProvider = StateNotifierProvider<AuthNotifier, AuthNotifierState>((
-  ref,
-) {
-  final authService = ref.watch(authServiceProvider);
-  final userService = ref.watch(userServiceProvider);
-  return AuthNotifier(authService, userService)..initialize();
-});
-
-final appInitializationProvider = FutureProvider<void>((ref) async {
-  await Future.delayed(const Duration(seconds: 2));
-
-  bool isLoading = true;
-  while (isLoading) {
-    final state = ref.read(authProvider);
-    isLoading = state.isLoading;
-
-    if (isLoading) {
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-  }
-});
-
-final isAppInitializedProvider = Provider<bool>((ref) {
-  final initializationState = ref.watch(appInitializationProvider);
-  return !initializationState.isLoading && !initializationState.hasError;
-});
+final authProvider =
+    StateNotifierProvider.autoDispose<AuthNotifier, AuthNotifierState>((ref) {
+      final authService = ref.watch(authServiceProvider);
+      final userService = ref.watch(userServiceProvider);
+      return AuthNotifier(authService, userService)..initialize();
+    });
 
 final currentUserProvider = Provider<UserModel?>((ref) {
   return ref.watch(authProvider.select((state) => state.user));
-});
-
-final isLoadingProvider = Provider<bool>((ref) {
-  return ref.watch(authProvider.select((state) => state.isLoading));
 });

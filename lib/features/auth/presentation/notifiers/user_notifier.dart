@@ -1,14 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:travelcompanion/features/auth/data/services/user_service.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/profile_state.dart';
 
 class UserNotifier extends StateNotifier<UserState> {
   final UserService _userService;
+  final Ref _ref;
 
-  UserNotifier(this._userService) : super(UserState()) {
+  UserNotifier(this._userService, this._ref) : super(UserState()) {
+    _syncWithAuthState();
     getCurrentUser();
   }
+  void _syncWithAuthState() {
+    _ref.listen(authProvider, (previous, next) {
+      if (next.user != null && state.user?.id != next.user?.id) {
+        state = state.copyWith(user: next.user);
+      } else if (next.user == null && state.user != null) {
+        state = state.copyWith(user: null);
+      }
+    });
+  }
+
   Future<void> updateProfile({
     required String userId,
     String? name,

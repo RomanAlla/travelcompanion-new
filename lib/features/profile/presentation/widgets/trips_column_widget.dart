@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/utils/string_utils.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/tile_widget.dart';
 
 class TripsColumnWidget extends StatelessWidget {
-  const TripsColumnWidget({super.key});
+  final int plannedCount;
+  const TripsColumnWidget({super.key, required this.plannedCount});
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +15,8 @@ class TripsColumnWidget extends StatelessWidget {
         Text('Маршруты', style: AppTheme.titleSmallBold),
         SizedBox(height: 8),
         TileWidget(
-          title: 'Пройденные',
-          subtitle: '4 маршрута',
-          width: 45,
-          icon: Icons.map,
-        ),
-        SizedBox(height: 5),
-        TileWidget(
           title: 'Запланированные',
-          subtitle: '3 маршрута',
+          subtitle: StringUtils.pluralizeRoute(plannedCount),
           width: 45,
           icon: Icons.calendar_today,
         ),

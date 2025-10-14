@@ -10,8 +10,9 @@ class SettingsWidget extends ConsumerWidget {
   const SettingsWidget({super.key});
 
   Future<void> logOut(WidgetRef ref, BuildContext context) async {
-    await ref.read(authServiceProvider).signOut();
+    await ref.read(authProvider.notifier).signOut();
     if (!context.mounted) return;
+    ref.invalidate(authProvider);
     context.router.pushAndPopUntil(SignInRoute(), predicate: (route) => false);
   }
 

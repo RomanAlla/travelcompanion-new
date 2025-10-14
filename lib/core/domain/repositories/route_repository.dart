@@ -8,6 +8,7 @@ abstract class RouteRepository {
     required String description,
     List<String>? photoUrls,
     required int travelDuration,
+    required bool isTaken,
   });
 
   Future<List<RouteModel>> getRoutes();

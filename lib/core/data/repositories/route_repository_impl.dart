@@ -14,6 +14,7 @@ class RouteRepositoryImpl implements RouteRepository {
     required String description,
     List<String>? photoUrls,
     required int travelDuration,
+    required bool isTaken,
   }) async {
     try {
       final response = await _supabase

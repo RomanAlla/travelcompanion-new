@@ -7,6 +7,7 @@ import 'package:travelcompanion/core/domain/entities/route_model.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/core/presentation/providers/use_cases_providers.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
+import 'package:travelcompanion/features/profile/presentation/providers/planned_routes_count_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/favourite_repository_provider.dart';
 
 class CarouselSliderWidget extends ConsumerStatefulWidget {
@@ -43,6 +44,7 @@ class _CarouselSliderWidgetState extends ConsumerState<CarouselSliderWidget> {
 
       await addToFavouritesUseCase(routeId: widget.route.id, userId: user.id);
       widget.ref.invalidate(favouriteListProvider);
+      widget.ref.invalidate(plannedRoutesCountProvider);
     } on Exception catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(

@@ -65,7 +65,7 @@ class RouteCreatorInfoWidget extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      pluralizeRoute(userRoutesCount),
+                      StringUtils.pluralizeRoute(userRoutesCount),
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],

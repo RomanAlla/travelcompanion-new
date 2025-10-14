@@ -34,17 +34,16 @@ class AuthGuard extends AutoRouteGuard {
     StackRouter router,
   ) async {
     try {
-      await ref.read(appInitializationProvider.future);
-      final user = ref.read(currentUserProvider);
+      final user = ref.watch(authProvider.select((state) => state.user));
       final isAuthRoute =
           resolver.route.name == SignInRoute.name ||
           resolver.route.name == SignUpRoute.name;
       final isAuthenticated = user != null;
 
       if (!isAuthenticated && !isAuthRoute) {
-        router.replace(const SignInRoute());
+        router.replaceAll([SignInRoute()]);
       } else if (isAuthenticated && isAuthRoute) {
-        router.replace(const HomeRoute());
+        router.replaceAll([HomeRoute()]);
       } else {
         resolver.next(true);
       }

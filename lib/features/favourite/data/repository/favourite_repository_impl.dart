@@ -72,4 +72,17 @@ class FavouriteRepositoryImpl implements FavouriteRepository {
       throw AppException('Ошибка проверки избранного: $e');
     }
   }
+
+  @override
+  Future<int> getUserFavouriteLength({required String userId}) async {
+    try {
+      final response = await _supabase
+          .from('favourite_routes')
+          .select()
+          .eq('user_id', userId);
+      return response.length;
+    } catch (e) {
+      throw AppException('Ошибка получения количества избранных маршрутов');
+    }
+  }
 }

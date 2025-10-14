@@ -46,7 +46,7 @@ class RouteMetaInfoWidget extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                pluralizeReviews(reviewsCount),
+                StringUtils.pluralizeReviews(reviewsCount),
                 style: TextStyle(color: Colors.grey[600], fontSize: 13),
               ),
             ],
