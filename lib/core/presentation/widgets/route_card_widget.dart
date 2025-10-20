@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/data/cache/app_cached_image.dart';
 import 'package:travelcompanion/core/data/cache/preloaded_cached_image_provider.dart';
 import 'package:travelcompanion/core/domain/entities/route_model.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
