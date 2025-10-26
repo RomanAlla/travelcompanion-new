@@ -34,12 +34,10 @@ Travel Companion — это социальная платформа для лю�
   <img src="https://github.com/user-attachments/assets/698f40ce-f584-4b15-8e68-4b542275f49f" width="300" height="auto" />
   <img src="https://github.com/user-attachments/assets/f9254862-4220-4c80-8b21-4ad62c36618b" width="300" height="auto" />
   <img src="https://github.com/user-attachments/assets/f2d80c26-2b71-475e-a6c8-ff6469c2dbbb" width="300" height="auto" />
-  <img src="https://github.com/user-attachments/assets/4559c7e4-a0b5-4d6a-b64b-0a9a7c3ad6fc" width="300" height="auto" />
-  <img src="https://github.com/user-attachments/assets/ccc721e0-17b4-48b4-a291-1b69665a1fb9" width="300" height="auto" />
-  <img src="https://github.com/user-attachments/assets/0657e789-3e3c-456f-808f-b7d0315d9a14" width="300" height="auto" />
+  <img src="https://github.com/user-attachments/assets/7beee0e3-9362-44bc-8a5b-699727eedb89" width="300" height="auto" />
   <img src="https://github.com/user-attachments/assets/28649b66-9a46-44bd-872b-032a3a02567b" width="300" height="auto" />
   
- 
+
 
 
 
