@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 
-//1
+//12
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
 
