@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/domain/entities/route_model.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';

@@ -8,6 +8,7 @@ import 'package:travelcompanion/core/domain/entities/route_point_model.dart';
 import 'package:travelcompanion/features/route_builder/presentation/providers/route_builder_notifier.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
+//1
 class YandexMapService {
   Future<void> buildPedestrianRoute(WidgetRef ref) async {
     try {

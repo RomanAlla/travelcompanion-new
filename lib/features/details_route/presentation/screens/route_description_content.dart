@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/domain/entities/user_model.dart';
 import 'package:travelcompanion/core/domain/entities/comment_model.dart';
-import 'package:travelcompanion/core/domain/exceptions/app_exception.dart';
 import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/carousel_slider_widget.dart';
 import 'package:travelcompanion/features/details_route/presentation/widgets/reviews_section_widget.dart';
@@ -17,8 +16,6 @@ import 'package:travelcompanion/core/domain/entities/route_model.dart'
     show RouteModel;
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 import 'package:travelcompanion/features/map/presentation/providers/map_state_notifier_provider.dart';
-import 'package:travelcompanion/features/profile/presentation/providers/planned_routes_count_provider.dart';
-import 'package:travelcompanion/features/route_builder/presentation/providers/route_repository_provider.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/continue_action_button_widget.dart';
 
 class RouteDescriptionContent extends ConsumerStatefulWidget {
