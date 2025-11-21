@@ -1,16 +1,46 @@
-# travelcompanion
+# Travel Companion
+Мобильное приложение для создания и обмена туристическими маршрутами. Позволяет пользователям публиковать свои маршруты, делиться фотографиями и впечатлениями, находить интересные локации и взаимодействовать с сообществом путешественников.
 
-A new Flutter project.
+## О проекте
 
-## Getting Started
+Travel Companion — это социальная платформа для любителей путешествий, где каждый может:
+- 🗺️ Создавать собственные туристические маршруты с подробным описанием
+- 📸 Делиться фотографиями и впечатлениями от поездок
+- ⭐ Оставлять отзывы и рейтинги маршрутам
+- 💾 Сохранять понравившиеся маршруты в избранное
+- 🔍 Искать интересные маршруты по описанию и меткам
+- 👥 Просматривать маршруты других пользователей
 
-This project is a starting point for a Flutter application.
+## Основной функционал
 
-A few resources to get you started if this is your first Flutter project:
+### Маршруты
+- Интерактивная карта с построением маршрутов
+- Добавление фото и описания к маршрутам
+- Промежуточные точки (waypoints) с советами
+- Расчет продолжительности маршрута
+- Отображение всех опубликованных маршрутов
+- ### Социальные функции
+- Система отзывов и рейтингов (1-5 звезд)
+- Загрузка фотографий к отзывам
+- Средний рейтинг маршрутов
+- Статистика создателя (количество маршрутов, средний рейтинг)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Профиль пользователя
+- Управление профилем
+- Загрузка аватарок
+- Просмотр собственных маршрутов
+- Избранное
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  <img src="https://github.com/user-attachments/assets/698f40ce-f584-4b15-8e68-4b542275f49f" width="300" height="auto" />
+  <img src="https://github.com/user-attachments/assets/f9254862-4220-4c80-8b21-4ad62c36618b" width="300" height="auto" />
+  <img src="https://github.com/user-attachments/assets/f2d80c26-2b71-475e-a6c8-ff6469c2dbbb" width="300" height="auto" />
+  <img src="https://github.com/user-attachments/assets/7beee0e3-9362-44bc-8a5b-699727eedb89" width="300" height="auto" />
+  <img src="https://github.com/user-attachments/assets/28649b66-9a46-44bd-872b-032a3a02567b" width="300" height="auto" />
+  
+
+
+
+
+
+
+
