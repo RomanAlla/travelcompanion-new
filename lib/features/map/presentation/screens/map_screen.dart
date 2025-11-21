@@ -8,7 +8,14 @@ import 'package:travelcompanion/features/map/presentation/widgets/yandex_map_wid
 @RoutePage()
 class MapScreen extends ConsumerStatefulWidget {
   final MapMode mode;
-  const MapScreen({super.key, this.mode = MapMode.viewAll});
+  final double? targetLatitude;
+  final double? targetLongitude;
+  const MapScreen({
+    super.key,
+    this.mode = MapMode.viewAll,
+    this.targetLatitude,
+    this.targetLongitude,
+  });
 
   @override
   ConsumerState<MapScreen> createState() => _MapChangeModeState();
@@ -45,7 +52,11 @@ class _MapChangeModeState extends ConsumerState<MapScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          YandexMapWidget(mode: widget.mode),
+          YandexMapWidget(
+            mode: widget.mode,
+            targetLatitude: widget.targetLatitude,
+            targetLongitude: widget.targetLongitude,
+          ),
           if (_showInstruction)
             HelperWidget(
               text: 'Нажмите на метку, чтобы увидеть полный маршрут',

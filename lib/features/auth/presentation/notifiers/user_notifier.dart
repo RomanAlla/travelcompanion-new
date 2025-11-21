@@ -39,6 +39,12 @@ class UserNotifier extends StateNotifier<UserState> {
         country: country,
       );
       state = state.copyWith(isLoading: false, user: updatedUser);
+      
+      // Обновляем authProvider, чтобы ProfileScreen получил обновленные данные
+      final authNotifier = _ref.read(authProvider.notifier);
+      if (updatedUser != null) {
+        authNotifier.updateUser(updatedUser);
+      }
     } catch (e) {
       state = state.copyWith(isLoading: false);
       rethrow;
@@ -57,6 +63,12 @@ class UserNotifier extends StateNotifier<UserState> {
       await _userService.uploadUserPhoto(image.path);
       final refreshedUser = await _userService.getCurrentUser();
       state = state.copyWith(user: refreshedUser);
+      
+      // Обновляем authProvider, чтобы ProfileScreen получил обновленные данные
+      if (refreshedUser != null) {
+        final authNotifier = _ref.read(authProvider.notifier);
+        authNotifier.updateUser(refreshedUser);
+      }
     } finally {
       state = state.copyWith(isLoading: false);
     }

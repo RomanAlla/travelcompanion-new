@@ -8,9 +8,7 @@ import 'package:travelcompanion/core/domain/validators/form_validator.dart';
 import 'package:travelcompanion/core/presentation/widgets/app_bar.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/avatar_widget.dart';
-import 'package:travelcompanion/features/profile/presentation/widgets/common_button_widget.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/country_sheet.dart';
-import 'package:travelcompanion/features/profile/presentation/widgets/save_changes_button.dart';
 import 'package:travelcompanion/features/profile/presentation/widgets/set_avatar_bottom_sheet_widget.dart';
 import 'package:travelcompanion/features/route_builder/presentation/widgets/text_field_widget.dart';
 
@@ -24,7 +22,6 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _nameController = TextEditingController();
-
   final _emailController = TextEditingController();
   final _numberController = TextEditingController();
   final _countryController = TextEditingController();
@@ -42,6 +39,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   void initState() {
+    super.initState();
     final userData = ref.read(userNotifierProvider).user;
 
     _nameController.text = userData?.name ?? '';
@@ -49,11 +47,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _numberController.text = userData?.phoneNumber ?? '';
     _countryController.text = userData?.country ?? '';
     _nameController.addListener(changeColor);
-
     _emailController.addListener(changeColor);
     _numberController.addListener(changeColor);
     _countryController.addListener(changeColor);
-    super.initState();
   }
 
   @override
@@ -82,7 +78,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               email: _emailController.text,
               phoneNumber: _numberController.text,
             );
-        Future.delayed(Duration(seconds: 1));
+        Future.delayed(const Duration(seconds: 1));
         if (mounted) {
           setState(() {
             isLoading = false;
@@ -103,13 +99,20 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       isScrollControlled: true,
       context: context,
       useSafeArea: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return CountrySheet(
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: CountrySheet(
           onSelectedCountry: (country) {
             setState(() {
               _countryController.text = country;
             });
           },
+          ),
         );
       },
     );
@@ -132,8 +135,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     showModalBottomSheet(
       showDragHandle: true,
       context: context,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return SetAvatarBottomSheetWidget();
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: SetAvatarBottomSheetWidget(),
+        );
       },
     );
   }
@@ -143,47 +153,196 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final userData = ref.watch(userNotifierProvider).user;
 
     return Scaffold(
+      backgroundColor: AppTheme.lightGrey,
       appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 50),
-        child: AppBarWidget(title: 'Редактировать'),
+        preferredSize: const Size(double.infinity, 60),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppTheme.primaryLightColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: AppBarWidget(title: 'Редактировать профиль'),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: 20),
+              // Аватар
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Stack(
                 children: [
-                  Align(
-                    alignment: Alignment.center,
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppTheme.primaryLightColor.withValues(
+                                alpha: 0.3,
+                              ),
+                              width: 2,
+                            ),
+                          ),
                     child: AvatarWidget(
                       radius: 50,
                       avatarUrl: pickedPhotoPath ?? userData!.avatarUrl,
                     ),
                   ),
-                  SizedBox(height: 15),
-                  CommonButtonWidget(
-                    onPressed: showBottomSheetWidget,
-                    text: userData!.avatarUrl != null
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryLightColor,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.primaryLightColor.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: showBottomSheetWidget,
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Icon(
+                                    Icons.camera_alt_rounded,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.lightGrey,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: showBottomSheetWidget,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.edit_rounded,
+                                  color: AppTheme.primaryLightColor,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  userData!.avatarUrl != null
                         ? 'Изменить аватар'
                         : 'Добавить аватар',
-                  ),
-                  SizedBox(height: 20),
-                  Text('Имя', style: AppTheme.bodyMedium),
-                  SizedBox(height: 5),
+                                  style: AppTheme.bodySmall.copyWith(
+                                    color: AppTheme.primaryLightColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Форма редактирования
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryLightColor.withValues(
+                              alpha: 0.1,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.person_rounded,
+                            color: AppTheme.primaryLightColor,
+                            size: 16,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Личная информация',
+                          style: AppTheme.titleSmallBold.copyWith(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    _buildFieldLabel('Имя'),
+                    const SizedBox(height: 6),
                   InputDataFieldWidget(
                     controller: _nameController,
                     validator: (value) {
                       return FormValidator.validateName(value);
                     },
                   ),
-                  SizedBox(height: 15),
-                  GestureDetector(
-                    onTap: () => showCountryPickSheet(context),
-                    child: Text('Страна', style: AppTheme.bodyMedium),
-                  ),
+                    const SizedBox(height: 16),
+                    _buildFieldLabel('Страна'),
+                    const SizedBox(height: 6),
                   GestureDetector(
                     onTap: () => showCountryPickSheet(context),
                     child: AbsorbPointer(
@@ -192,56 +351,130 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 15),
-
-                  Text('Почта', style: AppTheme.bodyMedium),
-                  SizedBox(height: 5),
+                    const SizedBox(height: 16),
+                    _buildFieldLabel('Почта'),
+                    const SizedBox(height: 6),
                   InputDataFieldWidget(
                     controller: _emailController,
                     validator: (value) {
                       return FormValidator.validateEmail(value);
                     },
                   ),
-                  SizedBox(height: 15),
-                  Text('Телефон', style: AppTheme.bodyMedium),
-                  SizedBox(height: 5),
-                  TextFormField(
+                    const SizedBox(height: 16),
+                    _buildFieldLabel('Телефон'),
+                    const SizedBox(height: 6),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.lightGrey,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: TextFormField(
                     inputFormatters: [maskFormatter],
                     controller: _numberController,
-
+                        style: AppTheme.bodyMedium,
                     decoration: InputDecoration(
-                      labelStyle: AppTheme.hintStyle,
                       hintText: '+7 (999) 999-99-99',
                       hintStyle: AppTheme.hintStyle,
+                          prefixIcon: Icon(
+                            Icons.phone_rounded,
+                            color: AppTheme.primaryLightColor,
+                            size: 20,
+                          ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(14),
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: const Color.fromARGB(255, 232, 243, 248),
+                          fillColor: Colors.transparent,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                        ),
                     ),
                   ),
                 ],
               ),
-              Spacer(),
+              ),
+              const SizedBox(height: 20),
+              // Кнопка сохранения
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : ActionButtonWidget(
-                        text: 'Сохранить',
-                        backgroundColor: _buttonColor,
-                        onPressed: () {
-                          _buttonColor == AppTheme.primaryLightColor
-                              ? updateUserInfo()
-                              : null;
-                        },
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryLightColor,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                          color: _buttonColor == AppTheme.primaryLightColor
+                              ? AppTheme.primaryLightColor
+                              : Colors.grey[400],
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: (_buttonColor == AppTheme.primaryLightColor
+                                      ? AppTheme.primaryLightColor
+                                      : Colors.grey)
+                                  .withValues(alpha: 0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _buttonColor == AppTheme.primaryLightColor
+                                ? updateUserInfo
+                                : null,
+                            borderRadius: BorderRadius.circular(14),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.check_circle_rounded,
+                                    color: Colors.white,
+                                    size: 18,
+                      ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Сохранить изменения',
+                                    style: AppTheme.bodySmallBold.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 40),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFieldLabel(String label) {
+    return Text(
+      label,
+      style: AppTheme.bodySmallBold.copyWith(
+        color: Colors.black87,
       ),
     );
   }

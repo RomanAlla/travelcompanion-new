@@ -112,4 +112,25 @@ class UserRepositoryImpl implements UserRepository {
       throw AppException('Ошибка обновления пользователя: $e');
     }
   }
+
+  @override
+  Future<List<UserModel>> getUsers() async {
+    try {
+      final response = await _supabase.from('users').select();
+      return (response as List)
+          .map((json) => UserModel.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw AppException('Ошибка получения пользователей: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteUser(String id) async {
+    try {
+      await _supabase.from('users').delete().eq('id', id);
+    } catch (e) {
+      throw AppException('Ошибка удаления пользователя: $e');
+    }
+  }
 }

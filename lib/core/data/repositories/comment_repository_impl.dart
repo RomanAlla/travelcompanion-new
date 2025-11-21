@@ -25,6 +25,22 @@ class CommentRepositoryImpl implements CommentRepository {
   }
 
   @override
+  Future<List<CommentModel>> getAllComments() async {
+    try {
+      final response = await _supabase
+          .from('comments')
+          .select('*, creator:users(*)')
+          .order('created_at', ascending: false);
+
+      return (response as List)
+          .map((json) => CommentModel.fromJson(json))
+          .toList();
+    } catch (e) {
+      throw AppException('Ошибка получения всех комментариев: $e');
+    }
+  }
+
+  @override
   Future<int> getCommentsCount({required String routeId}) async {
     try {
       final response = await _supabase

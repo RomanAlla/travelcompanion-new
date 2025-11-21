@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/domain/entities/route_model.dart';
+import 'package:travelcompanion/core/domain/exceptions/app_exception.dart';
+import 'package:travelcompanion/core/domain/validators/route_validator.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/user_notifier_provider.dart';
 import 'package:travelcompanion/features/map/presentation/providers/yandex_map_service_provider.dart';
 import 'package:travelcompanion/core/domain/entities/route_point_model.dart';
@@ -42,12 +43,13 @@ class MapState {
     String? selectedRouteId,
     String? tappedRouteId,
     RouteModel? pickedRoute,
+    bool clearError = false,
   }) {
     return MapState(
       isLoading: isLoading ?? this.isLoading,
       allRoutePoints: allRoutePoints ?? this.allRoutePoints,
       routes: routes ?? this.routes,
-      error: error ?? this.error,
+      error: clearError ? null : (error ?? this.error),
       showAllStartPoints: showAllStartPoints ?? this.showAllStartPoints,
       selectedRouteId: selectedRouteId ?? this.selectedRouteId,
       tappedRouteId: tappedRouteId,
@@ -56,9 +58,7 @@ class MapState {
   }
 
   bool get hasTappedPoint {
-    final result = tappedRouteId != null;
-
-    return result;
+    return tappedRouteId != null;
   }
 
   List<RoutePointsModel> get startPoints =>
@@ -124,14 +124,13 @@ class MapState {
               opacity: 0.9,
               text: PlacemarkText(
                 text: cluster.size.toString(),
-                style: PlacemarkTextStyle(color: Colors.white),
+                style: const PlacemarkTextStyle(color: Colors.white),
               ),
               icon: PlacemarkIcon.single(
                 PlacemarkIconStyle(
                   image: BitmapDescriptor.fromAssetImage(
                     'assets/icons/cluster.png',
                   ),
-
                   scale: 0.1,
                 ),
               ),
@@ -207,14 +206,28 @@ class MapStateNotifier extends StateNotifier<MapState> {
 
   Future<void> createRoute(WidgetRef ref) async {
     try {
-      state = state.copyWith(isLoading: true);
+      state = state.copyWith(isLoading: true, error: null);
       final routeRepository = ref.read(routeRepositoryProvider);
       final routePointRepository = ref.read(routePointRepositoryProvider);
       final tipRepository = ref.read(tipRepositoryProvider);
       final creator = ref.read(userNotifierProvider).user;
       final routeInfo = ref.read(routeBuilderNotifierProvider);
 
-      if (creator == null) return;
+      if (creator == null) {
+        state = state.copyWith(
+          isLoading: false,
+          error: 'Пользователь не авторизован',
+        );
+        throw AppException('Пользователь не авторизован');
+      }
+
+      // Валидация данных маршрута
+      final validationErrors = RouteValidator.validateRouteForm(routeInfo);
+      if (validationErrors.isNotEmpty) {
+        final errorMessage = validationErrors.map((e) => e.message).join('\n');
+        state = state.copyWith(isLoading: false, error: errorMessage);
+        throw AppException(errorMessage);
+      }
       final route = await routeRepository.createRoute(
         creatorId: creator.id,
         name: routeInfo.name!,
@@ -264,11 +277,17 @@ class MapStateNotifier extends StateNotifier<MapState> {
       }
 
       if (mounted) {
-        state = state.copyWith(isLoading: false);
+        state = state.copyWith(isLoading: false, error: null);
       }
     } catch (e) {
-      debugPrint(e.toString());
-      state = state.copyWith(isLoading: false);
+      debugPrint('Error creating route: $e');
+      final errorMessage = e is AppException
+          ? e.message
+          : 'Ошибка при создании маршрута. Попробуйте еще раз.';
+      if (mounted) {
+        state = state.copyWith(isLoading: false, error: errorMessage);
+      }
+      rethrow;
     }
   }
 
@@ -307,20 +326,46 @@ class MapStateNotifier extends StateNotifier<MapState> {
 
   Future<void> loadRouteByStartPoint(WidgetRef ref, String routeId) async {
     try {
+      debugPrint('Загрузка маршрута: $routeId');
+
+      // Сначала обновляем selectedRouteId, чтобы получить точки маршрута
       state = state.copyWith(
         isLoading: true,
         selectedRouteId: routeId,
         showAllStartPoints: false,
+        routes: [], // Очищаем предыдущие маршруты
       );
+
+      // Теперь получаем точки выбранного маршрута
+      final selectedPoints = state.selectedRoutePoints;
+      debugPrint('Найдено точек маршрута: ${selectedPoints.length}');
+
+      if (selectedPoints.isEmpty) {
+        debugPrint('Маршрут не содержит точек');
+        state = state.copyWith(isLoading: false);
+        return;
+      }
 
       final start = state.selectedStartPoint;
       final end = state.selectedEndPoint;
+
+      debugPrint('Начальная точка: ${start != null ? "есть" : "нет"}');
+      debugPrint('Конечная точка: ${end != null ? "есть" : "нет"}');
+
+      // Строим маршрут только если есть начальная и конечная точки
       if (start != null && end != null) {
+        debugPrint('Построение пешеходного маршрута...');
         await ref.read(yandexMapServiceProvider).buildPedestrianRoute(ref);
+        debugPrint('Маршрут построен, проверяем состояние...');
+        debugPrint('Количество маршрутов в state: ${state.routes.length}');
+      } else {
+        debugPrint('Недостаточно точек для построения маршрута');
       }
 
       state = state.copyWith(isLoading: false);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('Ошибка при загрузке маршрута: $e');
+      debugPrint('Stack trace: $stackTrace');
       state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
@@ -334,7 +379,11 @@ class MapStateNotifier extends StateNotifier<MapState> {
   }
 
   void clearError() {
-    state = state.copyWith(error: null);
+    state = state.copyWith(clearError: true);
+  }
+
+  void setLoading(bool loading) {
+    state = state.copyWith(isLoading: loading);
   }
 
   void setTappedPoint(String tappedRouteId) {
@@ -342,7 +391,12 @@ class MapStateNotifier extends StateNotifier<MapState> {
   }
 
   void clearTappedPoint() {
-    state = state.copyWith(tappedRouteId: null, showAllStartPoints: true);
+    state = state.copyWith(
+      tappedRouteId: null,
+      showAllStartPoints: true,
+      selectedRouteId: null,
+      routes: [],
+    );
   }
 
   void rebuildRoute(WidgetRef ref) async {
@@ -354,6 +408,12 @@ class MapStateNotifier extends StateNotifier<MapState> {
   }
 
   void clearPickedRoute() {
-    state = state.copyWith(pickedRoute: null);
+    state = state.copyWith(pickedRoute: null, selectedRouteId: null);
+  }
+
+  /// Установить построенные маршруты (для режима просмотра)
+  void setRoutes(List<PolylineMapObject> routes) {
+    debugPrint('Установка маршрутов в MapState: ${routes.length}');
+    state = state.copyWith(routes: routes);
   }
 }

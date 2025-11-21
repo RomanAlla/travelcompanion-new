@@ -1,11 +1,40 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
+import 'package:travelcompanion/features/auth/presentation/providers/auth_state.dart';
 
-class SplashScreen extends ConsumerWidget {
+@RoutePage()
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Убеждаемся, что authProvider инициализирован
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(authProvider);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Автоматическое перенаправление после завершения загрузки
+    ref.listen<AuthNotifierState>(authProvider, (previous, next) {
+      if (previous?.isLoading == true && !next.isLoading) {
+        if (next.user != null) {
+          context.router.replacePath('/');
+        } else {
+          context.router.replacePath('/sign-in');
+        }
+      }
+    });
+
     return Scaffold(
       body: Center(
         child: Column(

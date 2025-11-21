@@ -13,23 +13,28 @@ class _HelperWidgetState extends State<HelperWidget> {
   bool _showInstraction = true;
   double _instructionOffset = -0.2;
   double _instructionOpacity = 0.0;
+
   @override
   void initState() {
-    Future.delayed(Duration(milliseconds: 100), () {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
       setState(() {
         _instructionOffset = 0.0;
         _instructionOpacity = 1.0;
       });
+      }
     });
-    super.initState();
   }
 
   void _closeInstruction() {
+    if (mounted) {
     setState(() {
       _showInstraction = false;
       _instructionOffset = -0.2;
       _instructionOpacity = 0.0;
     });
+    }
   }
 
   @override
@@ -63,6 +68,19 @@ class _HelperWidgetState extends State<HelperWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // Показываем индикатор загрузки для текста "Построение маршрута..."
+                    if (widget.text.contains('Построение маршрута'))
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppTheme.primaryLightColor,
+                          ),
+                        ),
+                      )
+                    else
                     Icon(
                       Icons.touch_app,
                       color: AppTheme.primaryLightColor,
@@ -78,13 +96,10 @@ class _HelperWidgetState extends State<HelperWidget> {
                         ),
                       ),
                     ),
-                    
+                    // Скрываем кнопку закрытия во время загрузки
+                    if (!widget.text.contains('Построение маршрута'))
                     GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _closeInstruction();
-                        });
-                      },
+                        onTap: _closeInstruction,
                       child: Icon(Icons.close, size: 20, color: Colors.grey),
                     ),
                   ],

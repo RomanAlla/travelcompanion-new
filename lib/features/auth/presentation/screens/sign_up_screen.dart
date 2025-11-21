@@ -5,7 +5,6 @@ import 'package:travelcompanion/core/domain/exceptions/error_handler.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/auth/presentation/providers/auth_provider.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/auth_button_widget.dart';
-import 'package:travelcompanion/features/auth/presentation/widgets/social_login_button.dart';
 import 'package:travelcompanion/features/auth/presentation/widgets/textfield_widget.dart';
 
 @RoutePage()
@@ -74,263 +73,230 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen>
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: Stack(
-        children: [
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 60),
-                        Center(
-                          child: Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.blue[700]!.withOpacity(0.2),
-                                  blurRadius: 30,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.person_add,
-                              size: 48,
-                              color: AppTheme.primaryLightColor,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 40),
-                        Text(
-                          'Создайте аккаунт',
-                          style: AppTheme.headLineSmall.copyWith(
-                            color: AppTheme.primaryLightColor,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Зарегистрируйтесь, чтобы начать планировать путешествия',
-                          style: AppTheme.bodySmall.copyWith(
-                            color: AppTheme.grey600,
-                          ),
-                        ),
-                        const SizedBox(height: 40),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: SocialLoginButton(
-                                icon: Icons.g_mobiledata,
-                                label: 'Google',
-                                onTap: () {},
+      backgroundColor: AppTheme.lightGrey,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 40),
+                    // Логотип
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: AppTheme.primaryGradient,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.primaryLightColor.withValues(
+                                alpha: 0.2,
                               ),
-                            ),
-                            SizedBox(width: 5),
-                            Expanded(
-                              child: SocialLoginButton(
-                                icon: Icons.facebook,
-                                label: 'Facebook',
-                                onTap: () {},
-                              ),
-                            ),
-                            SizedBox(width: 5),
-                            Expanded(
-                              child: SocialLoginButton(
-                                icon: Icons.apple,
-                                label: 'Apple',
-                                onTap: () {},
-                              ),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 30),
-                        Row(
-                          children: [
-                            Expanded(child: Divider(color: Colors.grey[300])),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: Text(
-                                'или зарегистрируйтесь через email',
-                                style: AppTheme.bodyMini.copyWith(
-                                  color: AppTheme.grey600,
-                                ),
-                              ),
-                            ),
-                            Expanded(child: Divider(color: Colors.grey[300])),
-                          ],
+                        child: const Icon(
+                          Icons.person_add_rounded,
+                          size: 40,
+                          color: Colors.white,
                         ),
-                        const SizedBox(height: 30),
-                        Column(
-                          children: [
-                            TextFieldWidget(
-                              labelText: 'Логин',
-                              hintText: 'Введите логин',
-                              prefixIcon: const Icon(
-                                Icons.email,
-                                color: AppTheme.grey600,
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Пожалуйста, введите логин';
-                                }
-                                return null;
-                              },
-                              controller: _emailController,
-                              obscureText: false,
-                            ),
-                            SizedBox(height: 10),
-                            TextFieldWidget(
-                              obscureText: !_isPasswordVisible,
-                              labelText: 'Пароль',
-                              hintText: 'Введите пароль',
-                              isPassword: true,
-                              prefixIcon: const Icon(
-                                Icons.lock_outline,
-                                color: AppTheme.grey600,
-                              ),
-                              onTogglePasswordVisibility: () {
-                                setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible;
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Пожалуйста, введите пароль';
-                                }
-                                if (value.length < 6) {
-                                  return 'Пароль должен содержать минимум 6 символов';
-                                }
-                                if (value != _confirmPasswordController.text) {
-                                  return 'Пароли не совпадают';
-                                }
-
-                                return null;
-                              },
-                              controller: _passwordController,
-                            ),
-                            SizedBox(height: 10),
-                            TextFieldWidget(
-                              obscureText: !_isConfirmPasswordVisible,
-                              labelText: 'Подтвердите пароль',
-                              hintText: 'Подтвердите пароль',
-                              isPassword: true,
-                              prefixIcon: const Icon(
-                                Icons.lock_outline,
-                                color: AppTheme.grey600,
-                              ),
-                              onTogglePasswordVisibility: () {
-                                setState(() {
-                                  _isConfirmPasswordVisible =
-                                      !_isConfirmPasswordVisible;
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Пожалуйста, введите пароль';
-                                }
-                                if (value.length < 6) {
-                                  return 'Пароль должен содержать минимум 6 символов';
-                                }
-                                return null;
-                              },
-                              controller: _confirmPasswordController,
-                            ),
-                          ],
-                        ),
-                        if (_error != null) ...[
-                          const SizedBox(height: 16),
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.red[50],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.error_outline,
-                                  color: Colors.red[700],
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    _error!,
-                                    style: TextStyle(
-                                      color: Colors.red[700],
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // Заголовок
+                    Text(
+                      'Создайте аккаунт',
+                      style: AppTheme.titleLarge.copyWith(
+                        color: AppTheme.textPrimaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Зарегистрируйтесь, чтобы начать',
+                      style: AppTheme.bodyMedium.copyWith(
+                        color: AppTheme.grey600,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // Поля ввода
+                    TextFieldWidget(
+                      labelText: 'Email',
+                      hintText: 'Введите ваш email',
+                      prefixIcon: const Icon(
+                        Icons.email_outlined,
+                        color: AppTheme.grey600,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Пожалуйста, введите email';
+                        }
+                        if (!value.contains('@')) {
+                          return 'Введите корректный email';
+                        }
+                        return null;
+                      },
+                      controller: _emailController,
+                      obscureText: false,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFieldWidget(
+                      obscureText: !_isPasswordVisible,
+                      labelText: 'Пароль',
+                      hintText: 'Введите пароль',
+                      isPassword: true,
+                      prefixIcon: const Icon(
+                        Icons.lock_outline_rounded,
+                        color: AppTheme.grey600,
+                      ),
+                      onTogglePasswordVisibility: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Пожалуйста, введите пароль';
+                        }
+                        if (value.length < 6) {
+                          return 'Пароль должен содержать минимум 6 символов';
+                        }
+                        if (value != _confirmPasswordController.text &&
+                            _confirmPasswordController.text.isNotEmpty) {
+                          return 'Пароли не совпадают';
+                        }
+                        return null;
+                      },
+                      controller: _passwordController,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFieldWidget(
+                      obscureText: !_isConfirmPasswordVisible,
+                      labelText: 'Подтвердите пароль',
+                      hintText: 'Подтвердите пароль',
+                      isPassword: true,
+                      prefixIcon: const Icon(
+                        Icons.lock_outline_rounded,
+                        color: AppTheme.grey600,
+                      ),
+                      onTogglePasswordVisibility: () {
+                        setState(() {
+                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Пожалуйста, подтвердите пароль';
+                        }
+                        if (value != _passwordController.text) {
+                          return 'Пароли не совпадают';
+                        }
+                        return null;
+                      },
+                      controller: _confirmPasswordController,
+                    ),
+                    // Ошибка
+                    if (_error != null) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.red[200]!,
+                            width: 1,
                           ),
-                        ],
-                        const SizedBox(height: 24),
-                        Row(
+                        ),
+                        child: Row(
                           children: [
                             Icon(
-                              Icons.check_circle_outline,
-                              color: AppTheme.primaryLightColor,
+                              Icons.error_outline_rounded,
+                              color: Colors.red[700],
                               size: 20,
                             ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'Регистрируясь, вы соглашаетесь с нашими условиями использования и политикой конфиденциальности',
-                                style: AppTheme.bodyMini.copyWith(
-                                  color: AppTheme.grey600,
+                                _error!,
+                                style: TextStyle(
+                                  color: Colors.red[700],
+                                  fontSize: 13,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 24),
-                        AuthButtonWidget(
-                          onPressed: _signUp,
-                          text: 'Зарегистрироваться',
-                          isLoading: authState.isLoading,
+                      ),
+                    ],
+                    const SizedBox(height: 20),
+                    // Согласие
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.check_circle_outline_rounded,
+                          color: AppTheme.primaryLightColor,
+                          size: 18,
                         ),
-                        const SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Уже есть аккаунт?',
-                              style: AppTheme.bodySmall.copyWith(
-                                color: AppTheme.grey600,
-                              ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Регистрируясь, вы соглашаетесь с нашими условиями использования и политикой конфиденциальности',
+                            style: AppTheme.bodyMini.copyWith(
+                              color: AppTheme.grey600,
                             ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text(
-                                'Войти',
-                                style: AppTheme.bodySmallBold.copyWith(
-                                  color: AppTheme.primaryLightColor,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 24),
+                    // Кнопка регистрации
+                    AuthButtonWidget(
+                      onPressed: _signUp,
+                      text: 'Зарегистрироваться',
+                      isLoading: authState.isLoading,
+                    ),
+                    const SizedBox(height: 24),
+                    // Вход
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Уже есть аккаунт? ',
+                          style: AppTheme.bodyMedium.copyWith(
+                            color: AppTheme.grey600,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                          ),
+                          child: Text(
+                            'Войти',
+                            style: AppTheme.bodyMediumBold.copyWith(
+                              color: AppTheme.primaryLightColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                 ),
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

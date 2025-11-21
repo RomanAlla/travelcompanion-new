@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
+import 'package:travelcompanion/core/domain/entities/route_point_model.dart';
+import 'package:travelcompanion/core/presentation/providers/address_provider.dart';
 import 'package:travelcompanion/features/details_route/presentation/providers/way_points_provider.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 
@@ -97,40 +99,59 @@ class RoutePointsWidget extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          leading: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF6C5CE7).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(
-                              Icons.location_on,
-                              color: AppTheme.primaryLightColor,
-                              size: 20,
-                            ),
-                          ),
-                          title: Text(
-                            '${point.latitude}, ${point.longitude}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-
-                          trailing: IconButton(
-                            onPressed: () {
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
                               context.router.push(
-                                MapRoute(mode: MapMode.viewAll),
+                                MapRoute(
+                                  mode: MapMode.viewAll,
+                                  targetLatitude: point.latitude,
+                                  targetLongitude: point.longitude,
+                                ),
                               );
                             },
-                            icon: Icon(
-                              Icons.arrow_circle_right,
-                              color: AppTheme.primaryLightColor,
+                            borderRadius: BorderRadius.circular(16),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              leading: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF6C5CE7).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.location_on,
+                                  color: AppTheme.primaryLightColor,
+                                  size: 20,
+                                ),
+                              ),
+                              title: FutureBuilder<String>(
+                                future: ref.read(
+                                  addressProvider(point.point).future,
+                                ),
+                                builder: (context, snapshot) {
+                                  final address = snapshot.data ??
+                                      '${point.latitude}, ${point.longitude}';
+                                  return Text(
+                                    address,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  );
+                                },
+                              ),
+                              trailing: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: AppTheme.primaryLightColor,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ),

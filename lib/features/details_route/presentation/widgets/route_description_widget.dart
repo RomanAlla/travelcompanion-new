@@ -11,19 +11,52 @@ class RouteDescriptionWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      constraints: BoxConstraints(minHeight: 170),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Описание', style: AppTheme.bodyMediumBold),
-            SizedBox(height: 7),
-            Text(route.description!, style: TextStyle(fontSize: 16)),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryLightColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.description_rounded,
+                    color: AppTheme.primaryLightColor,
+                    size: 16,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Описание',
+                  style: AppTheme.titleSmallBold.copyWith(fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              route.description ?? 'Нет описания',
+              style: AppTheme.bodyMedium.copyWith(
+                height: 1.5,
+                color: Colors.grey[800],
+                fontSize: 14,
+              ),
+            ),
           ],
         ),
       ),

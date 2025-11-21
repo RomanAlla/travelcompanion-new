@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -105,36 +104,21 @@ class _CarouselSliderWidgetState extends ConsumerState<CarouselSliderWidget> {
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                    border: null,
-                    color: AppTheme.primaryLightColor.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => context.router.pop(context),
-                  ),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                height: 45,
+                width: 45,
+                decoration: BoxDecoration(
+                  border: null,
+                  color: AppTheme.primaryLightColor.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(100),
                 ),
-                Container(
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                    border: null,
-                    color: AppTheme.primaryLightColor.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.favorite_border, color: Colors.white),
-                    onPressed: addToFavouriteRoute,
-                  ),
+                child: IconButton(
+                  icon: Icon(Icons.favorite_border, color: Colors.white),
+                  onPressed: addToFavouriteRoute,
                 ),
-              ],
+              ),
             ),
           ),
         ),

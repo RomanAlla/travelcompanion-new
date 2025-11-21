@@ -21,6 +21,8 @@ import 'package:travelcompanion/core/domain/entities/route_model.dart';
 import 'package:travelcompanion/features/search/presentation/screens/search_main_screen.dart';
 import 'package:travelcompanion/features/travels/presentation/screens/travels_screen.dart';
 import 'package:travelcompanion/features/user_routes/presentation/user_routes.dart';
+import 'package:travelcompanion/core/presentation/screens/splash_screen.dart';
+import 'package:travelcompanion/features/chat/presentation/screens/chat_screen.dart';
 part 'router.gr.dart';
 
 class AuthGuard extends AutoRouteGuard {
@@ -34,21 +36,41 @@ class AuthGuard extends AutoRouteGuard {
     StackRouter router,
   ) async {
     try {
-      final user = ref.watch(authProvider.select((state) => state.user));
+      final authState = ref.watch(authProvider);
+      final isLoading = authState.isLoading;
+      final user = authState.user;
       final isAuthRoute =
           resolver.route.name == SignInRoute.name ||
           resolver.route.name == SignUpRoute.name;
+      final isSplashRoute = resolver.route.name == SplashRoute.name;
       final isAuthenticated = user != null;
 
-      if (!isAuthenticated && !isAuthRoute) {
-        router.replaceAll([SignInRoute()]);
+      // Если идет загрузка и это не splash screen, разрешаем навигацию только на splash
+      if (isLoading && !isSplashRoute) {
+        router.replacePath('/splash');
+        return;
+      }
+
+      // Если загрузка завершена и мы на splash screen, перенаправляем
+      if (!isLoading && isSplashRoute) {
+        if (isAuthenticated) {
+          router.replacePath('/');
+        } else {
+          router.replacePath('/sign-in');
+        }
+        return;
+      }
+
+      // Обычная логика проверки авторизации
+      if (!isAuthenticated && !isAuthRoute && !isSplashRoute) {
+        router.replacePath('/sign-in');
       } else if (isAuthenticated && isAuthRoute) {
-        router.replaceAll([HomeRoute()]);
+        router.replacePath('/');
       } else {
         resolver.next(true);
       }
     } catch (e) {
-      router.replace(const SignInRoute());
+      router.replacePath('/sign-in');
     }
   }
 }
@@ -60,6 +82,7 @@ class AppRouter extends RootStackRouter {
   AppRouter({required this.authGuard});
   @override
   List<AutoRoute> get routes => [
+    AutoRoute(page: SplashRoute.page, path: '/splash', initial: true),
     AutoRoute(
       page: HomeRoute.page,
       path: '/',
@@ -67,7 +90,7 @@ class AppRouter extends RootStackRouter {
       children: [
         AutoRoute(page: MainRoutesRoute.page, path: 'main'),
         AutoRoute(page: FavouriteRoute.page, path: 'favourite'),
-        AutoRoute(page: TravelsRoute.page, path: 'travels'),
+        AutoRoute(page: ChatRoute.page, path: 'chat'),
         AutoRoute(page: ProfileRoute.page, path: 'profile'),
       ],
     ),
@@ -88,7 +111,7 @@ class AppRouter extends RootStackRouter {
       guards: [authGuard],
     ),
     AutoRoute(page: MapRoute.page, guards: [authGuard]),
-    AutoRoute(page: SignInRoute.page, path: '/sign-in', initial: true),
+    AutoRoute(page: SignInRoute.page, path: '/sign-in'),
     AutoRoute(page: SignUpRoute.page, path: '/sign-up'),
 
     AutoRoute(

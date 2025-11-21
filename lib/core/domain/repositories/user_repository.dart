@@ -10,4 +10,8 @@ abstract class UserRepository {
   Future<String?> uploadUserPhoto(File file);
 
   Future<UserModel?> getUserById(String id);
+
+  Future<List<UserModel>> getUsers();
+
+  Future<void> deleteUser(String id);
 }

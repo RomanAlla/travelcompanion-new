@@ -52,7 +52,7 @@ class AuthService {
 
       return user;
     } catch (e) {
-      throw AppException('Ошибка входа: $e');
+      throw AppException('$e');
     }
   }
 

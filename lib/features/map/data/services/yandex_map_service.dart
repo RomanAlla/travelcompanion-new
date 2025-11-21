@@ -10,19 +10,54 @@ import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class YandexMapService {
   Future<void> buildPedestrianRoute(WidgetRef ref) async {
+    // Сохраняем ссылки на notifiers до асинхронных операций
+    // чтобы избежать использования ref после dispose
+    final mapStateNotifier = ref.read(mapStateNotifierProvider.notifier);
+    final routeBuilderNotifier = ref.read(
+      routeBuilderNotifierProvider.notifier,
+    );
+
+    // Очищаем предыдущую ошибку в начале новой попытки построения
+    mapStateNotifier.clearError();
+    // Устанавливаем состояние загрузки
+    mapStateNotifier.setLoading(true);
+
     try {
       final builderState = ref.read(routeBuilderNotifierProvider);
       final mapState = ref.read(mapStateNotifierProvider);
 
       final List<RequestPoint> requestPoints = [];
 
-      if (mapState.selectedRouteId != null) {
-        final pts = mapState.selectedRoutePoints;
-        if (pts.isEmpty) return;
+      // Проверяем, в каком режиме мы работаем
+      final isViewMode = mapState.selectedRouteId != null;
 
-        final start = pts.firstWhere((p) => p.type == 'start');
-        final end = pts.firstWhere((p) => p.type == 'end');
+      if (isViewMode) {
+        // Режим просмотра - используем точки из выбранного маршрута
+        final pts = mapState.selectedRoutePoints;
+        debugPrint('Режим просмотра, точек маршрута: ${pts.length}');
+
+        if (pts.isEmpty) {
+          debugPrint('Точки маршрута пусты');
+          mapStateNotifier.setLoading(false);
+          return;
+        }
+
+        final startPoints = pts.where((p) => p.type == 'start').toList();
+        final endPoints = pts.where((p) => p.type == 'end').toList();
         final waypoints = pts.where((p) => p.type == 'waypoint').toList();
+
+        if (startPoints.isEmpty || endPoints.isEmpty) {
+          debugPrint('Отсутствуют начальная или конечная точка');
+          mapStateNotifier.setLoading(false);
+          return;
+        }
+
+        final start = startPoints.first;
+        final end = endPoints.first;
+
+        debugPrint('Начальная точка: ${start.latitude}, ${start.longitude}');
+        debugPrint('Конечная точка: ${end.latitude}, ${end.longitude}');
+        debugPrint('Промежуточных точек: ${waypoints.length}');
 
         requestPoints.add(
           RequestPoint(
@@ -46,7 +81,11 @@ class YandexMapService {
           ),
         );
       } else {
+        // Режим создания маршрута - используем точки из routeBuilderNotifier
+        debugPrint('Режим создания маршрута');
         if (builderState.startPoint == null || builderState.endPoint == null) {
+          debugPrint('Точки не выбраны в режиме создания');
+          mapStateNotifier.setLoading(false);
           return;
         }
 
@@ -75,8 +114,15 @@ class YandexMapService {
         );
       }
 
-      if (requestPoints.length < 2) return;
+      if (requestPoints.length < 2) {
+        debugPrint(
+          'Недостаточно точек для построения маршрута: ${requestPoints.length}',
+        );
+        mapStateNotifier.setLoading(false);
+        return;
+      }
 
+      debugPrint('Запрос к YandexPedestrian с ${requestPoints.length} точками');
       final (session, resultFuture) = await YandexPedestrian.requestRoutes(
         points: requestPoints,
         timeOptions: const TimeOptions(),
@@ -84,13 +130,19 @@ class YandexMapService {
       );
 
       final result = await resultFuture;
+      debugPrint(
+        'Ответ от YandexPedestrian: ${result.routes?.length ?? 0} маршрутов',
+      );
 
       if (result.routes == null || result.routes!.isEmpty) {
-        ref
-            .read(mapStateNotifierProvider.notifier)
-            .setError('Не удалось построить маршрут');
-
-        ref.read(routeBuilderNotifierProvider.notifier).setRoutes([]);
+        debugPrint('Маршруты не получены от Yandex API');
+        mapStateNotifier.setError('Не удалось построить маршрут');
+        mapStateNotifier.setLoading(false);
+        if (!isViewMode) {
+          routeBuilderNotifier.setRoutes([], null);
+        } else {
+          mapStateNotifier.setRoutes([]);
+        }
         return;
       }
 
@@ -104,21 +156,41 @@ class YandexMapService {
         strokeWidth: 5,
       );
 
-      if (mapState.selectedRouteId != null) {
-        final mapNotifier = ref.read(mapStateNotifierProvider.notifier);
+      debugPrint(
+        'Маршрут построен успешно, точек в полилинии: ${route.geometry.points.length}',
+      );
 
-        mapNotifier.state = mapNotifier.state.copyWith(routes: [polyline]);
+      // Сохраняем построенный маршрут в зависимости от режима
+      if (isViewMode) {
+        // Режим просмотра - сохраняем в mapStateNotifier
+        mapStateNotifier.setRoutes([polyline]);
+        debugPrint('Маршрут сохранен в MapState');
       } else {
-        ref.read(routeBuilderNotifierProvider.notifier).setRoutes([polyline]);
+        // Режим создания - сохраняем в routeBuilderNotifier
+        routeBuilderNotifier.setRoutes([polyline], null);
+        debugPrint('Маршрут сохранен в RouteBuilderNotifier');
       }
 
-      ref.read(mapStateNotifierProvider.notifier).clearError();
+      // Очищаем ошибку и завершаем загрузку после успешного построения
+      mapStateNotifier.clearError();
+      mapStateNotifier.setLoading(false);
     } catch (e, st) {
-      debugPrint('buildPedestrianRoute error: $e\n$st');
-      ref
-          .read(mapStateNotifierProvider.notifier)
-          .setError('Ошибка построения маршрута: $e');
-      ref.read(routeBuilderNotifierProvider.notifier).setRoutes([]);
+      debugPrint('buildPedestrianRoute error: $e');
+      debugPrint('Stack trace: $st');
+      // Используем сохраненные ссылки, чтобы избежать использования ref после dispose
+      try {
+        mapStateNotifier.setError('Ошибка построения маршрута: $e');
+        mapStateNotifier.setLoading(false);
+        final mapState = ref.read(mapStateNotifierProvider);
+        if (mapState.selectedRouteId != null) {
+          mapStateNotifier.setRoutes([]);
+        } else {
+          routeBuilderNotifier.setRoutes([], null);
+        }
+      } catch (disposeError) {
+        // Игнорируем ошибки, если виджет уже удален
+        debugPrint('Widget disposed, ignoring state updates: $disposeError');
+      }
     }
   }
 

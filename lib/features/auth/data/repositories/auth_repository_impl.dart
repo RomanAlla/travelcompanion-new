@@ -27,10 +27,8 @@ class AuthRepositoryImpl implements AuthRepository {
         case 'Password should be at least 6 characters':
           throw AppException('Пароль должен содержать минимум 6 символов');
         default:
-          throw AppException('Ошибка регистрации:  ${e.message}');
+          throw AppException('Произошла ошибка... Попробуйте позже');
       }
-    } catch (e) {
-      throw AppException('Неизвестная ошибка при регистрации: $e');
     }
   }
 
@@ -56,10 +54,8 @@ class AuthRepositoryImpl implements AuthRepository {
         case 'User not found':
           throw AppException('Пользователь не найден');
         default:
-          throw AppException('Ошибка входа: ${e.message}');
+          throw AppException('Произошла ошибка... Попробуйте позже');
       }
-    } catch (e) {
-      throw AppException('Неизвестная ошибка при входе: $e');
     }
   }
 

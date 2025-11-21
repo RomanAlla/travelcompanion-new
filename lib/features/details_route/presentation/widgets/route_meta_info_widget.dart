@@ -14,40 +14,47 @@ class RouteMetaInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 12.0,
-      runSpacing: 8.0,
+      spacing: 10.0,
+      runSpacing: 6.0,
       alignment: WrapAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
+            color: Colors.orange.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.orange.shade200,
+              width: 1,
               ),
-            ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.star, color: Colors.amber, size: 18),
+              Icon(Icons.star_rounded, color: Colors.orange.shade700, size: 16),
               const SizedBox(width: 4),
               Text(
                 rating.toStringAsFixed(1),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2D3436),
-                  fontSize: 14,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.orange.shade700,
+                  fontSize: 13,
                 ),
+              ),
+              const SizedBox(width: 6),
+              Container(
+                width: 1,
+                height: 14,
+                color: Colors.orange.shade300,
               ),
               const SizedBox(width: 6),
               Text(
                 StringUtils.pluralizeReviews(reviewsCount),
-                style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                style: TextStyle(
+                  color: Colors.orange.shade700,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),

@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static const Color primaryLightColor = Color.fromARGB(255, 86, 177, 251);
+  static const Color primaryDarkColor = Color.fromARGB(255, 56, 142, 220);
+  static const Color secondaryColor = Color(0xFF6C5CE7);
+  static const Color accentColor = Color(0xFFFF6B6B);
+  static const Color successColor = Color(0xFF51CF66);
+  static const Color warningColor = Color(0xFFFFD93D);
+
   static const Color textHintColor = Color(0xFF4A739C);
   static const Color deepPurpleColor = Color(0xFF6C5CE7);
   static const Color textPrimaryColor = Color.fromARGB(255, 0, 0, 0);
@@ -9,6 +15,31 @@ class AppTheme {
   static const Color lightGrey = Color(0xffF0F2F5);
   static const Color grey700 = Color(0xFF616161);
   static const Color grey600 = Color(0xFF757575);
+
+  // Градиенты (более сдержанные)
+  static const LinearGradient primaryGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF56B1FB), Color(0xFF4A9FE8)],
+  );
+  
+  static const LinearGradient cardGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Colors.transparent, Color.fromARGB(150, 0, 0, 0)],
+  );
+  
+  static const LinearGradient accentGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFE57373), Color(0xFFEF5350)],
+  );
+  
+  static const LinearGradient successGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF66BB6A), Color(0xFF4CAF50)],
+  );
   static const TextStyle headLineSmall = TextStyle(
     fontSize: 28,
     fontWeight: FontWeight.w600,

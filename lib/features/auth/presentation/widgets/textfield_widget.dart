@@ -35,24 +35,61 @@ class TextFieldWidget extends StatelessWidget {
         labelText: labelText,
         hintText: hintText,
         labelStyle: AppTheme.bodyMedium.copyWith(color: AppTheme.grey600),
-        hintStyle: AppTheme.bodySmall.copyWith(color: AppTheme.grey600),
+        hintStyle: AppTheme.bodySmall.copyWith(color: Colors.grey[400]),
         prefixIcon: prefixIcon,
-        prefixStyle: TextStyle(color: AppTheme.primaryLightColor),
+        prefixStyle: const TextStyle(color: AppTheme.primaryLightColor),
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
-                  obscureText ? Icons.visibility_off : Icons.visibility,
+                  obscureText
+                      ? Icons.visibility_off_rounded
+                      : Icons.visibility_rounded,
                   color: Colors.grey[600],
                 ),
                 onPressed: onTogglePasswordVisibility,
               )
             : null,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: Colors.grey[300]!,
+            width: 1,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: Colors.grey[300]!,
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: AppTheme.primaryLightColor,
+            width: 2,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 2,
+          ),
         ),
         filled: true,
-        fillColor: Colors.grey[50],
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
       ),
       validator: validator,
     );

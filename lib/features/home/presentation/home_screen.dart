@@ -16,7 +16,12 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(userNotifierProvider);
     return AutoTabsRouter(
-      routes: const [MainRoutesRoute(), FavouriteRoute(), ProfileRoute()],
+      routes: const [
+        MainRoutesRoute(),
+        FavouriteRoute(),
+        ChatRoute(),
+        ProfileRoute(),
+      ],
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
         return Scaffold(
@@ -30,12 +35,18 @@ class HomeScreen extends ConsumerWidget {
             selectedItemColor: Colors.black,
             unselectedItemColor: Colors.grey,
             items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Поиск'),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                label: 'Поиск',
+              ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.favorite_border),
                 label: 'Избранное',
               ),
-
+              BottomNavigationBarItem(
+                icon: Icon(Icons.auto_awesome_rounded),
+                label: 'AI Чат',
+              ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
                 label: 'Профиль',

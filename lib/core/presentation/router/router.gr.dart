@@ -11,6 +11,22 @@
 part of 'router.dart';
 
 /// generated route for
+/// [ChatScreen]
+class ChatRoute extends PageRouteInfo<void> {
+  const ChatRoute({List<PageRouteInfo>? children})
+    : super(ChatRoute.name, initialChildren: children);
+
+  static const String name = 'ChatRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ChatScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [CreateRouteScreen]
 class CreateRouteRoute extends PageRouteInfo<void> {
   const CreateRouteRoute({List<PageRouteInfo>? children})
@@ -164,10 +180,17 @@ class MapRoute extends PageRouteInfo<MapRouteArgs> {
   MapRoute({
     Key? key,
     MapMode mode = MapMode.viewAll,
+    double? targetLatitude,
+    double? targetLongitude,
     List<PageRouteInfo>? children,
   }) : super(
          MapRoute.name,
-         args: MapRouteArgs(key: key, mode: mode),
+         args: MapRouteArgs(
+           key: key,
+           mode: mode,
+           targetLatitude: targetLatitude,
+           targetLongitude: targetLongitude,
+         ),
          initialChildren: children,
        );
 
@@ -179,32 +202,53 @@ class MapRoute extends PageRouteInfo<MapRouteArgs> {
       final args = data.argsAs<MapRouteArgs>(
         orElse: () => const MapRouteArgs(),
       );
-      return MapScreen(key: args.key, mode: args.mode);
+      return MapScreen(
+        key: args.key,
+        mode: args.mode,
+        targetLatitude: args.targetLatitude,
+        targetLongitude: args.targetLongitude,
+      );
     },
   );
 }
 
 class MapRouteArgs {
-  const MapRouteArgs({this.key, this.mode = MapMode.viewAll});
+  const MapRouteArgs({
+    this.key,
+    this.mode = MapMode.viewAll,
+    this.targetLatitude,
+    this.targetLongitude,
+  });
 
   final Key? key;
 
   final MapMode mode;
 
+  final double? targetLatitude;
+
+  final double? targetLongitude;
+
   @override
   String toString() {
-    return 'MapRouteArgs{key: $key, mode: $mode}';
+    return 'MapRouteArgs{key: $key, mode: $mode, targetLatitude: $targetLatitude, targetLongitude: $targetLongitude}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! MapRouteArgs) return false;
-    return key == other.key && mode == other.mode;
+    return key == other.key &&
+        mode == other.mode &&
+        targetLatitude == other.targetLatitude &&
+        targetLongitude == other.targetLongitude;
   }
 
   @override
-  int get hashCode => key.hashCode ^ mode.hashCode;
+  int get hashCode =>
+      key.hashCode ^
+      mode.hashCode ^
+      targetLatitude.hashCode ^
+      targetLongitude.hashCode;
 }
 
 /// generated route for
@@ -382,6 +426,22 @@ class SignUpRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const SignUpScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [SplashScreen]
+class SplashRoute extends PageRouteInfo<void> {
+  const SplashRoute({List<PageRouteInfo>? children})
+    : super(SplashRoute.name, initialChildren: children);
+
+  static const String name = 'SplashRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SplashScreen();
     },
   );
 }

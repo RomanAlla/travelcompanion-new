@@ -14,6 +14,8 @@ abstract class CommentRepository {
 
   Future<List<CommentModel>> getComments({required String routeId});
 
+  Future<List<CommentModel>> getAllComments();
+
   Future<int> getCommentsCount({required String routeId});
 
   Future<double?> getAverageRating({required String routeId});

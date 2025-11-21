@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:travelcompanion/core/domain/exceptions/app_exception.dart';
+import 'package:travelcompanion/core/domain/exceptions/error_handler.dart';
 import 'package:travelcompanion/core/presentation/router/router.dart';
 import 'package:travelcompanion/core/domain/theme/app_theme.dart';
 import 'package:travelcompanion/features/main/presentation/providers/routes_filter_provider.dart';
@@ -44,12 +44,21 @@ class _ConfirmStepScreenState extends ConsumerState<ConfirmStepScreen> {
         _isLoading = false;
       });
       if (context.mounted) {
+        final errorMessage = ErrorHandler.getErrorMessage(e);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Произошла неизвестная ошибка...')),
+          SnackBar(
+            content: Text(errorMessage),
+            duration: const Duration(seconds: 5),
+            backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
         );
       }
-
-      throw AppException(e.toString());
+      // Не пробрасываем исключение дальше, чтобы пользователь мог исправить ошибки
     }
   }
 

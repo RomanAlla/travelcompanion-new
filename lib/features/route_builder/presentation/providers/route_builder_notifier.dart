@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:travelcompanion/features/map/domain/enums/map_mode.dart';
 import 'package:travelcompanion/features/map/domain/enums/route_pick_state.dart';
@@ -120,29 +121,34 @@ class RouteForm {
 class RouteBuilderNotifier extends StateNotifier<RouteForm> {
   RouteBuilderNotifier() : super(RouteForm());
 
-  void addStartPoint(Point point) {
+  void addStartPoint(Point point, WidgetRef? ref) {
     state = state.copyWith(
       startPoint: point,
       status: PointPickState.startPicked,
     );
+    // Очищаем ошибку и останавливаем загрузку при изменении начальной точки
+    if (ref != null) {
+      ref.read(mapStateNotifierProvider.notifier).clearError();
+      ref.read(mapStateNotifierProvider.notifier).setLoading(false);
+    }
   }
 
-  void handleTap(Point point, MapMode mode) {
+  void handleTap(Point point, MapMode mode, WidgetRef? ref) {
     if (mode == MapMode.pickMainPoints) {
       if (state.status == PointPickState.none) {
-        addStartPoint(point);
+        addStartPoint(point, ref);
       } else if (state.status == PointPickState.startPicked) {
-        addEndPoint(point);
+        addEndPoint(point, ref);
       } else {
-        clearAll();
+        clearAll(ref);
       }
     } else if (mode == MapMode.pickWayPoints) {
       if (state.status == PointPickState.none) {
-        addStartPoint(point);
+        addStartPoint(point, ref);
       } else if (state.status == PointPickState.startPicked) {
-        addEndPoint(point);
+        addEndPoint(point, ref);
       } else {
-        addWayPoint(point);
+        addWayPoint(point, ref);
       }
     }
   }
@@ -151,21 +157,42 @@ class RouteBuilderNotifier extends StateNotifier<RouteForm> {
     state = state.copyWith(name: name);
   }
 
-  void addEndPoint(Point point) {
+  void addEndPoint(Point point, WidgetRef? ref) {
     state = state.copyWith(endPoint: point, status: PointPickState.bothPicked);
+    // Очищаем ошибку и останавливаем загрузку при изменении конечной точки
+    if (ref != null) {
+      ref.read(mapStateNotifierProvider.notifier).clearError();
+      ref.read(mapStateNotifierProvider.notifier).setLoading(false);
+    }
   }
 
-  void addWayPoint(Point point) {
+  void addWayPoint(Point point, WidgetRef? ref) {
     state = state.copyWith(wayPoints: [...state.wayPoints!, point]);
+    // Очищаем ошибку и останавливаем загрузку при добавлении промежуточной точки
+    if (ref != null) {
+      ref.read(mapStateNotifierProvider.notifier).clearError();
+      ref.read(mapStateNotifierProvider.notifier).setLoading(false);
+    }
   }
 
   void deleteWayPoints(WidgetRef ref) {
     state = state.copyWith(wayPoints: const []);
+    ref.read(mapStateNotifierProvider.notifier).clearError();
     ref.read(mapStateNotifierProvider.notifier).rebuildRoute(ref);
   }
 
-  void setRoutes(List<PolylineMapObject> routes) {
+  void setRoutes(List<PolylineMapObject> routes, WidgetRef? ref) {
     state = state.copyWith(routes: routes);
+    // Если маршрут успешно построен, очищаем ошибку синхронно
+    // ref может быть null, если виджет уже удален - это безопасно
+    if (routes.isNotEmpty && ref != null) {
+      try {
+        ref.read(mapStateNotifierProvider.notifier).clearError();
+      } catch (e) {
+        // Игнорируем ошибки, если виджет уже удален
+        debugPrint('Cannot clear error: widget disposed');
+      }
+    }
   }
 
   void setDescription(String description) {
@@ -188,7 +215,12 @@ class RouteBuilderNotifier extends StateNotifier<RouteForm> {
     state = state.copyWith(tips: tips);
   }
 
-  void clearAll() {
+  void clearAll(WidgetRef? ref) {
     state = RouteForm();
+    // Очищаем ошибку и останавливаем загрузку при очистке всех точек
+    if (ref != null) {
+      ref.read(mapStateNotifierProvider.notifier).clearError();
+      ref.read(mapStateNotifierProvider.notifier).setLoading(false);
+    }
   }
 }
